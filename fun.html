@@ -1,0 +1,65 @@
+<html>
+<style>
+body {
+    margin: 0px;
+}
+canvas {
+    border: black 1px solid;
+}
+</style>
+
+<body>
+<canvas id="canvas" width="500" height="300">what?</canvas>
+<button onclick="drawit();">Draw</button>
+
+<script>
+var x = 10;
+var y = 30;
+var canvas = document.getElementById("canvas");
+
+function drawit() {
+    var c = canvas.getContext('2d');
+    c.save();
+    c.clearRect(0, 0, canvas.width, canvas.height);
+    c.fillStyly = "rgba(0,200,0,1)";
+    c.fillRect(x, y, 50, 50);
+    c.restore();
+}
+
+function reshapeit() {
+    canvas.width = window.innerWidth - 2;
+    canvas.height = window.innerHeight - 50;
+}
+
+window.addEventListener('keydown', function(event) {
+  switch (event.keyCode) {
+    case 37: // Left
+      x -= 5;
+    break;
+
+    case 38: // Up
+      y -= 5;
+    break;
+
+    case 39: // Right
+      x += 5;
+    break;
+
+    case 40: // Down
+      y += 5;
+    break;
+
+    default:
+      console.log(event.keyCode);
+    break;
+  }
+  drawit()
+}, false);
+
+window.onresize = reshapeit;
+window.onload = reshapeit;
+
+</script>
+
+</body>
+</html>
