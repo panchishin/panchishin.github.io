@@ -1,0 +1,43 @@
+<html>
+<style>
+  body { background-color: grey; }
+  canvas { border: black 1px solid; background-color: white; }
+</style>
+
+<script>
+  var canvas = false;
+  var context = false;
+  var gradient1 = false;
+  var leather = new Image();
+  leather.src = "leather_day_02.png";
+
+  function drawit() {
+    canvas = canvas || document.getElementById("canvas");
+    context = context || canvas.getContext('2d');
+    gradient1 = gradient1 || context.createLinearGradient(0,0,500,0);
+    gradient1.addColorStop(0,"magenta");
+    gradient1.addColorStop(0.5,"blue");
+    gradient1.addColorStop(1,"black");
+    context.clearRect(0, 0, canvas.width, canvas.height);
+    context.lineWidth = 10;
+    for (i=0 ; i<200; i+=60){
+      context.fillStyle = gradient1; // "hsl("+(15+i)+", 60%, 40%)";
+      context.fillRect(10+i*2, 30+i, 50, 50);
+      context.strokeStyle = "hsl("+(300-i)+", 60%, 40%)";
+      context.strokeRect(430, 30+i, 50, 50);
+    }
+
+    var pattern = context.createPattern(leather,"repeat");
+    context.fillStyle = pattern;
+    context.fillRect(250,20,100,100);
+  }
+
+  window.onload = drawit;
+</script>
+
+<body>
+  <h1>Canvas Bootcamp day 2</h1>
+  <canvas id="canvas" width="500" height="300">what?  no canvas?  get a new browser</canvas>
+</body>
+
+</html>

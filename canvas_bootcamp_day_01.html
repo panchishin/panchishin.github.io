@@ -1,0 +1,31 @@
+<html>
+<style>
+  canvas { border: black 1px solid; }
+</style>
+
+<script>
+  var canvas = false;
+  var context = false;
+
+  function drawit() {
+    canvas = canvas || document.getElementById("canvas");
+    context = context || canvas.getContext('2d');
+    context.clearRect(0, 0, canvas.width, canvas.height);
+    for (i=0 ; i<200; i+=60){
+      context.fillStyle = "hsl("+(15+i)+", 60%, 40%)";
+      context.fillRect(10+i*2, 30+i, 50, 50);
+      context.strokeStyle = "hsl("+(300-i)+", 60%, 40%)";
+      context.strokeRect(430, 30+i, 50, 50);
+    }
+    context.restore();
+  }
+
+  window.onload = drawit;
+</script>
+
+<body>
+  <h1>Canvas Bootcamp day 1</h1>
+  <canvas id="canvas" width="500" height="300">what?  no canvas?  get a new browser</canvas>
+</body>
+
+</html>
