@@ -25,7 +25,7 @@
     context.stroke();
     context.fill();
 
-    lean = Math.cos(Date.now()/300.0)/10.0;
+    lean = Math.cos(Date.now()/400.0)/10.0;
     drawBranch(250,280,0,50,lean);
     
     setTimeout(drawit, 20);
@@ -33,17 +33,19 @@
   var lean = 0.0
 
   function drawBranch(x,y,direction,size,lean){
-    context.lineWidth = size/10.0;
-    context.beginPath();
-    context.moveTo(x,y)
-    x -= size*Math.sin(direction);
-    y -= size*Math.cos(direction);
-    context.lineTo(x,y)
-    context.stroke();
     if (size>6) {
+      context.lineWidth = size/10.0;
+      context.beginPath();
+      context.moveTo(x,y)
+      x -= size*Math.sin(direction);
+      y -= size*Math.cos(direction);
+      context.lineTo(x,y)
+      context.stroke();
       size *= 0.8;
       drawBranch(x,y,direction+.4+lean,size,lean);
       drawBranch(x,y,direction-.4+lean,size,lean);
+    } else {
+      context.fillRect(x,y,size,size);
     }
   }
 
