@@ -1,0 +1,32 @@
+<html>
+<script>
+
+var total_calls = 0;
+
+function setitup() {
+    var start = null;
+    var element = document.getElementById('SomeElementYouWantToAnimate');
+    element.style.position = 'absolute';
+
+    function step(timestamp) {
+      total_calls += 1;
+      if (!start) start = timestamp;
+      var progress = timestamp - start;
+      element.style.left = Math.min(progress / 10, 200) + 'px';
+      if (progress < 2000) {
+        window.requestAnimationFrame(step);
+      } else {
+        document.getElementById('TotalCount').innerHTML = total_calls;
+        console.log(total_calls);
+      }
+    }
+
+    window.requestAnimationFrame(step);
+}
+window.onload = setitup;
+</script>
+<body>
+<h1 id="SomeElementYouWantToAnimate">Bubba</h1>
+<h2 id="TotalCount">unknown</h2>
+</body>
+</html>

@@ -28,7 +28,8 @@
     lean = Math.cos(Date.now()/400.0)/10.0;
     drawBranch(250,280,0,50,lean);
     
-    setTimeout(drawit, 20);
+    
+    window.requestAnimationFrame(drawit);
   }
   var lean = 0.0
 
