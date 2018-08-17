@@ -1,0 +1,78 @@
+<html>
+<style>
+  body { background-color: grey; }
+  canvas { border: black 1px solid; background-color: white; }
+</style>
+
+<script>
+  var canvas = false;
+  var context = false;
+  var locationDiv = false;
+  var left = .4;
+  var leftLength = .8;
+  var right = .4;
+  var rightLength = .8;
+  var controlAngle = false;
+  var controlLength = false;
+
+  function mouseListener(event) {
+    if (controlLength) {
+      leftLength = event.offsetX / canvas.width;
+      rightLength = event.offsetY / canvas.height;
+    }
+    if (controlAngle) {
+      left = event.offsetX / canvas.width * 2 - .5;
+      right = event.offsetY / canvas.height * 2 - .5;
+    }
+  }
+  function mouseDown(event) {
+    mouseIsDown = true;
+  }
+
+  function initdrawit() {
+    canvas = canvas || document.getElementById("canvas");
+    locationDiv = locationDiv || document.getElementById("location");
+    context = context || canvas.getContext('2d');
+    context.canvas.addEventListener("mousemove",mouseListener)
+    context.canvas.addEventListener("mousedown",function() { controlAngle = false; controlLength = false })
+    drawit()    
+  }
+
+  function drawit() {
+    lean = Math.cos(Date.now()/1000.0)/20.0;
+    context.clearRect(0, 0, canvas.width, canvas.height);
+    drawBranch(250,280,0,50,lean,9);
+    
+    window.requestAnimationFrame(drawit);
+  }
+  var lean = 0.0
+
+  function drawBranch(x,y,direction,size,lean,step){
+    if (size>6 && step>0) {
+      context.lineWidth = size/10.0;
+      context.beginPath();
+      context.moveTo(x,y)
+      x -= size*Math.sin(direction);
+      y -= size*Math.cos(direction);
+      context.lineTo(x,y)
+      context.stroke();
+      drawBranch(x,y,direction+left+lean,size*leftLength,lean,step-1);
+      drawBranch(x,y,direction-right+lean,size*rightLength,lean,step-1);
+    } else {
+      context.fillRect(x,y,size,size);
+    }
+  }
+
+  window.onload = initdrawit;
+</script>
+
+<body>
+  <h1>Canvas Bootcamp day 5</h1>
+  <canvas id="canvas" width="500" height="300">what?  no canvas?  get a new browser</canvas>
+  <button onclick="controlAngle=true">Control Angle</button>
+  <button onclick="controlLength=true">Control Length</button>
+
+  <p>Click on one of the control buttons.  Move the mouse around to change tree.  Click the image to lock your settings.</p>
+</body>
+
+</html>
