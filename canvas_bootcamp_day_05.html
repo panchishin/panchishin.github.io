@@ -41,6 +41,8 @@
   function drawit() {
     lean = Math.cos(Date.now()/1000.0)/20.0;
     context.clearRect(0, 0, canvas.width, canvas.height);
+    context.fillStyle = "hsl(45, 60%, 40%)";
+
     drawBranch(250,280,0,50,lean,9);
     
     window.requestAnimationFrame(drawit);
