@@ -1,0 +1,121 @@
+<html>
+<style>
+  body { background-color: grey; }
+  canvas { border: black 1px solid; background-color: white; display: block; }
+</style>
+
+<script>
+  var canvas = false;
+  var context = false;
+  var info = false;
+
+  var reportFPS = function() {
+    var requests = 0;
+    var infobox = false;
+    var startTime = false;
+    return function() {
+      requests += 1;
+      startTime = startTime || Date.now()
+      infobox = infobox || document.getElementById("infobox");
+      if (requests % 10 == 0) {
+        infobox.innerHTML = "Frames per second " + Math.round( 1000* requests/(Date.now()-startTime) );
+      }
+    }
+  }();
+
+  function generateConfig(seed) {
+    if (seed == false) {
+      return {
+        leftAngle:.5-Math.random()*.6, leftLength:.9-Math.random()*.3,
+        rightAngle:.5-Math.random()*.6, rightLength:.9-Math.random()*.3
+      };
+    } else {
+      var newSeed = {};
+      Object.keys(seed).forEach(function(key){
+        newSeed[key] = seed[key]+Math.random()*.2-.1
+      })
+      if (Math.random()>.9) {
+        newSeed = {
+          leftAngle:newSeed.rightAngle, leftLength:newSeed.rightLength,
+          rightAngle:newSeed.leftAngle, rightLength:newSeed.leftLength
+        }
+      }
+      if (Math.random()>.9) {
+        newSeed = {
+          leftAngle:newSeed.leftAngle, leftLength:newSeed.rightLength,
+          rightAngle:newSeed.rightAngle, rightLength:newSeed.leftLength
+        }
+      }
+      return newSeed;
+    }
+  }
+
+  function mouseDown(event) {
+    element = Math.floor(3.0 * event.offsetX / canvas.width)
+    element += 3*Math.floor(2.0 * event.offsetY / canvas.height)
+    console.log(element)
+    for (index in configs) {
+      if (index != element) {
+        configs[index] = generateConfig(configs[element])
+      }
+    }
+  }
+
+  var configs=[generateConfig(false),generateConfig(false),generateConfig(false),generateConfig(false),generateConfig(false),generateConfig(false)]
+
+  function initdrawit() {
+    canvas = canvas || document.getElementById("canvas");
+    context = context || canvas.getContext('2d');
+    canvas.addEventListener("mousedown",mouseDown);
+    drawit()    
+  }
+
+  function calculateLean() {
+    return Math.cos(Date.now()/400.0)/10.0;
+  }
+
+  function drawit() {
+    reportFPS()
+    context.clearRect(0, 0, canvas.width, canvas.height);
+    context.fillStyle = "hsl(45, 60%, 40%)";
+
+    drawBranch(1*canvas.width/6,4*canvas.height/8,0,25,calculateLean(),9,configs[0]);
+    drawBranch(3*canvas.width/6,4*canvas.height/8,0,25,calculateLean(),9,configs[1]);
+    drawBranch(5*canvas.width/6,4*canvas.height/8,0,25,calculateLean(),9,configs[2]);
+
+    drawBranch(1*canvas.width/6,7*canvas.height/8,0,25,calculateLean(),9,configs[3]);
+    drawBranch(3*canvas.width/6,7*canvas.height/8,0,25,calculateLean(),9,configs[4]);
+    drawBranch(5*canvas.width/6,7*canvas.height/8,0,25,calculateLean(),9,configs[5]);
+
+
+    window.requestAnimationFrame(drawit);
+  }
+  var lean = 0.0
+
+  function drawBranch(x,y,direction,size,lean,step,config){
+    if (size>3 && step>0) {
+      context.lineWidth = size/10.0;
+      context.beginPath();
+      context.moveTo(x,y)
+      x -= size*Math.sin(direction);
+      y -= size*Math.cos(direction);
+      context.lineTo(x,y)
+      context.stroke();
+      drawBranch(x,y,direction+config.leftAngle+lean,size*config.leftLength,lean,step-1,config);
+      drawBranch(x,y,direction-config.rightAngle+lean,size*config.rightLength,lean,step-1,config);
+    } else {
+      context.fillRect(x,y,size,size);
+    }
+  }
+
+  window.onload = initdrawit;
+</script>
+
+<body>
+  <h1>Canvas Bootcamp day 6</h1>
+  <canvas id="canvas" width="600" height="400">what?  no canvas?  get a new browser</canvas>
+  <p>Click on any tree to make new trees like it</p>
+  <h2 id="infobox">Frames per seconds ---</h2>
+</body>
+
+</html>
