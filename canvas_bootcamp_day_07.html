@@ -1,0 +1,164 @@
+<html>
+<style>
+  body { background-color: grey; }
+  canvas { border: black 1px solid; background-color: white; display: block; }
+</style>
+
+<script>
+  var canvas = false;
+  var context = false;
+  var info = false;
+  var mouseX = 0;
+  var mouseY = 0;
+
+  var reportFPS = function() {
+    var requests = 0;
+    var infobox = false;
+    var startTime = false;
+    return function() {
+      requests += 1;
+      startTime = startTime || Date.now()
+      infobox = infobox || document.getElementById("infobox");
+      if ( Date.now()-startTime > 500 ) {
+        infobox.innerHTML = "Frames per second " + Math.round( 1000* requests/(Date.now()-startTime) ) + " Mouse at " + mouseX + "," + mouseY;
+        startTime = Date.now();
+        requests = 0;
+      }
+    }
+  }();
+
+  var tree = {
+    'new' : function newConfig() {
+      return {
+        x: 0.1*canvas.width + 0.8*canvas.width*Math.random(),
+        y: 0.4*canvas.height + 0.5*canvas.height*Math.random(),
+        size: 30 - Math.random()*10,
+        leftAngle:.5-Math.random()*.6, leftLength:.9-Math.random()*.3,
+        rightAngle:.5-Math.random()*.6, rightLength:.9-Math.random()*.3
+      };
+    },
+    'mutate' : function mutateConfig(parent) {
+      var newSeed = {};
+      Object.keys(parent).forEach(function(key){
+        newSeed[key] = parent[key]+Math.random()*.2-.1
+      })
+      newSeed.selected = false;
+      if (Math.random()>.9) {
+        newSeed = {
+          leftAngle:newSeed.rightAngle, leftLength:newSeed.rightLength,
+          rightAngle:newSeed.leftAngle, rightLength:newSeed.leftLength
+        }
+      }
+      if (Math.random()>.9) {
+        newSeed = {
+          leftAngle:newSeed.leftAngle, leftLength:newSeed.rightLength,
+          rightAngle:newSeed.rightAngle, rightLength:newSeed.leftLength
+        }
+      }
+      newSeed.x = 0.1*canvas.width + 0.8*canvas.width*Math.random();
+      newSeed.y = 0.4*canvas.height + 0.5*canvas.height*Math.random();
+
+      return newSeed;
+    },
+    'list' : [],
+    'draw' : function drawTree(specimen,x,y,direction,size,lean,step) {
+      if (!x && !y && !direction && !size) {
+        x = specimen.x;
+        y = specimen.y;
+        direction = 0;
+        size = specimen.size;
+        lean = calculateLean();
+        step = 9;
+        if (specimen.selected) {
+          context.strokeStyle = "hsl(180, 60%, 20%)";
+          context.fillStyle = "hsl(180, 60%, 40%)";
+        } else {
+          context.strokeStyle = "hsl(0, 0%, 0%)";
+          context.fillStyle = "hsl(45, 60%, 40%)";
+        }
+      }
+      if (size>3 && step>0) {
+        context.lineWidth = size/10.0;
+        context.beginPath();
+        context.moveTo(x,y)
+        x -= size*Math.sin(direction);
+        y -= size*Math.cos(direction);
+        context.lineTo(x,y)
+        context.stroke();
+        tree.draw(specimen,x,y,direction+specimen.leftAngle+lean,size*specimen.leftLength,lean,step-1);
+        tree.draw(specimen,x,y,direction-specimen.rightAngle+lean,size*specimen.rightLength,lean,step-1);
+      } else {
+        context.fillRect(x,y,size,size);
+      }
+    }
+  }
+
+
+  function mouseMove(event) {
+    mouseX = event.offsetX;
+    mouseY = event.offsetY;
+    tree.list.forEach(function(specimen){
+      specimen.selected = (
+        mouseX > specimen.x - specimen.size &&
+        mouseX < specimen.x + specimen.size &&
+        mouseY > specimen.y - specimen.size * 2 &&
+        mouseY < specimen.y
+        )
+    });
+  }
+
+  function mouseDown(event) {
+    var selected = tree.list.filter(function(specimen){ return specimen.selected })
+    if ( selected.length == 1 ) {
+      tree.list = tree.list.map(function(specimen) {
+        if (!specimen.selected) {
+          return tree.mutate(selected[0])
+        } else {
+          return selected[0]
+        }
+      })
+    }
+  }
+
+  function initdrawit() {
+    canvas = canvas || document.getElementById("canvas");
+    context = context || canvas.getContext('2d');
+    canvas.addEventListener("mousedown",mouseDown);
+    canvas.addEventListener("mousemove",mouseMove);
+    for (var x=0; x<12; x++) {
+      tree.list.push(tree.new())
+    }
+    drawit()    
+  }
+
+  function calculateLean() {
+    return Math.cos(Date.now()/400.0)/10.0;
+  }
+
+  function drawit() {
+    reportFPS()
+    context.clearRect(0, 0, canvas.width, canvas.height);
+    context.fillStyle = "hsl(45, 60%, 40%)";
+
+    tree.list.forEach(function(specimen){
+      tree.draw(specimen)
+    });
+
+
+    window.requestAnimationFrame(drawit);
+  }
+  var lean = 0.0
+
+
+
+  window.onload = initdrawit;
+</script>
+
+<body>
+  <h1>Canvas Bootcamp day 6</h1>
+  <canvas id="canvas" width="600" height="400">what?  no canvas?  get a new browser</canvas>
+  <p>Click on any tree to make new trees like it</p>
+  <h2 id="infobox">Frames per seconds ---</h2>
+</body>
+
+</html>
