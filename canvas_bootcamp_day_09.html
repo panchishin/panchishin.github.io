@@ -1,0 +1,71 @@
+<html>
+<title>Day 9 - Snowflakes</title>
+
+<style>
+body {
+    background-color: hsl(0,60%,60%);
+}
+canvas {
+    background-color: hsl(0,100%,100%);
+}
+</style>
+
+
+<script>
+var canvas = null;
+var context = null;
+var infobox = null;
+
+function initdrawit() {
+    canvas = canvas || document.getElementById("canvas");
+    context = context || canvas.getContext('2d');
+    infobox = infobox || document.getElementById("infobox");
+    window.requestAnimationFrame(drawit);
+}
+
+var flakes = [];
+var nextFlake = Date.now()
+var lastUpdate = Date.now()
+
+function drawit() {
+    var now = Date.now();
+    var deltatime = now - lastUpdate;
+    lastUpdate = now;
+
+    context.clearRect(0, 0, canvas.width, canvas.height);
+
+    flakes = flakes.filter(function(flake){
+        context.save()
+        context.translate(flake.x,flake.y);
+        context.rotate(flake.y/10);
+        context.fillStyle = "hsl(120, "+(flake.s*10)+"%, 60%)";
+        context.fillRect( -flake.s/2 , -flake.s/2 , flake.s , flake.s);
+        context.restore()
+        flake.y += deltatime * 0.01 * flake.s;
+        return flake.y < canvas.height        
+    });
+
+
+    if (Date.now() > nextFlake) {
+        nextFlake += 100;
+        flakes.push({
+            x : Math.random() * canvas.width ,
+            y : 0 , 
+            s : Math.random() * 7 + 1
+        })
+    }
+    infobox.innerHTML = "Total flakes = " + flakes.length;
+    window.requestAnimationFrame(drawit);
+}
+
+window.onload = initdrawit;
+</script>
+
+
+<body>
+    <h1>Day 9 - Snowflakes</h1>
+    <canvas id="canvas" width="500" height="400">no canvas? no game</canvas>
+    <h2 id="infobox">Some info here</h2>
+</body>
+
+</html>
