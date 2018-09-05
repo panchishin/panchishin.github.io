@@ -1,0 +1,103 @@
+<html>
+<title>Flying Aces - Retro</title>
+
+<style>
+body {
+    background-color: hsl(0,0%,60%);
+}
+canvas {
+    background-color: hsl(0,100%,100%);
+}
+</style>
+
+
+<script>
+var canvas = null;
+var context = null;
+var infobox = null;
+var attitude = 0;
+var power = 0;
+
+function initdrawit() {
+    canvas = canvas || document.getElementById("canvas");
+    context = context || canvas.getContext('2d');
+    infobox = infobox || document.getElementById("infobox");
+    context.canvas.addEventListener("mousemove",mouseListener);
+    window.requestAnimationFrame(drawit);
+}
+
+var flakes = [];
+var nextFlake = Date.now()
+var lastUpdate = Date.now()
+var groundsky = false;
+
+function drawPlane() {
+    context.save()
+    context.translate(power + 10, 2*canvas.height/3);
+    context.rotate(2*Math.PI*attitude/360);
+    context.fillStyle = "hsl(0,80%,80%)";
+    context.fillRect( -30,-5,60,10);
+    context.restore();
+}
+
+function drawit() {
+    var now = Date.now();
+    var deltatime = now - lastUpdate;
+    lastUpdate = now;
+
+    context.clearRect(0, 0, canvas.width, canvas.height);
+
+    groundsky = groundsky || context.createLinearGradient(0,0,0,canvas.height);
+    groundsky.addColorStop(0,"white");
+    groundsky.addColorStop(0.6,"blue");
+    groundsky.addColorStop(0.6,"green");
+    groundsky.addColorStop(0.95,"green");
+    groundsky.addColorStop(0.95,"black");
+    context.fillStyle = groundsky;
+    context.fillRect(0,0,canvas.width,canvas.height);
+
+
+    flakes = flakes.filter(function(flake){
+        context.save()
+        context.translate(flake.x,flake.y);
+        context.rotate(flake.y/10);
+        context.fillStyle = "hsla(0, "+(flake.s*10)+"%, 100%, "+(flake.s*5)+"%)";
+        context.fillRect( -flake.s/2 , -flake.s/2 , flake.s , flake.s);
+        context.restore()
+        flake.y += deltatime * 0.01 * flake.s;
+        return flake.y + ( 7 - flake.s )*30 < canvas.height        
+    });
+
+
+    if (Date.now() > nextFlake) {
+        nextFlake += 100;
+        flakes.push({
+            x : Math.random() * canvas.width ,
+            y : 0 , 
+            s : Math.random() * 7 + 1
+        })
+    }
+
+    drawPlane();
+
+    infobox.innerHTML = "Attitude " + attitude + " degrees , Power = " + power + "%";
+    window.requestAnimationFrame(drawit);
+}
+
+function mouseListener(event) {
+    power = Math.round(100*event.offsetX / canvas.width);
+    attitude = Math.round(90 * event.offsetY / canvas.height - 45);
+}
+
+
+window.onload = initdrawit;
+</script>
+
+
+<body>
+    <h1>Flying Aces - Retro</h1>
+    <canvas id="canvas" width="800" height="400">no canvas? no game</canvas>
+    <h2 id="infobox">Some info here</h2>
+</body>
+
+</html>
