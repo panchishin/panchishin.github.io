@@ -94,7 +94,7 @@ function drawit() {
     });
 
 
-    if (Date.now() > nextFlake && flakes.length <= MAX_FLAKES) {
+    if (Date.now() > nextFlake && flakes.length < MAX_FLAKES) {
         nextFlake += MSEC_BETWEEN_FLAKES;
         flakes.push({
             x : Math.random() * canvas.width * 2 ,
