@@ -4,32 +4,56 @@
 <style>
 body {
     background-color: hsl(0,0%,60%);
+    margin: 0px;
 }
 canvas {
     background-color: hsl(0,100%,100%);
+    z-index: 0;
+}
+#infobox {
+    position: fixed;
+    top: 0;
+    right: 2em;
+    z-index: 1;
+    color: rgba(0,0,0,40%);
+}
+li {
+    list-style: none;
 }
 </style>
 
 
 <script>
+
 var canvas = null;
 var context = null;
 var infobox = null;
+var infoboxLastUpdate = 0;
 var attitude = 0;
 var power = 0;
+
+var flakes = [];
+var MAX_FLAKES = 50;
+var MSEC_BETWEEN_FLAKES = 100;
+var nextFlake = Date.now()
+var lastUpdate = Date.now()
+var groundsky = false;
+
 
 function initdrawit() {
     canvas = canvas || document.getElementById("canvas");
     context = context || canvas.getContext('2d');
     infobox = infobox || document.getElementById("infobox");
     context.canvas.addEventListener("mousemove",mouseListener);
+    reshapeit();
     window.requestAnimationFrame(drawit);
 }
 
-var flakes = [];
-var nextFlake = Date.now()
-var lastUpdate = Date.now()
-var groundsky = false;
+function reshapeit() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    groundsky = false;
+}
 
 function drawPlane() {
     context.save()
@@ -70,8 +94,8 @@ function drawit() {
     });
 
 
-    if (Date.now() > nextFlake) {
-        nextFlake += 100;
+    if (Date.now() > nextFlake && flakes.length <= MAX_FLAKES) {
+        nextFlake += MSEC_BETWEEN_FLAKES;
         flakes.push({
             x : Math.random() * canvas.width * 2 ,
             y : 0 , 
@@ -81,7 +105,12 @@ function drawit() {
 
     drawPlane();
 
-    infobox.innerHTML = "Attitude " + attitude + " degrees , Power = " + power + "%";
+    if (Date.now() > infoboxLastUpdate + 200) {
+        infobox.innerHTML = "<li>Attitude = " + attitude + "</li>"+
+            "<li>Power = " + power + "%</li>" +
+            "<li>Flakes = " + flakes.length + "</li>";
+        infoboxLastUpdate = Date.now();
+    }
     window.requestAnimationFrame(drawit);
 }
 
@@ -92,13 +121,14 @@ function mouseListener(event) {
 
 
 window.onload = initdrawit;
+window.onresize = reshapeit;
+
 </script>
 
 
 <body>
-    <h1>Flying Aces - Retro</h1>
     <canvas id="canvas" width="800" height="400">no canvas? no game</canvas>
-    <h2 id="infobox">Some info here</h2>
+    <ul id="infobox"><li>Some info here<li></ul>
 </body>
 
 </html>
