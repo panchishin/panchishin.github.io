@@ -7,7 +7,6 @@ body {
     margin: 0px;
 }
 canvas {
-    background-color: hsl(0,100%,100%);
     z-index: 0;
 }
 #infobox {
@@ -16,6 +15,21 @@ canvas {
     right: 2em;
     z-index: 1;
     color: rgba(0,0,0,40%);
+}
+#front {
+    position: fixed;
+    height: 50%;
+    width: 50%;
+    z-index: 1;
+}
+#front #message {
+    position: absolute;
+    text-align: center;
+    height: 10em;
+    bottom: -5em;
+    width: 10em;
+    right: -5em;
+    color: rgb(0,0,0,80%);
 }
 li {
     list-style: none;
@@ -30,7 +44,9 @@ var context = null;
 var infobox = null;
 var infoboxLastUpdate = 0;
 var attitude = 0;
-var power = 0;
+var power = 50;
+var height = 50;
+
 
 var flakes = [];
 var MAX_FLAKES = 50;
@@ -40,12 +56,17 @@ var lastUpdate = Date.now()
 var groundsky = false;
 
 
-function initdrawit() {
+function clickToStart() {
+    document.getElementById("message").innerHTML = "";
+    document.getElementById("front").style.display = "none";
+
     canvas = canvas || document.getElementById("canvas");
     context = context || canvas.getContext('2d');
     infobox = infobox || document.getElementById("infobox");
-    context.canvas.addEventListener("mousemove",mouseListener);
+
+    window.onresize = reshapeit;
     reshapeit();
+    window.addEventListener("mousemove",planeControl);
     window.requestAnimationFrame(drawit);
 }
 
@@ -55,9 +76,11 @@ function reshapeit() {
     groundsky = false;
 }
 
-function drawPlane() {
+function drawPlane(deltatime) {
     context.save()
-    context.translate(power + 10, 2*canvas.height/3);
+    height += attitude*power*deltatime/50000;
+    height = Math.max(0,Math.min(100,height));
+    context.translate(power + 10, canvas.height*height/100);
     context.rotate(2*Math.PI*attitude/360);
     context.fillStyle = "hsl(0,80%,80%)";
     context.fillRect( -30,-5,60,10);
@@ -103,32 +126,33 @@ function drawit() {
         })
     }
 
-    drawPlane();
+    drawPlane(deltatime);
 
     if (Date.now() > infoboxLastUpdate + 200) {
         infobox.innerHTML = "<li>Attitude = " + attitude + "</li>"+
             "<li>Power = " + power + "%</li>" +
-            "<li>Flakes = " + flakes.length + "</li>";
+            "<li>Flakes = " + flakes.length + "</li>" +
+            "<li>Height = " + Math.round(height) + "</li>";
         infoboxLastUpdate = Date.now();
     }
     window.requestAnimationFrame(drawit);
 }
 
-function mouseListener(event) {
-    power = Math.round(100*event.offsetX / canvas.width);
-    attitude = Math.round(90 * event.offsetY / canvas.height - 45);
+function planeControl(event) {
+    if (event && canvas) {
+        var previousPower = power
+        power = Math.round(100*event.pageX / canvas.width);
+        attitude = Math.round(90 * event.pageY / canvas.height - 45);
+    }
 }
-
-
-window.onload = initdrawit;
-window.onresize = reshapeit;
 
 </script>
 
 
 <body>
+    <div id="front"><div id='message' onclick="clickToStart()"><h1>Flying Ace</h1><h2>Click to start</h2></div></div>
     <canvas id="canvas" width="800" height="400">no canvas? no game</canvas>
-    <ul id="infobox"><li>Some info here<li></ul>
+    <ul id="infobox"></ul>
 </body>
 
 </html>
