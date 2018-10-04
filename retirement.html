@@ -4,48 +4,79 @@
 body {
   background: white;
   font-family: Helvetica;
+  padding: 0.5em;
+  color: white;
 }
 div {
-  width : 25em;
+  display : inline-block;
+  width : 17em;
+  padding : 1em;
+  margin : 0.5em;
+  border-radius : 0.5em;
+  background-color: blue;
 }
 p {
   display : inline-block;
   width : 10em;
   height : 1.5em;
   margin : .2em;
+  text-align : left;
+}
+p.report {
+  width : 5em;
+  text-align : right;
 }
 
 input {
-  width : 10em;
+  width : 5em;
+  font-size : 1em;
   display : inline-block;
   height : 1.5em;
   margin : .2em;
+  text-align : right;
 }
+
 </style>
 </header>
 
 <body>
 
+
 <div>
-
-<p>Starting Wealth</p>
-<input id='principle' value='20'>
-
-<p>Yearly Contribution</p>
-<input id='contribution' value='16'>
-
-<p>Years of Contribution</p>
-<input id='years' value='23'>
-
-<p>% Interest Rate</p>
-<input id='interest' value='5'>
-
-<p>Retirement Amount</p>
-<p id='future_value'></p>
-
-<p>Retirement Income</p>
-<p id='income'></p>
-
+  <h1>Retire Calc</h1>
+  <p>Starting Wealth</p><input class='principle' value='20'>
+  <p>Yearly Contribution</p><input class='contribution' value='16'>
+  <p>Years of Contribution</p><input class='years' value='23'>
+  <p>% Interest Rate</p><input class='interest' value='5'>
+  <p>Retirement Amount</p><p class='report future_value'>blank</p>
+  <p>Retirement Income</p><p class='report income'>blank</p>
+</div>
+<div>
+  <h1>Retire Calc</h1>
+  <p>Starting Wealth</p><input class='principle' value='20'>
+  <p>Yearly Contribution</p><input class='contribution' value='16'>
+  <p>Years of Contribution</p><input class='years' value='23'>
+  <p>% Interest Rate</p><input class='interest' value='5'>
+  <p>Retirement Amount</p><p class='report future_value'>blank</p>
+  <p>Retirement Income</p><p class='report income'>blank</p>
+</div>
+<div>
+  <h1>Contrib Calc</h1>
+  <p>Starting Wealth</p><input class='principle' value='20'>
+  <p>Yearly Contribution</p><p class='report contribution'>blank</p>
+  <p>Years of Contribution</p><input class='years' value='23'>
+  <p>% Interest Rate</p><input class='interest' value='5'>
+  <p>Retirement Amount</p><input class='future_value' value="800">
+  <p>Retirement Income</p><p class='report income'>blank</p>
+</div>
+<div>
+  <h1>Contrib Calc</h1>
+  <p>Starting Wealth</p><input class='principle' value='20'>
+  <p>Yearly Contribution</p><p class='report contribution'>blank</p>
+  <p>Years of Contribution</p><input class='years' value='23'>
+  <p>% Interest Rate</p><input class='interest' value='5'>
+  <p>Retirement Amount</p><input class='future_value' value="800">
+  <p>Retirement Income</p><p class='report income'>blank</p>
 </div>
 
 </body>
@@ -55,24 +86,40 @@ input {
   integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
   crossorigin="anonymous"></script>
 <script>
-var principle = $("#principle");
-var contribution = $("#contribution");
-var years = $("#years");
-var interest = $("#interest");
-var future_value = $("#future_value");
-var income = $("#income");
 
-function recalculate (){
-  future_value.text(
-    Math.round( 
-    principle.val() * Math.pow( interest.val() / 100.0 + 1 , years.val() ) +
-    contribution.val() * ( Math.pow( interest.val() / 100.0 + 1 , years.val() ) - 1.0 ) / ( interest.val() / 100.0 )
+
+function recalculate (target){
+  console.log(target)
+  var parent = target.parent()
+  var principle = parent.find(".principle");
+  var contribution = parent.find(".contribution");
+  var years = parent.find(".years");
+  var interest = parent.find(".interest");
+  var future_value = parent.find(".future_value");
+  var income = parent.find(".income");
+  var future_value_amount = 0;
+  if ( !future_value.hasClass("report") ) {
+    future_value_amount = future_value.val()
+    contribution.text(
+      Math.round( ( future_value.val() - principle.val() * Math.pow( interest.val() / 100.0 + 1 , years.val() ) ) * ( interest.val() / 100.0 ) / ( Math.pow( interest.val() / 100.0 + 1 , years.val() ) - 1.0 ) )
     )
-  )
-  income.text( Math.round( future_value.text() * interest.val() / 100.0 ))
+
+  } else {
+    future_value_amount = 
+      Math.round( 
+      principle.val() * Math.pow( interest.val() / 100.0 + 1 , years.val() ) +
+      contribution.val() * ( Math.pow( interest.val() / 100.0 + 1 , years.val() ) - 1.0 ) / ( interest.val() / 100.0 )
+      )
+    future_value.text(future_value_amount)
+  }
+  income.text( Math.round( future_value_amount * interest.val() / 100.0 ))
 }
-$("input").on("keyup", recalculate)
-recalculate()
+$("input").on("keyup", function(event){ 
+  recalculate($(event.target)) 
+} )
+$("div").each(function(index,item){
+  recalculate( $(item).find(".income") )
+})
 </script>
 
 </html>
