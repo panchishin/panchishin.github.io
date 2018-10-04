@@ -1,0 +1,78 @@
+<html>
+<header>
+<style>
+body {
+  background: white;
+  font-family: Helvetica;
+}
+div {
+  width : 25em;
+}
+p {
+  display : inline-block;
+  width : 10em;
+  height : 1.5em;
+  margin : .2em;
+}
+
+input {
+  width : 10em;
+  display : inline-block;
+  height : 1.5em;
+  margin : .2em;
+}
+</style>
+</header>
+
+<body>
+
+<div>
+
+<p>Starting Wealth</p>
+<input id='principle' value='20'>
+
+<p>Yearly Contribution</p>
+<input id='contribution' value='16'>
+
+<p>Years of Contribution</p>
+<input id='years' value='23'>
+
+<p>% Interest Rate</p>
+<input id='interest' value='5'>
+
+<p>Retirement Amount</p>
+<p id='future_value'></p>
+
+<p>Retirement Income</p>
+<p id='income'></p>
+
+</div>
+
+</body>
+
+<script
+  src="https://code.jquery.com/jquery-3.3.1.min.js"
+  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+  crossorigin="anonymous"></script>
+<script>
+var principle = $("#principle");
+var contribution = $("#contribution");
+var years = $("#years");
+var interest = $("#interest");
+var future_value = $("#future_value");
+var income = $("#income");
+
+function recalculate (){
+  future_value.text(
+    Math.round( 
+    principle.val() * Math.pow( interest.val() / 100.0 + 1 , years.val() ) +
+    contribution.val() * ( Math.pow( interest.val() / 100.0 + 1 , years.val() ) - 1.0 ) / ( interest.val() / 100.0 )
+    )
+  )
+  income.text( Math.round( future_value.val() * interest.val() / 100.0 ))
+}
+$("input").on("keyup", recalculate)
+recalculate()
+</script>
+
+</html>
