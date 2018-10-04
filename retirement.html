@@ -69,7 +69,7 @@ function recalculate (){
     contribution.val() * ( Math.pow( interest.val() / 100.0 + 1 , years.val() ) - 1.0 ) / ( interest.val() / 100.0 )
     )
   )
-  income.text( Math.round( future_value.val() * interest.val() / 100.0 ))
+  income.text( Math.round( future_value.text() * interest.val() / 100.0 ))
 }
 $("input").on("keyup", recalculate)
 recalculate()
