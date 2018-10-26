@@ -30,7 +30,7 @@
       }
 
       if (( 'x' in focus ) && ( focus.x == x ) && ( focus.y == y )) {
-        var elapseTime = Math.min(15, (Date.now() - focus.startTime)/200);
+        var elapseTime = Math.floor(Math.min(15, (Date.now() - focus.startTime)/200));
         result = { 'own':1, 'str':elapseTime, 'typ': (result.typ=='empty'?'block':'empty')}
       }
       return result
