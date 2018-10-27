@@ -86,12 +86,12 @@
 
   function calcMultiplier(px,py) {
     var multiplier = 0
-    for (var x=-1;x<=1;x++) for (var y=-1;y<=1;y++) {
+    for (var x=-3;x<=3;x++) for (var y=-3;y<=3;y++) {
       var point = getPoint(px+x,py+y)
       var sign = point.own == 1 ? 1 : -1;
       multiplier += point.str * sign;      
     }
-    multiplier = Math.pow(1.03,multiplier)
+    multiplier = Math.pow(1.005,multiplier)
     multiplierElement.innerHTML = multiplier
     return multiplier
   }
