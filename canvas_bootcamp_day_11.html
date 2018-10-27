@@ -7,6 +7,7 @@
 <body>
   <h1>Canvas Bootcamp day 11</h1>
   <canvas id="canvas" width="800" height="400">what?  no canvas?  get a new browser</canvas>
+  <p>Multiplier = <span id="multiplier">empty</span></p>
   <p>Click on squares to convert their ownership and toggle between clear and fill</p>
   <p>Hold the mouse down to determine color strength</p>
   <p>The area data structure is <span id="area">empty</span></p>
@@ -15,6 +16,7 @@
 <script>
   var canvas = false;
   var context = false;
+  var multiplierElement = false;
   var areaElement = false;
   var area = {"1,1":{"typ":"empty"},"0,1":{"typ":"block"},"0,0":{"typ":"block"},"1,0":{"typ":"block"},"2,0":{"typ":"block"},"3,0":{"typ":"block"},"4,0":{"typ":"block"},"5,0":{"typ":"block"},"6,0":{"typ":"block"},"6,1":{"typ":"block"},"6,2":{"typ":"block"},"6,3":{"typ":"empty"},"6,4":{"typ":"empty"},"6,5":{"typ":"block"},"5,5":{"typ":"block"},"4,5":{"typ":"block"},"3,5":{"typ":"block"},"2,5":{"typ":"block"},"1,5":{"typ":"block"},"0,5":{"typ":"block"},"0,4":{"typ":"block"},"0,3":{"typ":"block"},"0,2":{"typ":"block"},"5,1":{"typ":"empty"},"5,2":{"typ":"empty"},"5,3":{"typ":"empty"},"5,4":{"typ":"empty"},"4,1":{"typ":"empty"},"4,2":{"typ":"empty"},"4,3":{"typ":"empty"},"4,4":{"typ":"empty"},"7,0":{"typ":"block"},"8,0":{"typ":"empty"},"3,1":{"typ":"empty"},"3,2":{"typ":"empty"},"3,3":{"typ":"empty"},"3,4":{"typ":"empty"},"2,4":{"typ":"empty"},"2,3":{"typ":"empty"},"2,2":{"typ":"empty"},"2,1":{"typ":"empty"},"1,2":{"typ":"empty"},"1,3":{"typ":"empty"},"1,4":{"typ":"empty"},"3,6":{"typ":"block"},"2,7":{"typ":"block"},"3,7":{"typ":"block"},"4,7":{"typ":"block"},"2,6":{"typ":"empty"},"4,6":{"typ":"empty"}}
   Object.keys(area).forEach( function(key) { area[key].str=13; area[key].own=0; })
@@ -32,18 +34,30 @@
         result = area[loc];
       }
 
-      if (( 'x' in focus ) && ( focus.x == x ) && ( focus.y == y )) {
-        var elapseTime = Math.floor(Math.min(15, (Date.now() - focus.startTime)/200));
-        result = { 'own':1, 'str':elapseTime, 'typ': (result.typ=='empty'?'block':'empty')}
-      }
       return result
-
   }
+
+  function getDrawablePoint(x,y) {
+    var result = getPoint(x,y)
+    if (( 'x' in focus ) && ( focus.x == x ) && ( focus.y == y )) {
+      var elapseTime = Math.floor(Math.min(15, (Date.now() - focus.startTime)/200*calcMultiplier(x,y)));
+      if (result.own == 1) {
+        return { 'own':1, 'str':elapseTime, 'typ': (result.typ=='empty'?'block':'empty')}
+      } else if (elapseTime >= result.str) {
+        area[x+","+y] = { 'own':1, 'str':0, 'typ': result.typ}
+        focus.startTime = Date.now()
+      } else {
+        return { 'own':result.own, 'str':Math.max(0,result.str-elapseTime), 'typ':result.typ}
+      }
+    }
+    return result
+  }
+
 
   function drawit() {
     context.clearRect(0, 0, canvas.width, canvas.height);
     for (x=0 ; x<16 ; x++ ) { for (y=0 ; y<8; y++){
-      var point = getPoint(x,y);
+      var point = getDrawablePoint(x,y);
       context.strokeStyle = "hsl("+point.own*60+", "+(95-point.str*5)+"%, "+(95-point.str*5)+"%)";
       context.strokeRect(x*50+1, 351-y*50, 48, 48);       
       context.fillStyle = "hsl("+point.own*60+", "+(95-point.str*5)+"%, "+(95-point.str*5)+"%)";
@@ -61,18 +75,32 @@
       'y' : 7 - Math.floor(event.offsetY / 50),
       'startTime' : Date.now()
     }
+    calcMultiplier(focus.x,focus.y)
   }
 
   function mouseup(event) {
-    area[focus.x+','+focus.y] = getPoint(focus.x,focus.y)
+    area[focus.x+','+focus.y] = getDrawablePoint(focus.x,focus.y)
     areaElement.innerHTML = JSON.stringify(area)
     focus = {}
+  }
+
+  function calcMultiplier(px,py) {
+    var multiplier = 0
+    for (var x=-1;x<=1;x++) for (var y=-1;y<=1;y++) {
+      var point = getPoint(px+x,py+y)
+      var sign = point.own == 1 ? 1 : -1;
+      multiplier += point.str * sign;      
+    }
+    multiplier = Math.pow(1.03,multiplier)
+    multiplierElement.innerHTML = multiplier
+    return multiplier
   }
 
   function initdrawit() {
     canvas = canvas || document.getElementById("canvas");
     areaElement = areaElement || document.getElementById("area");
     areaElement.innerHTML = JSON.stringify(area)
+    multiplierElement = multiplierElement || document.getElementById("multiplier");
     context = context || canvas.getContext('2d');
     canvas.addEventListener("mousedown",mousedown);
     canvas.addEventListener("mouseup",mouseup);
