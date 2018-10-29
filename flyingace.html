@@ -36,6 +36,12 @@ li {
 }
 </style>
 
+<body>
+    <div id="front"><div id='message' onclick="clickToStart()"><h1>Flying Ace</h1><h2>Click to start</h2></div></div>
+    <canvas id="canvas" width="800" height="400">no canvas? no game</canvas>
+    <ul id="infobox"></ul>
+</body>
+
 
 <script>
 
@@ -43,27 +49,45 @@ var canvas = null;
 var context = null;
 var infobox = null;
 var infoboxLastUpdate = 0;
+
 var attitude = 0;
-var power = 50;
-var height = 50;
+var power = 0;
+var direction = 1;  // 1 == right , -1 == left
+var height = 0;
+var xspeed = 0;
+var yspeed = 0;
 
-
+var GROUND = 95;
 var flakes = [];
-var MAX_FLAKES = 50;
+var MAX_FLAKES = 250;
 var MSEC_BETWEEN_FLAKES = 100;
 var nextFlake = Date.now()
 var lastUpdate = Date.now()
 var groundsky = false;
 
-
-function clickToStart() {
-    document.getElementById("message").innerHTML = "";
-    document.getElementById("front").style.display = "none";
-
+function init() {
     canvas = canvas || document.getElementById("canvas");
     context = context || canvas.getContext('2d');
     infobox = infobox || document.getElementById("infobox");
 
+    height = GROUND - 1;
+}
+
+function drawBackground() {
+    groundsky = groundsky || context.createLinearGradient(0,0,0,canvas.height);
+    groundsky.addColorStop(0,"white");
+    groundsky.addColorStop(0.75,"blue");
+    groundsky.addColorStop(0.75,"gray");
+    groundsky.addColorStop(GROUND / 100.0,"green");
+    groundsky.addColorStop(GROUND / 100.0,"black");
+    context.fillStyle = groundsky;
+    context.fillRect(0,0,canvas.width,canvas.height);
+}
+
+function clickToStart() {
+    document.getElementById("message").innerHTML = "";
+    document.getElementById("front").style.display = "none";
+    init()
     window.onresize = reshapeit;
     reshapeit();
     window.addEventListener("mousemove",planeControl);
@@ -77,13 +101,14 @@ function reshapeit() {
 }
 
 function drawPlane(deltatime) {
+    height += ( power > 25 ? attitude*power*deltatime/20000 : 0 ) + deltatime*0.03;
+    height = Math.max(0,Math.min(GROUND,height));
     context.save()
-    height += attitude*power*deltatime/50000;
-    height = Math.max(0,Math.min(100,height));
-    context.translate(power + 10, canvas.height*height/100);
-    context.rotate(2*Math.PI*attitude/360);
+    context.translate(canvas.width/2-power*direction, canvas.height*height/100);
+    context.rotate(2*Math.PI*attitude/360*direction);
     context.fillStyle = "hsl(0,80%,80%)";
     context.fillRect( -30,-5,60,10);
+    context.fillRect( -30*direction,-10,10*direction,15);
     context.restore();
 }
 
@@ -94,25 +119,18 @@ function drawit() {
 
     context.clearRect(0, 0, canvas.width, canvas.height);
 
-    groundsky = groundsky || context.createLinearGradient(0,0,0,canvas.height);
-    groundsky.addColorStop(0,"white");
-    groundsky.addColorStop(0.6,"blue");
-    groundsky.addColorStop(0.6,"green");
-    groundsky.addColorStop(0.95,"green");
-    groundsky.addColorStop(0.95,"black");
-    context.fillStyle = groundsky;
-    context.fillRect(0,0,canvas.width,canvas.height);
+    drawBackground()
 
 
     flakes = flakes.filter(function(flake){
         context.save()
-        context.translate(flake.x,flake.y);
+        context.translate(flake.x-power*direction,flake.y);
         context.rotate(flake.y/10);
         context.fillStyle = "hsla(0, "+(flake.s*10)+"%, 100%, "+(flake.s*5)+"%)";
         context.fillRect( -flake.s/2 , -flake.s/2 , flake.s , flake.s);
         context.restore()
         flake.y += deltatime * 0.01 * flake.s;
-        flake.x -= deltatime * 0.001 * power;
+        flake.x -= deltatime * 0.005 * power*direction;
         return flake.y + ( 7 - flake.s )*30 < canvas.height        
     });
 
@@ -120,8 +138,8 @@ function drawit() {
     if (Date.now() > nextFlake && flakes.length < MAX_FLAKES) {
         nextFlake += MSEC_BETWEEN_FLAKES;
         flakes.push({
-            x : Math.random() * canvas.width * 2 ,
-            y : 0 , 
+            x : Math.random() * canvas.width + canvas.width * power*direction / 100.0,
+            y : Math.random() * canvas.height * power / 100.0 / 2 , 
             s : Math.random() * 7 + 1
         })
     }
@@ -140,19 +158,13 @@ function drawit() {
 
 function planeControl(event) {
     if (event && canvas) {
-        var previousPower = power
-        power = Math.round(100*event.pageX / canvas.width);
+        direction = event.pageX*2 > canvas.width ? 1 : -1 ;
+        power = Math.round(200*event.pageX / canvas.width - 100) * direction;
         attitude = Math.round(90 * event.pageY / canvas.height - 45);
     }
 }
 
 </script>
 
-
-<body>
-    <div id="front"><div id='message' onclick="clickToStart()"><h1>Flying Ace</h1><h2>Click to start</h2></div></div>
-    <canvas id="canvas" width="800" height="400">no canvas? no game</canvas>
-    <ul id="infobox"></ul>
-</body>
 
 </html>
