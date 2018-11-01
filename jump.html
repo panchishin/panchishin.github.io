@@ -33,6 +33,8 @@ function reshapeit() {
     canvas.height = window.innerHeight - 2;
     MAX_X = canvas.width - BOX_SIZE;
     MAX_Y = canvas.height - BOX_SIZE;
+    x = MAX_X / 2;
+    y = MAX_Y / 2;
 }
 
 var actions = {
@@ -92,8 +94,6 @@ var keyCodeDown = {};
 
 function init() {
     reshapeit();
-    x = canvas.width / 2;
-    y = canvas.height / 2;
     window.requestAnimationFrame(drawit);
 }
 
@@ -149,11 +149,11 @@ function physics() {
 }
 
 
-window.onresize = init();
-window.onload = init();
+window.onload = init;
+window.onresize = reshapeit;
 
 window.addEventListener('keydown', function(event) {
-    keyCodeDown[event.keyCode] = Date.now() + 60000;
+    keyCodeDown[event.keyCode] = Date.now() + 60*1000;
 }, false);
 window.addEventListener('keyup', function(event) {
     delete keyCodeDown[event.keyCode];
