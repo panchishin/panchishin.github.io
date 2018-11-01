@@ -1,0 +1,165 @@
+<html>
+<style>
+body {
+    margin: 0px;
+}
+canvas {
+    border: black 1px solid;
+}
+</style>
+
+<body>
+<canvas id="canvas" width="500" height="300">what?</canvas>
+
+<script>
+var canvas = document.getElementById("canvas");
+var context = canvas.getContext('2d');
+
+var MAX_X = 0;
+var MAX_Y = 0;
+
+var RUN_SPEEDUP = 0.1;
+var RUN_MAX_SPEED = 20;
+var JUMP_SPEED = -10;
+var NEXT_JUMP_COOLDOWN = 200;
+var STOP_DRAG = 0.985;
+var STOP_DROP = 0.1;
+var BOX_SIZE = 50;
+
+
+
+function reshapeit() {
+    canvas.width = window.innerWidth - 2;
+    canvas.height = window.innerHeight - 2;
+    MAX_X = canvas.width - BOX_SIZE;
+    MAX_Y = canvas.height - BOX_SIZE;
+}
+
+var actions = {
+    default : { desc : 'default', funct : function(keyCode,deltaTime){ } },
+    '37' : { desc : 'left' , 
+        funct : function(keyCode,deltaTime) {
+            if ( nextLeftTime < Date.now() ) {
+                dx -= deltaTime*RUN_SPEEDUP ; dx = Math.max(-1*RUN_MAX_SPEED,dx) 
+            }
+        }
+    },
+    '39' : { desc : 'right' , 
+        funct : function(keyCode,deltaTime) { 
+            if ( nextRightTime < Date.now() ) {
+                dx += deltaTime*RUN_SPEEDUP ; dx = Math.min(RUN_MAX_SPEED,dx) 
+            }
+        }
+    },
+    '38' : { desc : 'up' , 
+        funct : function(keyCode,deltaTime) { 
+            if( (jumps < 2)&&(nextJumpTime < Date.now() ) ){ 
+                nextJumpTime = Date.now() + NEXT_JUMP_COOLDOWN; jumps += 1; dy = JUMP_SPEED ; 
+            } 
+        }
+    },
+    '40' : { desc : 'down' , 
+        funct : function(keyCode,deltaTime) { 
+            dx *= Math.pow(STOP_DRAG,deltaTime) ; 
+            dy += STOP_DROP*deltaTime 
+        }
+    },
+};
+
+Object.keys(actions).forEach(function(key) {
+    var action = actions[key];
+    if (!('funct' in action)) {
+        action['funct'] = function(){ }
+    }
+});
+
+function doAction(keyCode,deltaTime){
+    var action = "" + keyCode;
+    action = (action in actions) ? action : "default";
+    actions[action].funct(keyCode,deltaTime);
+}
+
+
+var x = 0;
+var y = 0;
+var dy = 0;
+var dx = 0;
+var jumps = 0;
+var nextJumpTime = 0;
+var nextLeftTime = 0;
+var nextRightTime = 0;
+var keyCodeDown = {};
+
+function init() {
+    reshapeit();
+    x = canvas.width / 2;
+    y = canvas.height / 2;
+    window.requestAnimationFrame(drawit);
+}
+
+function drawit() {
+    physics();
+    context.save();
+    context.clearRect(0, 0, canvas.width, canvas.height);
+    context.fillStyle = "rgba(0,200,0,1)";
+    context.fillRect(x, y, BOX_SIZE, BOX_SIZE);
+    context.restore();
+    window.requestAnimationFrame(drawit);
+}
+
+var lastUpdate = Date.now();
+
+function physics() {
+    var now = Date.now();
+    var deltaTime = now - lastUpdate;
+    if ( deltaTime > 10 ) {
+
+        Object.keys(keyCodeDown)
+            .filter(function(key){ return keyCodeDown[key] <= now })
+            .forEach(function(key){ delete keyCodeDown[key] });
+
+        Object.keys(keyCodeDown)
+            .forEach(function(key){
+                doAction(key,deltaTime)
+            })
+
+        lastUpdate = now;
+
+        dy += deltaTime * 0.02;
+        y += dy;
+
+        x += dx;
+        dx *= Math.pow(.997,deltaTime);
+        if ( y >= MAX_Y ) {
+            y = MAX_Y;
+            dy = 0;
+            jumps = 0;
+        }
+        if ( x > MAX_X ) {
+            dx *= -.8;
+            x = MAX_X;
+            nextRightTime = Date.now() + 1000;
+        }
+        if ( x < 0 ) {
+            dx *= -.8;
+            x = 0;
+            nextLeftTime = Date.now() + 1000;
+        }
+    }
+}
+
+
+window.onresize = init();
+window.onload = init();
+
+window.addEventListener('keydown', function(event) {
+    keyCodeDown[event.keyCode] = Date.now() + 60000;
+}, false);
+window.addEventListener('keyup', function(event) {
+    delete keyCodeDown[event.keyCode];
+}, false);
+
+
+
+</script>
+</body>
