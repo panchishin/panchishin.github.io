@@ -13,18 +13,18 @@ Your browser does not support the HTML5 canvas tag.</canvas>
     <button onclick="resetAll();">Reset</button>
 </div>
 <div>
-    <span>Speed</span>
     <input type=range value="1" min="1" max="20" onchange="speed = this.value*1;"/>
+    <span>Speed</span>
 </div>
 <div>
-    <span>Height Lambda</span>
     <input type=range value="50" min="0" max="100" 
         onchange='heightLambda = Math.pow(0.92,this.value); console.log("heightLambda = " + heightLambda)'/>
+    <span>Height Lambda</span>
 </div>
 <div>
-    <span>Line Width</span>
-    <input type=range value="10" min="6" max="25" 
+    <input type=range value="10" min="1" max="20" 
         onchange='lineWidth = this.value; console.log("lineWidth = " + lineWidth)'/>
+    <span>Line Width</span>
 </div>
 <script>
 
