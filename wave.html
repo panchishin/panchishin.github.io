@@ -7,44 +7,103 @@ Your browser does not support the HTML5 canvas tag.</canvas>
 
 <script>
 
-var c = document.getElementById("myCanvas");
-var ctx = c.getContext("2d");
+var doccanvas = document.getElementById("myCanvas");
+var canvas = document.createElement('canvas');
+canvas.width  = 600;
+canvas.height = 300;
+
+var ctx = canvas.getContext("2d");
 
 
-var height = 100;
-var points = [ ];
-for( var offset = 20 ; offset < 460 ; offset += 20 ) {
-  height += Math.random()* 40 - 20;
-  points.push( [ offset , height ] )
+function createTerrain(color, height, change) {
+
+    var points = [ ];
+    for( var offset = -20 ; offset < 600 ; offset += 20 ) {
+      height += Math.random()* change * 2 - change;
+      //height = Math.max(0,Math.min(300,height))
+      points.push( [ offset , height ] )
+    }
+    return points
 }
 
-ctx.fillStyle = 'green';
-ctx.beginPath();
-ctx.moveTo(points[0][0]-5,300);
-for(var index = 0 ; index < points.length ; index++) {
-    ctx.lineTo(points[index][0]-5,points[index][1])
+function moveTerrain(points, change) {
+    points.shift();
+    points.forEach(function(point) {
+        point[0] -= 20;
+    })
+    var last = points[points.length-1];
+    points.push( [last[0]+20 , last[1] += Math.random()* change * 2 - change ])
 }
-ctx.lineTo(points[points.length-1][0]-5,300)
-ctx.closePath();
-ctx.fill();
 
-ctx.strokeStyle = '#FFA500';
-ctx.lineWidth=10;
-ctx.beginPath();
+function paintTerrain(color, points, change) {
+    ctx.fillStyle = color;
+    ctx.beginPath();
+    ctx.moveTo(points[0][0],300);
+    for(var index = 0 ; index < points.length ; index++) {
+        ctx.lineTo(points[index][0],points[index][1])
+    }
+    ctx.lineTo(points[points.length-1][0],300)
+    ctx.closePath();
+    ctx.fill();
 
-ctx.moveTo(points[0][0], points[0][1]);
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 10;
+    ctx.beginPath();
 
-for (i = 1; i < points.length - 2; i ++)
-{
-  var xc = (points[i][0] + points[i + 1][0]) / 2;
-  var yc = (points[i][1] + points[i + 1][1]) / 2;
-  ctx.quadraticCurveTo(points[i][0], points[i][1], xc, yc);
+    ctx.moveTo(points[0][0], points[0][1]);
+
+    for (i = 1; i < points.length - 2; i ++)
+    {
+      var xc = (points[i][0] + points[i + 1][0]) / 2;
+      var yc = (points[i][1] + points[i + 1][1]) / 2;
+      ctx.quadraticCurveTo(points[i][0], points[i][1], xc, yc);
+    }
+    // curve through the last two points
+    ctx.quadraticCurveTo(points[i][0], points[i][1], points[i+1][0],points[i+1][1]);
+     
+    ctx.stroke();
+    return points;
 }
-// curve through the last two points
-ctx.quadraticCurveTo(points[i][0], points[i][1], 
-       points[i+1][0],points[i+1][1]);
- 
-ctx.stroke()
+
+var l1,l2,l3,l4,l5;
+l1 = createTerrain("white",100,20)
+l2 = createTerrain("green",100,5)
+l3 = createTerrain("brown",150,15)
+l4 = createTerrain("grey",200,20)
+l5 = createTerrain("black",250,5)
+var offset = 0;
+
+function createAll() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = "blue";
+    ctx.fillRect(0,0,800,300);
+    paintTerrain("white", l1, 20)
+    paintTerrain("green", l2, 5 )
+    paintTerrain("brown", l3, 15)
+    paintTerrain("grey",  l4, 20)
+    paintTerrain("black", l5, 5 )
+
+    //grab the context from your destination canvas
+    var destCtx = doccanvas.getContext('2d');
+    //call its drawImage() function passing it the source canvas directly
+    destCtx.drawImage(canvas, -offset, 0);
+
+    offset += 1;
+    if (offset >= 20) {
+        offset -= 20;
+        moveTerrain(l1, 20)
+        moveTerrain(l2, 5 )
+        moveTerrain(l3, 15)
+        moveTerrain(l4, 20)
+        moveTerrain(l5, 5 )
+    }
+
+
+    setTimeout(createAll,10);
+}
+
+createAll()
+
 </script> 
 
 </body>
