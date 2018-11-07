@@ -4,105 +4,129 @@
 
 <canvas id="myCanvas" width="500" height="300" style="border:1px solid #d3d3d3;">
 Your browser does not support the HTML5 canvas tag.</canvas>
-
+<p>FPS = <span id=fps>60</span></p>
+<button onclick="resetAll();">Reset</button>
 <script>
 
-var doccanvas = document.getElementById("myCanvas");
-var canvas = document.createElement('canvas');
-canvas.width  = 600;
-canvas.height = 300;
+var fpsElement = document.getElementById("fps");
 
-var ctx = canvas.getContext("2d");
+var fps = 60;
+var fpsLambda = 0.04;
 
+var visibleCanvas = document.getElementById("myCanvas");
+var visibleCtx = visibleCanvas.getContext('2d');
 
-function createTerrain(color, height, change) {
+var terrainCanvas = document.createElement('canvas');
+terrainCanvas.width  = 600;
+terrainCanvas.height = 300;
+var terrainCtx = terrainCanvas.getContext("2d");
 
-    var points = [ ];
-    for( var offset = -20 ; offset < 600 ; offset += 20 ) {
-      height += Math.random()* change * 2 - change;
-      //height = Math.max(0,Math.min(300,height))
-      points.push( [ offset , height ] )
+function Terrain(color, height, change) {
+    return {
+        color : color,
+        height : height,
+        change : change,
+        points : [],
+        create : function createTerrain() {
+            this.points = [ ];
+            var height = this.height;
+            for( var offset = -20 ; offset < 600 ; offset += 20 ) {
+              height += Math.random() * this.change * 2 - this.change;
+              this.points.push( [ offset , height ] )
+            }
+            return this;
+        },
+        move : function moveTerrain() {
+            this.points.shift();
+            this.points.forEach(function(point) {
+                point[0] -= 20;
+            })
+            var last = this.points[this.points.length-1];
+            this.points.push( [last[0]+20 , last[1] += Math.random()* this.change * 2 - this.change ])
+        },
+        paint : function paintTerrain() {
+            terrainCtx.fillStyle = this.color;
+            terrainCtx.beginPath();
+            terrainCtx.moveTo(this.points[0][0],300);
+            for(var index = 0 ; index < this.points.length ; index++) {
+                terrainCtx.lineTo(this.points[index][0],this.points[index][1])
+            }
+            terrainCtx.lineTo(this.points[this.points.length-1][0],300)
+            terrainCtx.closePath();
+            terrainCtx.fill();
+
+            terrainCtx.strokeStyle = this.color;
+            terrainCtx.lineWidth = 10;
+            terrainCtx.beginPath();
+
+            terrainCtx.moveTo(this.points[0][0], this.points[0][1]);
+
+            for (i = 1; i < this.points.length - 2; i ++)
+            {
+              var xc = (this.points[i][0] + this.points[i + 1][0]) / 2;
+              var yc = (this.points[i][1] + this.points[i + 1][1]) / 2;
+              terrainCtx.quadraticCurveTo(this.points[i][0], this.points[i][1], xc, yc);
+            }
+            // curve through the last two this.points
+            terrainCtx.quadraticCurveTo(this.points[i][0], this.points[i][1], this.points[i+1][0],this.points[i+1][1]);
+             
+            terrainCtx.stroke();
+            return this.points;
+        }
     }
-    return points
 }
 
-function moveTerrain(points, change) {
-    points.shift();
-    points.forEach(function(point) {
-        point[0] -= 20;
-    })
-    var last = points[points.length-1];
-    points.push( [last[0]+20 , last[1] += Math.random()* change * 2 - change ])
-}
-
-function paintTerrain(color, points, change) {
-    ctx.fillStyle = color;
-    ctx.beginPath();
-    ctx.moveTo(points[0][0],300);
-    for(var index = 0 ; index < points.length ; index++) {
-        ctx.lineTo(points[index][0],points[index][1])
-    }
-    ctx.lineTo(points[points.length-1][0],300)
-    ctx.closePath();
-    ctx.fill();
-
-    ctx.strokeStyle = color;
-    ctx.lineWidth = 10;
-    ctx.beginPath();
-
-    ctx.moveTo(points[0][0], points[0][1]);
-
-    for (i = 1; i < points.length - 2; i ++)
-    {
-      var xc = (points[i][0] + points[i + 1][0]) / 2;
-      var yc = (points[i][1] + points[i + 1][1]) / 2;
-      ctx.quadraticCurveTo(points[i][0], points[i][1], xc, yc);
-    }
-    // curve through the last two points
-    ctx.quadraticCurveTo(points[i][0], points[i][1], points[i+1][0],points[i+1][1]);
-     
-    ctx.stroke();
-    return points;
-}
+var terrains = [];
 
 var l1,l2,l3,l4,l5;
-l1 = createTerrain("white",100,20)
-l2 = createTerrain("green",100,5)
-l3 = createTerrain("brown",150,15)
-l4 = createTerrain("grey",200,20)
-l5 = createTerrain("black",250,5)
 var offset = 0;
+function resetAll() {
+    terrains = [
+        Terrain("white",100,20).create(),
+        Terrain("green",100,5).create(),
+        Terrain("brown",150,15).create(),
+        Terrain("grey",200,20).create(),
+        Terrain("black",250,5).create(),
+    ];
+    offset = 0;
+}
+resetAll();
 
-function createAll() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.fillStyle = "blue";
-    ctx.fillRect(0,0,800,300);
-    paintTerrain("white", l1, 20)
-    paintTerrain("green", l2, 5 )
-    paintTerrain("brown", l3, 15)
-    paintTerrain("grey",  l4, 20)
-    paintTerrain("black", l5, 5 )
+var previousTime = Date.now();
 
-    //grab the context from your destination canvas
-    var destCtx = doccanvas.getContext('2d');
-    //call its drawImage() function passing it the source canvas directly
-    destCtx.drawImage(canvas, -offset, 0);
+var theData = null;
+
+function paintAll(invokeTime) {
+    terrainCtx.clearRect(0, 0, terrainCanvas.width, terrainCanvas.height);
+    terrains.forEach(function(terrain) {
+        terrain.paint()
+    })
+
+    visibleCtx.clearRect(0, 0, visibleCanvas.width, visibleCanvas.height);
+    visibleCtx.fillStyle = "blue";
+    visibleCtx.fillRect(0,0,800,300);
+    //call its drawImage() function passing it the source terrainCanvas directly
+    visibleCtx.drawImage(terrainCanvas, -offset, 0);
+
+
+    var instantFps = 1000/Math.max(10,invokeTime - previousTime);
+    previousTime = invokeTime;
+    fps = fps * (1 - fpsLambda) + instantFps * fpsLambda
 
     offset += 1;
     if (offset >= 20) {
         offset -= 20;
-        moveTerrain(l1, 20)
-        moveTerrain(l2, 5 )
-        moveTerrain(l3, 15)
-        moveTerrain(l4, 20)
-        moveTerrain(l5, 5 )
+        terrains.forEach(function(terrain) {
+            terrain.move()
+        })
+        fpsElement.innerHTML = Math.round(fps)
     }
 
+    window.requestAnimationFrame(paintAll)
 
-    setTimeout(createAll,10);
 }
 
-createAll()
+window.requestAnimationFrame(paintAll)
 
 </script> 
 
