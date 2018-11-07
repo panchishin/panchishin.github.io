@@ -14,14 +14,18 @@ Your browser does not support the HTML5 canvas tag.</canvas>
 </div>
 <div>
     <span>Speed</span>
-    <input type=range id=speed value="1" min="1" max="20" onchange="speed = this.value*1;"/>
+    <input type=range value="1" min="1" max="20" onchange="speed = this.value*1;"/>
 </div>
 <div>
     <span>Height Lambda</span>
-    <input type=range id=heightLambda value="50" min="0" max="100" 
+    <input type=range value="50" min="0" max="100" 
         onchange='heightLambda = Math.pow(0.92,this.value); console.log("heightLambda = " + heightLambda)'/>
 </div>
-
+<div>
+    <span>Line Width</span>
+    <input type=range value="10" min="6" max="25" 
+        onchange='lineWidth = this.value; console.log("lineWidth = " + lineWidth)'/>
+</div>
 <script>
 
 var fpsElement = document.getElementById("fps");
@@ -36,7 +40,10 @@ var speed = 1;
 var heightLambda = Math.pow(0.92,50);
 console.log("heightLambda = " + heightLambda);
 
-function Terrain(color, height, change) {
+var lineWidth = 10;
+
+
+function Terrain(colorHigh, colorLow, height, change) {
     var terrainCanvas = document.createElement('canvas');
     terrainCanvas.width  = 600;
     terrainCanvas.height = 400;
@@ -45,7 +52,8 @@ function Terrain(color, height, change) {
 
     return {
         dirtyImage : true,
-        color : color,
+        colorHigh : colorHigh,
+        colorLow : colorLow,
         height : height,
         change : change,
         points : [],
@@ -76,7 +84,7 @@ function Terrain(color, height, change) {
             if (this.dirtyImage) {
                 terrainCtx.clearRect(0, 0, terrainCanvas.width, terrainCanvas.height);
 
-                terrainCtx.fillStyle = this.color;
+                terrainCtx.fillStyle = this.colorLow;
                 terrainCtx.beginPath();
                 terrainCtx.moveTo(this.points[0][0],terrainCanvas.height);
                 for(var index = 0 ; index < this.points.length ; index++) {
@@ -86,8 +94,8 @@ function Terrain(color, height, change) {
                 terrainCtx.closePath();
                 terrainCtx.fill();
 
-                terrainCtx.strokeStyle = this.color;
-                terrainCtx.lineWidth = 10;
+                terrainCtx.strokeStyle = this.colorHigh;
+                terrainCtx.lineWidth = lineWidth;
                 terrainCtx.beginPath();
 
                 terrainCtx.moveTo(this.points[0][0], this.points[0][1]);
@@ -115,11 +123,11 @@ var l1,l2,l3,l4,l5;
 var offset = 0;
 function resetAll() {
     terrains = [
-        Terrain("white",200,20).create(),
-        Terrain("green",200,5).create(),
-        Terrain("brown",250,15).create(),
-        Terrain("grey",300,20).create(),
-        Terrain("black",375,5).create(),
+        Terrain("hsl(0, 0%, 100%)","hsl(0, 0%, 90%)",200,20).create(),
+        Terrain("hsl(120, 100%, 15%)","hsl(120, 100%, 25%)",200,5).create(), // green
+        Terrain("hsl(0, 59%, 31%)","hsl(0, 59%, 41%)",250,15).create(),
+        Terrain("hsl(0, 0%, 40%)","hsl(0, 0%, 50%)",300,20).create(),
+        Terrain("hsl(0, 0%, 0%)","hsl(0, 0%, 10%)",375,5).create(),
     ];
     offset = 0;
 }
