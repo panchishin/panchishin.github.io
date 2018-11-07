@@ -1,11 +1,27 @@
 <!DOCTYPE html>
 <html>
+<style>
+    body { display : inline-block ; }
+    div { display : block ; }
+</style>
 <body>
 
-<canvas id="myCanvas" width="500" height="300" style="border:1px solid #d3d3d3;">
+<canvas id="myCanvas" width="500" height="400" style="border:1px solid #d3d3d3;">
 Your browser does not support the HTML5 canvas tag.</canvas>
-<p>FPS = <span id=fps>60</span></p>
-<button onclick="resetAll();">Reset</button>
+<div>
+    <span>FPS = <span id=fps>60</span></span>
+    <button onclick="resetAll();">Reset</button>
+</div>
+<div>
+    <span>Speed</span>
+    <input type=range id=speed value="1" min="1" max="20" onchange="speed = this.value*1;"/>
+</div>
+<div>
+    <span>Height Lambda</span>
+    <input type=range id=heightLambda value="50" min="0" max="100" 
+        onchange='heightLambda = Math.pow(0.92,this.value); console.log("heightLambda = " + heightLambda)'/>
+</div>
+
 <script>
 
 var fpsElement = document.getElementById("fps");
@@ -16,24 +32,35 @@ var fpsLambda = 0.04;
 var visibleCanvas = document.getElementById("myCanvas");
 var visibleCtx = visibleCanvas.getContext('2d');
 
-var terrainCanvas = document.createElement('canvas');
-terrainCanvas.width  = 600;
-terrainCanvas.height = 300;
-var terrainCtx = terrainCanvas.getContext("2d");
+var speed = 1;
+var heightLambda = Math.pow(0.92,50);
+console.log("heightLambda = " + heightLambda);
 
 function Terrain(color, height, change) {
+    var terrainCanvas = document.createElement('canvas');
+    terrainCanvas.width  = 600;
+    terrainCanvas.height = 400;
+    var terrainCtx = terrainCanvas.getContext("2d");
+
+
     return {
+        dirtyImage : true,
         color : color,
         height : height,
         change : change,
         points : [],
+        newHeight : function newHeight(height,change) {
+            height += Math.random() * this.change * 2 - this.change;
+            return height * ( 1 - heightLambda ) + this.height * heightLambda;
+        },
         create : function createTerrain() {
             this.points = [ ];
             var height = this.height;
             for( var offset = -20 ; offset < 600 ; offset += 20 ) {
-              height += Math.random() * this.change * 2 - this.change;
+              height = this.newHeight(height,this.change);
               this.points.push( [ offset , height ] )
             }
+            this.dirtyImage = true;
             return this;
         },
         move : function moveTerrain() {
@@ -42,36 +69,42 @@ function Terrain(color, height, change) {
                 point[0] -= 20;
             })
             var last = this.points[this.points.length-1];
-            this.points.push( [last[0]+20 , last[1] += Math.random()* this.change * 2 - this.change ])
+            this.points.push( [last[0]+20 , this.newHeight(last[1],this.change) ])
+            this.dirtyImage = true;
         },
         paint : function paintTerrain() {
-            terrainCtx.fillStyle = this.color;
-            terrainCtx.beginPath();
-            terrainCtx.moveTo(this.points[0][0],300);
-            for(var index = 0 ; index < this.points.length ; index++) {
-                terrainCtx.lineTo(this.points[index][0],this.points[index][1])
+            if (this.dirtyImage) {
+                terrainCtx.clearRect(0, 0, terrainCanvas.width, terrainCanvas.height);
+
+                terrainCtx.fillStyle = this.color;
+                terrainCtx.beginPath();
+                terrainCtx.moveTo(this.points[0][0],terrainCanvas.height);
+                for(var index = 0 ; index < this.points.length ; index++) {
+                    terrainCtx.lineTo(this.points[index][0],this.points[index][1])
+                }
+                terrainCtx.lineTo(this.points[this.points.length-1][0],terrainCanvas.height)
+                terrainCtx.closePath();
+                terrainCtx.fill();
+
+                terrainCtx.strokeStyle = this.color;
+                terrainCtx.lineWidth = 10;
+                terrainCtx.beginPath();
+
+                terrainCtx.moveTo(this.points[0][0], this.points[0][1]);
+
+                for (i = 1; i < this.points.length - 2; i ++)
+                {
+                  var xc = (this.points[i][0] + this.points[i + 1][0]) / 2;
+                  var yc = (this.points[i][1] + this.points[i + 1][1]) / 2;
+                  terrainCtx.quadraticCurveTo(this.points[i][0], this.points[i][1], xc, yc);
+                }
+                // curve through the last two this.points
+                terrainCtx.quadraticCurveTo(this.points[i][0], this.points[i][1], this.points[i+1][0],this.points[i+1][1]);
+                 
+                terrainCtx.stroke();
             }
-            terrainCtx.lineTo(this.points[this.points.length-1][0],300)
-            terrainCtx.closePath();
-            terrainCtx.fill();
-
-            terrainCtx.strokeStyle = this.color;
-            terrainCtx.lineWidth = 10;
-            terrainCtx.beginPath();
-
-            terrainCtx.moveTo(this.points[0][0], this.points[0][1]);
-
-            for (i = 1; i < this.points.length - 2; i ++)
-            {
-              var xc = (this.points[i][0] + this.points[i + 1][0]) / 2;
-              var yc = (this.points[i][1] + this.points[i + 1][1]) / 2;
-              terrainCtx.quadraticCurveTo(this.points[i][0], this.points[i][1], xc, yc);
-            }
-            // curve through the last two this.points
-            terrainCtx.quadraticCurveTo(this.points[i][0], this.points[i][1], this.points[i+1][0],this.points[i+1][1]);
-             
-            terrainCtx.stroke();
-            return this.points;
+            this.dirtyImage = false;
+            visibleCtx.drawImage(terrainCanvas, -offset, 0);
         }
     }
 }
@@ -82,11 +115,11 @@ var l1,l2,l3,l4,l5;
 var offset = 0;
 function resetAll() {
     terrains = [
-        Terrain("white",100,20).create(),
-        Terrain("green",100,5).create(),
-        Terrain("brown",150,15).create(),
-        Terrain("grey",200,20).create(),
-        Terrain("black",250,5).create(),
+        Terrain("white",200,20).create(),
+        Terrain("green",200,5).create(),
+        Terrain("brown",250,15).create(),
+        Terrain("grey",300,20).create(),
+        Terrain("black",375,5).create(),
     ];
     offset = 0;
 }
@@ -97,27 +130,27 @@ var previousTime = Date.now();
 var theData = null;
 
 function paintAll(invokeTime) {
-    terrainCtx.clearRect(0, 0, terrainCanvas.width, terrainCanvas.height);
+
+    visibleCtx.clearRect(0, 0, visibleCanvas.width, visibleCanvas.height);
+    visibleCtx.fillStyle = "blue";
+    visibleCtx.fillRect(0,0,visibleCanvas.width, visibleCanvas.height);
+
+
     terrains.forEach(function(terrain) {
         terrain.paint()
     })
 
-    visibleCtx.clearRect(0, 0, visibleCanvas.width, visibleCanvas.height);
-    visibleCtx.fillStyle = "blue";
-    visibleCtx.fillRect(0,0,800,300);
-    //call its drawImage() function passing it the source terrainCanvas directly
-    visibleCtx.drawImage(terrainCanvas, -offset, 0);
 
 
-    var instantFps = 1000/Math.max(10,invokeTime - previousTime);
+    var instantFps = 1000/Math.max(1,invokeTime - previousTime);
     previousTime = invokeTime;
     fps = fps * (1 - fpsLambda) + instantFps * fpsLambda
 
-    offset += 1;
+    offset += speed;
     if (offset >= 20) {
         offset -= 20;
         terrains.forEach(function(terrain) {
-            terrain.move()
+            terrain.move();
         })
         fpsElement.innerHTML = Math.round(fps)
     }
