@@ -22,9 +22,11 @@ var RUN_SPEEDUP = 0.1;
 var RUN_MAX_SPEED = 20;
 var JUMP_SPEED = -10;
 var NEXT_JUMP_COOLDOWN = 200;
+var MAX_JUMPS = 5;
 var STOP_DRAG = 0.985;
 var STOP_DROP = 0.1;
 var BOX_SIZE = 50;
+var WALL_BOUNCE = -.6;
 
 
 
@@ -55,8 +57,9 @@ var actions = {
     },
     '38' : { desc : 'up' , 
         funct : function(keyCode,deltaTime) { 
-            if( (jumps < 2)&&(nextJumpTime < Date.now() ) ){ 
-                nextJumpTime = Date.now() + NEXT_JUMP_COOLDOWN; jumps += 1; dy = JUMP_SPEED ; 
+            if( (jumps < MAX_JUMPS)&&(nextJumpTime < Date.now() ) ){ 
+                nextJumpTime = Date.now() + NEXT_JUMP_COOLDOWN; 
+                jumps += 1; dy = JUMP_SPEED ; 
             } 
         }
     },
@@ -126,6 +129,9 @@ function physics() {
         lastUpdate = now;
 
         dy += deltaTime * 0.02;
+        if (dy > 5) {
+            dy *= Math.pow(0.998, deltaTime);
+        }
         y += dy;
 
         x += dx;
@@ -136,12 +142,12 @@ function physics() {
             jumps = 0;
         }
         if ( x > MAX_X ) {
-            dx *= -.8;
+            dx *= WALL_BOUNCE;
             x = MAX_X;
             nextRightTime = Date.now() + 1000;
         }
         if ( x < 0 ) {
-            dx *= -.8;
+            dx *= WALL_BOUNCE;
             x = 0;
             nextLeftTime = Date.now() + 1000;
         }
