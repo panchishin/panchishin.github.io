@@ -26,6 +26,13 @@ Your browser does not support the HTML5 canvas tag.</canvas>
         onchange='lineWidth = this.value; console.log("lineWidth = " + lineWidth)'/>
     <span>Line Width</span>
 </div>
+<div>
+    <input type=range value="5" min="0" max="10" 
+        onchange='dig_spread = this.value; console.log("dig_spread = " + dig_spread)'/>
+    <span>Dig Spread</span>
+</div>
+<div>
+    <p>Use the right arrow or 'd' to move right, down arrow or 's' to dig.</p>
 <script>
 
 var fpsElement = document.getElementById("fps");
@@ -35,6 +42,8 @@ var fpsLambda = 0.04;
 
 var visibleCanvas = document.getElementById("myCanvas");
 var visibleCtx = visibleCanvas.getContext('2d');
+
+var dig_spread = 5;
 
 var speed = 0;
 var heightLambda = Math.pow(0.92,50);
@@ -79,6 +88,35 @@ function Terrain(colorHigh, colorLow, height, change) {
             var last = this.points[this.points.length-1];
             this.points.push( [last[0]+20 , this.newHeight(last[1],this.change) ])
             this.dirtyImage = true;
+        },
+        getDepth : function getDepth(offset) {
+            return this.points[offset][1];
+        },
+        dig : function dig(depth, offset) {
+            depth = Math.max(this.points[offset][1],depth);
+            var change = depth - this.points[offset][1];
+            this.points[offset][1] += change;
+
+            for( var distance = 1 ; distance <= 8 ; distance++ ) {
+                var spread = this.points[offset - distance + 1][1] - this.points[offset - distance][1] ;
+                if (depth > this.points[offset - distance][1] ) {
+                    var move = Math.min(spread/(distance*distance),change);
+                    this.points[offset - distance][1] += move;
+                    for (var move_distance = 1 ; move_distance <= dig_spread ; move_distance++) {
+                        this.points[offset - distance - move_distance][1] -= move / dig_spread;
+                    }
+                }
+                spread = this.points[offset + distance - 1][1] - this.points[offset + distance][1];
+                if (depth > this.points[offset + distance][1] ) {
+                    var move = Math.min(spread/(distance*distance),change);
+                    this.points[offset + distance][1] += move;
+                    for (var move_distance = 1 ; move_distance <= dig_spread ; move_distance++) {
+                        this.points[offset + distance + move_distance][1] -= move / dig_spread;
+                    }
+                }
+            }
+            this.dirtyImage = true;
+            return this.points[offset][1];
         },
         paint : function paintTerrain() {
             if (this.dirtyImage) {
@@ -181,7 +219,10 @@ function KeyCodeHolder(){
             '37' : 'left' , '39' : 'right' , '38' : 'up' , '40' : 'down' , // arrows
             '65' : 'left' , '68' : 'right' , '87' : 'up' , '83' : 'down' , // letters
         },
-        keyTapToAction : { },
+        keyTapToAction : {
+            '37' : 'tapleft' , '39' : 'tapright' , '38' : 'tapup' , '40' : 'tapdown' , // arrows
+            '65' : 'tapleft' , '68' : 'tapright' , '87' : 'tapup' , '83' : 'tapdown' , // letters
+        },
         setAction : function(name,func) { this.actionFuncs[name] = func },
         removeAction : function(name,func) { delete this.actionFuncs[name] },
         setKeyHoldAction : function(key,actionName) { this.keyHoldToAction[key] = actionName },
@@ -197,8 +238,8 @@ function KeyCodeHolder(){
         },
         keyUpFunc : function(event) { delete this.keysHeld[event.keyCode] },
         doTapAction : function(keyCode) {
-            var actionKey = (keyCode in this.keyHoldToAction) ? this.keyHoldToAction[keyCode] : 'default';
-            this.actionFuncs[ actionKey ](0);
+            var actionKey = (keyCode in this.keyTapToAction) ? this.keyTapToAction[keyCode] : 'default';
+            this.actionFuncs[ (actionKey in this.actionFuncs) ? actionKey : 'default' ](0);
         },
         doHeldActions : function(timeDelta){
             var that = this;
@@ -232,7 +273,19 @@ function KeyCodeHolder(){
 
 
 keyHandler = KeyCodeHolder();
-keyHandler.setAction("right",function(deltaTime) { offset += Math.floor(deltaTime) })
+
+keyHandler.setAction("right",function(deltaTime) { offset += Math.floor(deltaTime/2) })
+
+//keyHandler.setAction("left",function(deltaTime) { offset -= Math.floor(deltaTime/5) })
+
+keyHandler.setAction("down",function(deltaTime) { 
+    var max_depth = terrains.slice(1).reduce(function(a,b) { return Math.min(a,b.points[15][1]); },1000)
+    console.log(max_depth);
+    max_depth += 100/deltaTime;
+    terrains.slice(1).forEach(function(terrain) {
+        terrain.dig(max_depth,15);
+    })
+})
 
 </script>
 
