@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html>
+<style>
+    body { display : inline-block ; }
+    div { display : block ; }
+</style>
+<body>
+
+<canvas id="myCanvas" width="500" height="400" style="border:1px solid #d3d3d3;">
+Your browser does not support the HTML5 canvas tag.</canvas>
+<div>
+    <span>FPS = <span id=fps>60</span></span>
+    <button onclick="resetAll();">Reset</button>
+</div>
+<div>
+    <input type=range value="0" min="0" max="20" onchange="speed = this.value*1;"/>
+    <span>Speed</span>
+</div>
+<div>
+    <input type=range value="50" min="0" max="100" 
+        onchange='heightLambda = Math.pow(0.92,this.value); console.log("heightLambda = " + heightLambda)'/>
+    <span>Height Lambda</span>
+</div>
+<div>
+    <input type=range value="10" min="1" max="20" 
+        onchange='lineWidth = this.value; console.log("lineWidth = " + lineWidth)'/>
+    <span>Line Width</span>
+</div>
+<script>
+
+var fpsElement = document.getElementById("fps");
+
+var fps = 60;
+var fpsLambda = 0.04;
+
+var visibleCanvas = document.getElementById("myCanvas");
+var visibleCtx = visibleCanvas.getContext('2d');
+
+var speed = 0;
+var heightLambda = Math.pow(0.92,50);
+console.log("heightLambda = " + heightLambda);
+
+var lineWidth = 10;
+
+
+function Terrain(colorHigh, colorLow, height, change) {
+    var terrainCanvas = document.createElement('canvas');
+    terrainCanvas.width  = 600;
+    terrainCanvas.height = 400;
+    var terrainCtx = terrainCanvas.getContext("2d");
+
+
+    return {
+        dirtyImage : true,
+        colorHigh : colorHigh,
+        colorLow : colorLow,
+        height : height,
+        change : change,
+        points : [],
+        newHeight : function newHeight(height,change) {
+            height += Math.random() * this.change * 2 - this.change;
+            return height * ( 1 - heightLambda ) + this.height * heightLambda;
+        },
+        create : function createTerrain() {
+            this.points = [ ];
+            var height = this.height;
+            for( var offset = -20 ; offset < 600 ; offset += 20 ) {
+              height = this.newHeight(height,this.change);
+              this.points.push( [ offset , height ] )
+            }
+            this.dirtyImage = true;
+            return this;
+        },
+        move : function moveTerrain() {
+            this.points.shift();
+            this.points.forEach(function(point) {
+                point[0] -= 20;
+            })
+            var last = this.points[this.points.length-1];
+            this.points.push( [last[0]+20 , this.newHeight(last[1],this.change) ])
+            this.dirtyImage = true;
+        },
+        paint : function paintTerrain() {
+            if (this.dirtyImage) {
+                terrainCtx.clearRect(0, 0, terrainCanvas.width, terrainCanvas.height);
+
+                terrainCtx.fillStyle = this.colorLow;
+                terrainCtx.beginPath();
+                terrainCtx.moveTo(this.points[0][0],terrainCanvas.height);
+                for(var index = 0 ; index < this.points.length ; index++) {
+                    terrainCtx.lineTo(this.points[index][0],this.points[index][1])
+                }
+                terrainCtx.lineTo(this.points[this.points.length-1][0],terrainCanvas.height)
+                terrainCtx.closePath();
+                terrainCtx.fill();
+
+                terrainCtx.strokeStyle = this.colorHigh;
+                terrainCtx.lineWidth = lineWidth;
+                terrainCtx.beginPath();
+
+                terrainCtx.moveTo(this.points[0][0], this.points[0][1]);
+
+                for (i = 1; i < this.points.length - 2; i ++)
+                {
+                  var xc = (this.points[i][0] + this.points[i + 1][0]) / 2;
+                  var yc = (this.points[i][1] + this.points[i + 1][1]) / 2;
+                  terrainCtx.quadraticCurveTo(this.points[i][0], this.points[i][1], xc, yc);
+                }
+                // curve through the last two this.points
+                terrainCtx.quadraticCurveTo(this.points[i][0], this.points[i][1], this.points[i+1][0],this.points[i+1][1]);
+                 
+                terrainCtx.stroke();
+            }
+            this.dirtyImage = false;
+            visibleCtx.drawImage(terrainCanvas, -offset, 0);
+        }
+    }
+}
+
+var terrains = [];
+
+var l1,l2,l3,l4,l5;
+var offset = 0;
+function resetAll() {
+    terrains = [
+        Terrain("hsl(0, 0%, 100%)","hsl(0, 0%, 90%)",200,20).create(), // white
+        Terrain("hsl(120, 100%, 15%)","hsl(120, 100%, 25%)",200,5).create(), // green
+        Terrain("hsl(0, 59%, 31%)","hsl(0, 59%, 41%)",250,15).create(), // red
+        Terrain("hsl(0, 0%, 40%)","hsl(0, 0%, 50%)",300,20).create(), // grey
+        Terrain("hsl(0, 0%, 0%)","hsl(0, 0%, 10%)",375,5).create(), // black
+    ];
+    offset = 0;
+}
+resetAll();
+
+var previousTime = Date.now();
+
+var theData = null;
+
+function paintAll(invokeTime) {
+
+    visibleCtx.clearRect(0, 0, visibleCanvas.width, visibleCanvas.height);
+    visibleCtx.fillStyle = "blue";
+    visibleCtx.fillRect(0,0,visibleCanvas.width, visibleCanvas.height);
+
+
+    terrains.forEach(function(terrain) {
+        terrain.paint()
+    })
+
+
+
+    var instantFps = 1000/Math.max(1,invokeTime - previousTime);
+    previousTime = invokeTime;
+    fps = fps * (1 - fpsLambda) + instantFps * fpsLambda
+
+    offset += speed;
+    if (offset >= 20) {
+        offset -= 20;
+        terrains.forEach(function(terrain) {
+            terrain.move();
+        })
+        fpsElement.innerHTML = Math.round(fps)
+    }
+
+    window.requestAnimationFrame(paintAll)
+
+}
+
+window.requestAnimationFrame(paintAll)
+
+function KeyCodeHolder(){
+
+    var obj = {
+        keysHeld : {},
+        actionFuncs : {
+            'default' : function(timeDelta) { } , 
+            'undefined' : function(timeDelta) { }
+        },
+        keyHoldToAction : { 
+            '37' : 'left' , '39' : 'right' , '38' : 'up' , '40' : 'down' , // arrows
+            '65' : 'left' , '68' : 'right' , '87' : 'up' , '83' : 'down' , // letters
+        },
+        keyTapToAction : { },
+        setAction : function(name,func) { this.actionFuncs[name] = func },
+        removeAction : function(name,func) { delete this.actionFuncs[name] },
+        setKeyHoldAction : function(key,actionName) { this.keyHoldToAction[key] = actionName },
+        removeKeyHoldAction : function(key,actionName) { delete this.keyHoldToAction[key] },
+        setKeyTapAction : function(key,actionName) { this.keyTapToAction[key] = actionName },
+        removeKeyTapAction : function(key,actionName) { delete this.keyTapToAction[key] },
+
+        keyTapFunc : function(event) { 
+            if ( (!(event.keyCode in this.keysHeld))&&( event.keyCode in this.keyTapToAction ) ) {
+                this.doTapAction(event.keyCode)
+            }
+            this.keysHeld[event.keyCode] = true; 
+        },
+        keyUpFunc : function(event) { delete this.keysHeld[event.keyCode] },
+        doTapAction : function(keyCode) {
+            var actionKey = (keyCode in this.keyHoldToAction) ? this.keyHoldToAction[keyCode] : 'default';
+            this.actionFuncs[ actionKey ](0);
+        },
+        doHeldActions : function(timeDelta){
+            var that = this;
+            new Set(
+                Object.keys(this.keysHeld)
+                .map(function(holdKey){ 
+                    return (holdKey in that.keyHoldToAction) ? that.keyHoldToAction[holdKey] : 'default' 
+                })
+            )
+            .forEach(function(actionKey) {
+                that.actionFuncs[ (actionKey in that.actionFuncs) ? actionKey : 'default' ](timeDelta);
+            })
+        }
+    }
+
+    window.addEventListener('keydown', function(event) { obj.keyTapFunc(event) }, false);
+    window.addEventListener('keyup', function(event) { obj.keyUpFunc(event) }, false);
+
+    var lastTime = Date.now()
+    setInterval(function doActions() {
+        var time = Date.now()
+        var timeDelta = time - lastTime;
+        if (timeDelta >= 10) {
+            lastTime = time;
+            obj.doHeldActions(timeDelta);
+        }
+    },30);
+
+    return obj;
+}
+
+
+keyHandler = KeyCodeHolder();
+keyHandler.setAction("right",function(deltaTime) { offset += Math.floor(deltaTime) })
+
+</script>
+
+</body>
+</html>
