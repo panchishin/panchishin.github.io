@@ -1,0 +1,100 @@
+<html>
+<header>
+<style>
+body {
+  background: white;
+  font-family: Helvetica;
+  padding: 0.5em;
+}
+div {
+  display : inline-block;
+  width : 17em;
+  padding : 1em;
+  margin : 0.5em;
+  border-radius : 0.5em;
+  background-color: #eee;
+}
+p {
+  display : inline-block;
+  width : 10em;
+  height : 1.5em;
+  margin : .2em;
+  text-align : left;
+}
+p.report {
+  width : 5em;
+  text-align : right;
+}
+
+input {
+  width : 5em;
+  font-size : 1em;
+  display : inline-block;
+  height : 1.5em;
+  margin : .2em;
+  text-align : right;
+}
+
+</style>
+</header>
+
+<body>
+
+
+<div>
+  <h1>Navy Weight</h1>
+  <p>Height (inch)</p><input class='height' value='70.0'>
+  <p>Waist (inch)</p><input class='waist' value='40.5'>
+  <p>Neck (inch)</p><input class='neck' value='15.5'>
+  <p>Fat (%)</p><p class='report fat_percent'>blank</p>
+  <p>Weight (lbs)</p><input class='weight' value='200'>
+  <p>Fat (lbs)</p><p class='report fat_lbs'>blank</p>
+  <p>Misc (lbs)</p><p class='report misc_lbs'>blank</p>
+  <p>Muscle (est. lbs)</p><p class='report muscle'>blank</p>
+</div>
+
+
+</body>
+
+<script
+  src="https://code.jquery.com/jquery-3.3.1.min.js"
+  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+  crossorigin="anonymous"></script>
+
+<script>
+
+function recalculate (target){
+  console.log(target)
+  var parent = target.parent()
+  var weight = parent.find(".weight");
+  var height = parent.find(".height");
+  var waist = parent.find(".waist");
+  var neck = parent.find(".neck");
+  var fat_percent = parent.find(".fat_percent");
+  var fat_lbs = parent.find(".fat_lbs");
+  var misc_lbs = parent.find(".misc_lbs");
+  var muscle = parent.find(".muscle");
+
+  if ( fat_percent.hasClass("report") ) {
+    var fat_percent_value = 86.01*Math.log10(waist.val()-neck.val())-70.041*Math.log10(height.val())+36.76;
+    fat_percent.text( Math.round(fat_percent_value*10)/10 + "%" );
+    var fat_lbs_value = weight.val() * fat_percent_value / 100.0;
+    fat_lbs.text( Math.round(fat_lbs_value) );
+    var lean_val = weight.val() - fat_lbs_value;
+    var bone_organ = 50*Math.pow(height.val()/69.5,2)+weight.val()*0.08;
+    misc_lbs.text( Math.round(bone_organ) );
+    var muscle_val = lean_val - bone_organ;
+    muscle.text( Math.round(muscle_val) );
+  } else {
+  }
+
+}
+$("input").on("keyup", function(event){ 
+  recalculate($(event.target)) 
+} )
+$("div").each(function(index,item){
+  recalculate( $(item).find(".income") )
+})
+</script>
+
+</html>
