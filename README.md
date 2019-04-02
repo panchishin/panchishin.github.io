@@ -2,19 +2,16 @@
 
 ## 'index'
 
-
 [flying ace](/flyingace.html)
-
-[infinite terrain](/infinite_terrain.html)
 
 [jump](/jump.html)
 
 [tensorflow.js demo](/test_tf_js.html)
 
-[wave](/wave.html)
+[wave](/wave.html) [with digging](/infinite_terrain.html)
+
 
 ## Canvas bootcamp
-
 
 [Day 01 Colours and squares](/canvas_bootcamp/01.html)
 
