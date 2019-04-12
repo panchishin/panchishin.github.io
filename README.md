@@ -10,6 +10,7 @@
 
 [wave](/wave.html) [with digging](/infinite_terrain.html)
 
+[flakes] (/flakes.html)
 
 ## Canvas bootcamp
 
