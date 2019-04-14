@@ -26,6 +26,7 @@ body {
 
 <script>
 
+var next_worker_id = 1;
 var workers = [];
 var worker_status = {};
 
@@ -50,7 +51,9 @@ function stopWorker(){
 
 function initWorker(){
 
-    var worker = new Worker("worker.js?t="+Date.now());
+    var worker = new Worker("worker.js?worker_id="+next_worker_id+"&value="+document.getElementById("send_value").value+"&time="+Date.now());
+    next_worker_id ++;
+
     worker.onmessage = function(event) {
         worker_status[event.data.id] = event.data.message;
         if (event.data.value >= 10) {
@@ -59,7 +62,7 @@ function initWorker(){
         }
         updateMessage();
     };
-    worker.postMessage({"type":"init","value":1*document.getElementById("send_value").value})
+    worker.postMessage({"type":"init"})
 
     workers.unshift(worker)
 }

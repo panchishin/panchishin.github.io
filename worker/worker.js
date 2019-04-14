@@ -1,7 +1,12 @@
 
-var worker_id = Date.now() % 100000;
+console.log(location.search)
+var parameters = {}
+location.search.slice(1).split("&").forEach( function(key_value) { var kv = key_value.split("="); parameters[kv[0]] = kv[1]; })
 
-var data = 0;
+console.log(parameters)
+
+var worker_id = parameters['worker_id']*1;
+var data = parameters['value']*1
 
 var started = false;
 
@@ -14,10 +19,8 @@ function count() {
 
 onmessage = function(event) {
 
-    if( event.data.type === "init" ) {
-
-        data = event.data.value;
-        postMessage({"id":worker_id,"value":data,"message":("Worker " + worker_id + " , Initialized with : " + data)})
+    if ( (event.data.type === "init" )) {
+        postMessage({"id":worker_id,"value":data,"message":("Worker " + worker_id + " , Initialized with Value " + data)})
 
     } else if ( !started && (event.data.type === "start" )) {
         
