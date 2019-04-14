@@ -1,0 +1,92 @@
+<html>
+<style>
+body {
+    width: 35em;
+}
+</style>
+<body>
+<h1>Worker example</h1>
+<p>Workers are initialized with 'X' and count up by 1 every second.  When this page receives a worker response value of 10 or greater it will terminate that worker.</p>
+<fieldset>
+    <legend>Initialization Value</legend>
+    X = <input type=text id="send_value" value=1 size=3>
+</fieldset>
+<fieldset>
+    <legend>Controls</legend>
+    <button id="send_init_message">Initialize 1 worker</button>
+    <button id="send_start_message">Start last worker</button>
+    <button id="send_stop_message">Stop all web workers</button>
+</fieldset>
+
+<fieldset>
+    <legend>Worker Output</legend>
+    <div id="worker_output"><p>Empty</p></div>
+</fieldset>
+
+
+<script>
+
+var workers = [];
+var worker_status = {};
+
+function updateMessage(){
+    if (workers.length > 0) {
+        var message = Object.keys(worker_status).map(function(id){ return "<li>"+worker_status[id]+"</li>" }).join("\n")
+        document.getElementById("worker_output").innerHTML = "<ul>"+message+"</ul>";
+    } else {
+        document.getElementById("worker_output").innerHTML = "<p>Empty</p>";
+    }
+
+}
+
+function stopWorker(){
+    workers.forEach( function(worker) {
+        worker.terminate();
+    })
+    workers = [];
+    worker_status = {};
+    updateMessage();
+}
+
+function initWorker(){
+
+    var worker = new Worker("worker.js?t="+Date.now());
+    worker.onmessage = function(event) {
+        worker_status[event.data.id] = event.data.message;
+        if (event.data.value >= 10) {
+            worker.terminate()
+            worker_status[event.data.id] += " - terminated";
+        }
+        updateMessage();
+    };
+    worker.postMessage({"type":"init","value":1*document.getElementById("send_value").value})
+
+    workers.unshift(worker)
+}
+
+function startWorker(){
+
+    if (workers.length > 0) {
+        workers[0].postMessage({"type":"start"})
+    }
+    updateMessage();
+
+}
+
+
+function startWindow(){
+
+    document.getElementById("worker_output").innerHTML = "<p>Empty</p>";
+
+    document.getElementById("send_stop_message").onclick = stopWorker;
+    document.getElementById("send_init_message").onclick = initWorker;
+    document.getElementById("send_start_message").onclick = startWorker;
+
+}
+
+
+window.onload = startWindow;
+</script>
+
+</body>
+</html>

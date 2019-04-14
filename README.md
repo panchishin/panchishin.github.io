@@ -12,6 +12,8 @@
 
 [flakes](/flakes.html)
 
+[web worker](/worker/page.html)
+
 ## Canvas bootcamp
 
 [Day 01 Colours and squares](/canvas_bootcamp/01.html)
