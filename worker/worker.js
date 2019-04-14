@@ -3,6 +3,7 @@ var worker_id = Date.now() % 100000;
 
 var data = 0;
 
+var started = false;
 
 function count() {
     data+= 1;
@@ -18,8 +19,9 @@ onmessage = function(event) {
         data = event.data.value;
         postMessage({"id":worker_id,"value":data,"message":("Worker " + worker_id + " , Initialized with : " + data)})
 
-    } else if ( event.data.type === "start" ) {
-
+    } else if ( !started && (event.data.type === "start" )) {
+        
+        started = true;
         setTimeout(count,1000);
 
     }
