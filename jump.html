@@ -1,38 +1,75 @@
 <html>
 <style>
 body {
-    margin: 0px;
+    margin: 10px;
+    background-color: black;
+    color: white;
 }
 canvas {
-    border: black 1px solid;
+    border: white 1px solid;
 }
 </style>
 
 <body>
-<canvas id="canvas" width="500" height="300">what?</canvas>
+<canvas id="canvas" width="1800px" height="500px">what, no canvas?  Yo browsa suks!</canvas>
+<ul>
+    <li>Frames Per Second <span id="fps"></span></li>
+    <li>Jump Power Available <span id="jumppower"></span>%</li>
+</ul>
 
 <script>
 var canvas = document.getElementById("canvas");
 var context = canvas.getContext('2d');
+var jump_power_element = document.getElementById('jumppower');
+
+
+var reportFPS = function() {
+    var fps_element = document.getElementById("fps");
+    var requests = -1;
+    var lastTime = false;
+    var lambdaElapse = 0;
+    return function() {
+      var thisTime = Date.now();
+      requests = Math.min(requests + 1, 100);
+      if (lastTime) {
+          var elapse = thisTime - lastTime;
+          lambdaElapse = ( (requests - 1)*lambdaElapse + elapse ) / requests;          
+          fps_element.innerHTML = Math.round( 1000/lambdaElapse );
+      }
+      lastTime = thisTime;
+    }
+}();
+
 
 var MAX_X = 0;
 var MAX_Y = 0;
 
 var RUN_SPEEDUP = 0.1;
-var RUN_MAX_SPEED = 20;
-var JUMP_SPEED = -10;
-var NEXT_JUMP_COOLDOWN = 200;
-var MAX_JUMPS = 5;
+var RUN_MAX_SPEED = 10;
+var VERTICAL_DRAG = 1.0;
+var HORIZONTAL_DRAG = .995;
+var MAX_JUMP_SPEED = -8;
+var JUMP_SPEED = -8;
+var JUMP_SPEED_FATIGUE = 0.8;
+var NEXT_JUMP_COOLDOWN = 1200;
+var MAX_JUMPS = 1;
 var STOP_DRAG = 0.985;
 var STOP_DROP = 0.1;
-var BOX_SIZE = 50;
-var WALL_BOUNCE = -.6;
+var BOX_SIZE = 20;
+var WALL_BOUNCE = -.2;
+var WALL_BOUNCE_TIME = 200;
 
 
+var reportJumpPower = function() {
+    if( (jumps < MAX_JUMPS)&&(nextJumpTime < Date.now() ) ){ 
+        JUMP_SPEED = MAX_JUMP_SPEED
+    }
+    jump_power_element.innerHTML = Math.round( JUMP_SPEED/MAX_JUMP_SPEED * 100 );
+}
 
 function reshapeit() {
-    canvas.width = window.innerWidth - 2;
-    canvas.height = window.innerHeight - 2;
+    canvas.width = window.innerWidth - 22;
+    canvas.height = window.innerHeight - 122;
     MAX_X = canvas.width - BOX_SIZE;
     MAX_Y = canvas.height - BOX_SIZE;
     x = MAX_X / 2;
@@ -59,8 +96,13 @@ var actions = {
         funct : function(keyCode,deltaTime) { 
             if( (jumps < MAX_JUMPS)&&(nextJumpTime < Date.now() ) ){ 
                 nextJumpTime = Date.now() + NEXT_JUMP_COOLDOWN; 
+                JUMP_SPEED = MAX_JUMP_SPEED
                 jumps += 1; dy = JUMP_SPEED ; 
-            } 
+            }else if(jumps < MAX_JUMPS) {
+                JUMP_SPEED *= JUMP_SPEED_FATIGUE
+                jumps += 1; dy = JUMP_SPEED ; 
+                nextJumpTime = Date.now() + NEXT_JUMP_COOLDOWN * ( .2 + JUMP_SPEED / MAX_JUMP_SPEED );
+            }
         }
     },
     '40' : { desc : 'down' , 
@@ -95,75 +137,83 @@ var nextLeftTime = 0;
 var nextRightTime = 0;
 var keyCodeDown = {};
 
+var lastUpdate = Date.now();
+
 function init() {
     reshapeit();
     window.requestAnimationFrame(drawit);
 }
 
 function drawit() {
-    physics();
-    context.save();
-    context.clearRect(0, 0, canvas.width, canvas.height);
-    context.fillStyle = "rgba(0,200,0,1)";
-    context.fillRect(x, y, BOX_SIZE, BOX_SIZE);
-    context.restore();
-    window.requestAnimationFrame(drawit);
-}
-
-var lastUpdate = Date.now();
-
-function physics() {
     var now = Date.now();
     var deltaTime = now - lastUpdate;
     if ( deltaTime > 10 ) {
-
-        Object.keys(keyCodeDown)
-            .filter(function(key){ return keyCodeDown[key] <= now })
-            .forEach(function(key){ delete keyCodeDown[key] });
-
-        Object.keys(keyCodeDown)
-            .forEach(function(key){
-                doAction(key,deltaTime)
-            })
-
+        reportFPS();
+        reportJumpPower();
+        physics(deltaTime,now);
+        context.save();
+        context.clearRect(0, 0, canvas.width, canvas.height);
+        context.fillStyle = "rgba(0,200,0,1)";
+        context.fillRect(x, y, BOX_SIZE, BOX_SIZE);
+        context.restore();
         lastUpdate = now;
+    }
+    window.requestAnimationFrame(drawit);
+}
 
-        dy += deltaTime * 0.02;
-        if (dy > 5) {
-            dy *= Math.pow(0.998, deltaTime);
-        }
-        y += dy;
+function physics(deltaTime,now) {
 
-        x += dx;
-        dx *= Math.pow(.997,deltaTime);
-        if ( y >= MAX_Y ) {
-            y = MAX_Y;
-            dy = 0;
-            jumps = 0;
-        }
-        if ( x > MAX_X ) {
-            dx *= WALL_BOUNCE;
-            x = MAX_X;
-            nextRightTime = Date.now() + 1000;
-        }
-        if ( x < 0 ) {
-            dx *= WALL_BOUNCE;
-            x = 0;
-            nextLeftTime = Date.now() + 1000;
-        }
+    Object.keys(keyCodeDown)
+        .filter(function(key){ return keyCodeDown[key] <= now })
+        .forEach(function(key){ delete keyCodeDown[key] });
+
+    Object.keys(keyCodeDown)
+        .forEach(function(key){
+            doAction(key,deltaTime)
+        })
+
+
+    dy += deltaTime * 0.02;
+    dy *= Math.pow(VERTICAL_DRAG, deltaTime);
+    y += dy;
+
+    x += dx;
+    dx *= Math.pow(HORIZONTAL_DRAG,deltaTime);
+    if ( y >= MAX_Y ) {
+        y = MAX_Y;
+        dy = 0;
+        jumps = 0;
+    }
+    if ( y <= 0 ) {
+        y = 0;
+        dy = 0;
+    }
+    if ( x > MAX_X ) {
+        dx *= WALL_BOUNCE;
+        x = MAX_X;
+        nextRightTime = Date.now() + WALL_BOUNCE_TIME;
+        jumps = 0;
+    }
+    if ( x < 0 ) {
+        dx *= WALL_BOUNCE;
+        x = 0;
+        nextLeftTime = Date.now() + WALL_BOUNCE_TIME;
+        jumps = 0;
     }
 }
 
 
 window.onload = init;
-window.onresize = reshapeit;
+//window.onresize = reshapeit;
 
-window.addEventListener('keydown', function(event) {
-    keyCodeDown[event.keyCode] = Date.now() + 60*1000;
-}, false);
-window.addEventListener('keyup', function(event) {
-    delete keyCodeDown[event.keyCode];
-}, false);
+window.addEventListener('keydown', 
+    function(event) { keyCodeDown[event.keyCode] = Date.now() + 60*1000; },
+    false
+);
+window.addEventListener('keyup', 
+    function(event) {delete keyCodeDown[event.keyCode];},
+    false
+);
 
 
 
