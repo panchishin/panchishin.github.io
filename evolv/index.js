@@ -47,7 +47,7 @@ function init() {
 function drawit() {
     let now = Date.now();
     let deltaTime = now - lastUpdate;
-    if ( deltaTime > 10 ) {``
+    if ( deltaTime > 10 ) {
         controller.update(deltaTime,now)
         reportFPS();
         physics(deltaTime,now);
