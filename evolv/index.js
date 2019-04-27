@@ -13,15 +13,8 @@ let move = .01
 const reportFPS = createFPSReporter("fps");
 
 
-function reshapeit(size) {
-    MAX_SIZE = size || Math.min(window.innerWidth - 22,window.innerHeight - 152);
-    canvas.width = MAX_SIZE;
-    canvas.height = MAX_SIZE;
-}
-
-
 const controller = makeController({
-    default : { desc : 'default', funct : function(keyCode,deltaTime){ console.log("undefined action '"+keyCode+"'") } },
+    'default' : { desc : 'default', funct : function(keyCode,deltaTime){ console.log("undefined action '"+keyCode+"'") } },
     '37' : { desc : 'left' , 
         funct : function(keyCode,deltaTime) { x=(x-move+1)%1 }
     },
@@ -37,37 +30,45 @@ const controller = makeController({
 });
 
 
-let lastUpdate = Date.now();
+let lastDraw = 0;
 
-function init() {
-    reshapeit();
-    window.requestAnimationFrame(drawit);
-}
 
-function drawit() {
+
+function draw() {
     let now = Date.now();
-    let deltaTime = now - lastUpdate;
-    if ( deltaTime > 10 ) {
-        controller.update(deltaTime,now)
+    let deltaTime = now - lastDraw;
+    if ( lastDraw == 0 ) {
+        lastDraw = now;
+    } else if ( deltaTime > 10 ) {
         reportFPS();
+        controller.update(deltaTime,now)
         physics(deltaTime,now);
-
-        context.save();
         context.clearRect(0, 0, canvas.width, canvas.height);
         context.fillStyle = "rgba(0,200,0,1)";
         context.fillRect(MAX_SIZE*x, MAX_SIZE*y, MAX_SIZE*size, MAX_SIZE*size);
-        context.restore();
-        lastUpdate = now;
-
+        lastDraw = now;
     }
-    window.requestAnimationFrame(drawit);
+    window.requestAnimationFrame(draw);
 }
 
 function physics(deltaTime,now) {
-    x = x*.995 + .5*.005;
-    y = y*.995 + .5*.005;
+    let lambda = Math.pow(.8,deltaTime/1000)
+    x = x*lambda + .5*(1-lambda);
+    y = y*lambda + .5*(1-lambda);
 }
 
+
+
+function reshapeCanvas(size) {
+    MAX_SIZE = size || Math.min(window.innerWidth - 22,window.innerHeight - 152);
+    canvas.width = MAX_SIZE;
+    canvas.height = MAX_SIZE;
+}
+
+function init() {
+    reshapeCanvas();
+    window.requestAnimationFrame(draw);
+}
 
 window.onload = init;
 
