@@ -4,7 +4,7 @@
 
 [flying ace](/flyingace.html)
 
-[jump](/jump.html)
+[jump](/jump/index.html)
 
 [tensorflow.js demo](/test_tf_js.html)
 

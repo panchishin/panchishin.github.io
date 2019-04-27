@@ -1,66 +1,48 @@
-<html>
-<style>
-body {
-    margin: 10px;
-    background-color: black;
-    color: white;
-}
-canvas {
-    border: white 1px solid;
-}
-</style>
 
-<body>
-<canvas id="canvas" width="1800px" height="500px">what, no canvas?  Yo browsa suks!</canvas>
-<ul>
-    <li>Frames Per Second <span id="fps"></span></li>
-    <li>Jump Power Available <span id="jumppower"></span>%</li>
-</ul>
-
-<script>
-var canvas = document.getElementById("canvas");
-var context = canvas.getContext('2d');
-var jump_power_element = document.getElementById('jumppower');
+let canvas = document.getElementById("canvas");
+let context = canvas.getContext('2d');
+let jump_power_element = document.getElementById('jumppower');
 
 
-var reportFPS = function() {
-    var fps_element = document.getElementById("fps");
-    var requests = -1;
-    var lastTime = false;
-    var lambdaElapse = 0;
-    return function() {
-      var thisTime = Date.now();
-      requests = Math.min(requests + 1, 100);
-      if (lastTime) {
-          var elapse = thisTime - lastTime;
-          lambdaElapse = ( (requests - 1)*lambdaElapse + elapse ) / requests;          
-          fps_element.innerHTML = Math.round( 1000/lambdaElapse );
+let reportFPS = function(element_id){
+    let fps_element = document.getElementById(element_id);
+    let requests = 0;
+    let lastTime = Date.now();
+    let clock = 0;
+    return function(){
+      let thisTime = Date.now();
+      requests += 1
+      if (thisTime - lastTime >= 500) {
+          let rate = 1000*requests/(thisTime - lastTime);
+          clock = (clock+1)%4;
+          fps_element.innerHTML = Math.round( rate ) + " " + (clock==0?"/":(clock==1?"-":(clock==2?"\\":"|"))) ;
+          requests = 0;
+          lastTime = thisTime;
       }
-      lastTime = thisTime;
     }
-}();
+}("fps");
 
 
-var MAX_X = 0;
-var MAX_Y = 0;
+let MAX_X = 0;
+let MAX_Y = 0;
 
-var RUN_SPEEDUP = 0.1;
-var RUN_MAX_SPEED = 10;
-var VERTICAL_DRAG = 1.0;
-var HORIZONTAL_DRAG = .995;
-var MAX_JUMP_SPEED = -8;
-var JUMP_SPEED = -8;
-var JUMP_SPEED_FATIGUE = 0.8;
-var NEXT_JUMP_COOLDOWN = 1200;
-var MAX_JUMPS = 1;
-var STOP_DRAG = 0.985;
-var STOP_DROP = 0.1;
-var BOX_SIZE = 20;
-var WALL_BOUNCE = -.2;
-var WALL_BOUNCE_TIME = 200;
+let RUN_SPEEDUP = 0.1;
+let RUN_MAX_SPEED = 10;
+let VERTICAL_DRAG = 1.0;
+let HORIZONTAL_DRAG = .995;
+let MAX_JUMP_SPEED = -8;
+let JUMP_SPEED = -8;
+let JUMP_SPEED_FATIGUE = 0.8;
+let NEXT_JUMP_COOLDOWN = 1200;
+let MAX_JUMPS = 1;
+let STOP_DRAG = 0.985;
+let STOP_DROP = 0.1;
+let BOX_SIZE = 20;
+let WALL_BOUNCE = -.2;
+let WALL_BOUNCE_TIME = 200;
 
 
-var reportJumpPower = function() {
+let reportJumpPower = function() {
     if( (jumps < MAX_JUMPS)&&(nextJumpTime < Date.now() ) ){ 
         JUMP_SPEED = MAX_JUMP_SPEED
     }
@@ -76,7 +58,7 @@ function reshapeit() {
     y = MAX_Y / 2;
 }
 
-var actions = {
+let actions = {
     default : { desc : 'default', funct : function(keyCode,deltaTime){ } },
     '37' : { desc : 'left' , 
         funct : function(keyCode,deltaTime) {
@@ -114,30 +96,30 @@ var actions = {
 };
 
 Object.keys(actions).forEach(function(key) {
-    var action = actions[key];
+    let action = actions[key];
     if (!('funct' in action)) {
         action['funct'] = function(){ }
     }
 });
 
 function doAction(keyCode,deltaTime){
-    var action = "" + keyCode;
+    let action = "" + keyCode;
     action = (action in actions) ? action : "default";
     actions[action].funct(keyCode,deltaTime);
 }
 
 
-var x = 0;
-var y = 0;
-var dy = 0;
-var dx = 0;
-var jumps = 0;
-var nextJumpTime = 0;
-var nextLeftTime = 0;
-var nextRightTime = 0;
-var keyCodeDown = {};
+let x = 0;
+let y = 0;
+let dy = 0;
+let dx = 0;
+let jumps = 0;
+let nextJumpTime = 0;
+let nextLeftTime = 0;
+let nextRightTime = 0;
+let keyCodeDown = {};
 
-var lastUpdate = Date.now();
+let lastUpdate = Date.now();
 
 function init() {
     reshapeit();
@@ -145,8 +127,8 @@ function init() {
 }
 
 function drawit() {
-    var now = Date.now();
-    var deltaTime = now - lastUpdate;
+    let now = Date.now();
+    let deltaTime = now - lastUpdate;
     if ( deltaTime > 10 ) {
         reportFPS();
         reportJumpPower();
@@ -204,7 +186,6 @@ function physics(deltaTime,now) {
 
 
 window.onload = init;
-//window.onresize = reshapeit;
 
 window.addEventListener('keydown', 
     function(event) { keyCodeDown[event.keyCode] = Date.now() + 60*1000; },
@@ -214,8 +195,3 @@ window.addEventListener('keyup',
     function(event) {delete keyCodeDown[event.keyCode];},
     false
 );
-
-
-
-</script>
-</body>
