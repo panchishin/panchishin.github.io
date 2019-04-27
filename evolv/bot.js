@@ -71,9 +71,11 @@ function makeFood(xParam,yParam,sizeParam) {
     let size = sizeParam || 0.01;
 
     let draw = function(MAX_SIZE,cameraX,cameraY) {
+        let nx = ((x-cameraX+2)%1)
+        let ny = ((y-cameraY+2)%1)
         context.fillStyle = "rgba(0,200,0,1)";
         context.beginPath();
-        context.arc(MAX_SIZE*((x-cameraX+2)%1),MAX_SIZE*((y-cameraY+2)%1), MAX_SIZE*size, 0, Math.PI * 2, true);
+        context.arc(MAX_SIZE*nx,MAX_SIZE*ny, MAX_SIZE*size, 0, Math.PI * 2, true);
         context.fill();    
     }
 
@@ -83,3 +85,6 @@ function makeFood(xParam,yParam,sizeParam) {
     return { draw : draw , physics : physics };    
 
 }
+
+
+
