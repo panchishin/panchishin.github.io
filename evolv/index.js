@@ -1,4 +1,5 @@
 const canvas = document.getElementById("canvas");
+
 const context = canvas.getContext('2d');
 
 
@@ -15,10 +16,9 @@ let foods = [];
 let cameraX = 0.5;
 let cameraY = 0.5;
 
-for(let i=0;i<20;i++) {
-    bots.push(makeBot(Math.random(),Math.random(),Math.random()*Math.PI*2,.15*(Math.random()+.5)));
-    foods.push(makeFood(Math.random(),Math.random()));
-}
+for(let i=0;i<10;i++) bots.push( new makeBot(Math.random(),Math.random(),Math.random()*Math.PI*2,.1));
+for(let i=0;i<200;i++) foods.push( new makeFood(Math.random(),Math.random()));
+
 
 const reportFPS = createFPSReporter("fps");
 
@@ -59,12 +59,22 @@ function draw() {
         for(let i in foods) { foods[i].draw(MAX_SIZE,cameraX,cameraY) }
         lastDraw = now;
     }
+
     window.requestAnimationFrame(draw);
 }
 
 function physics(deltaSeconds,now) {
     for(let i in bots) { bots[i].physics(deltaSeconds) }
     for(let i in foods) { foods[i].physics(deltaSeconds) }
+
+    for(let bi in bots) {
+        for(let fi=foods.length-1 ; fi>=0 ; fi--) {
+            if (collide(bots[bi],foods[fi])) {
+                foods.splice(fi,1)
+            }
+        }
+    }
+
 }
 
 
