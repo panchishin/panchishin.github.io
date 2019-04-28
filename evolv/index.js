@@ -53,8 +53,6 @@ function draw() {
         controller.update(deltaSeconds,now)
         physics(deltaSeconds,now);
         context.clearRect(0, 0, canvas.width, canvas.height);
-        context.fillStyle = "rgba(0,200,0,1)";
-        context.fillRect(MAX_SIZE*x, MAX_SIZE*y, MAX_SIZE*size, MAX_SIZE*size);
         for(let i in bots) { bots[i].draw(MAX_SIZE,cameraX,cameraY) }
         for(let i in foods) { foods[i].draw(MAX_SIZE,cameraX,cameraY) }
         lastDraw = now;
