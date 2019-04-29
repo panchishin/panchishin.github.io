@@ -16,14 +16,22 @@ let foods = [];
 let cameraX = 0.5;
 let cameraY = 0.5;
 
-for(let i=0;i<10;i++) bots.push( new makeBot(Math.random(),Math.random(),Math.random()*Math.PI*2,.1));
-for(let i=0;i<200;i++) foods.push( new makeFood(Math.random(),Math.random()));
+function addBot() {
+    bots.push( new Bot(Math.random(),Math.random(),Math.random()*Math.PI*2,.1));
+}
+
+function addFood() {
+    foods.push( new Food(Math.random(),Math.random()));
+}
+
+for(let i=0;i<20;i++) addBot();
+for(let i=0;i<50;i++) addFood();
 
 
 const reportFPS = createFPSReporter("fps");
 
 
-const controller = makeController({
+const controller = new makeController({
     'default' : { desc : 'default', funct : function(keyCode,deltaSeconds){ console.log("undefined action '"+keyCode+"'") } },
     '37' : { desc : 'left' , 
         funct : function(keyCode,deltaSeconds) { cameraX=(cameraX-move+2)%1 }

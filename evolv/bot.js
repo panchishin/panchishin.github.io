@@ -1,7 +1,7 @@
 
 let showBoidDebug = false;
 
-function makeBot(xParam,yParam,facingParam,speedParam) {
+function Bot(xParam,yParam,facingParam,speedParam) {
 
     this.x = xParam;
     this.y = yParam;
@@ -60,13 +60,11 @@ function makeBot(xParam,yParam,facingParam,speedParam) {
         this.x = (this.x+2)%1;
         this.y = (this.y+2)%1;
     }
-
-    return this;
 }
 
 
 
-function makeFood(xParam,yParam,sizeParam) {
+function Food(xParam,yParam,sizeParam) {
     this.x = xParam || Math.random();
     this.y = yParam || Math.random();
     this.size = sizeParam || 0.01;
@@ -82,9 +80,6 @@ function makeFood(xParam,yParam,sizeParam) {
 
     this.physics = function(deltaSeconds) {
     }
-
-    return this;
-
 }
 
 

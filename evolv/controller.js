@@ -39,6 +39,4 @@ function makeController(actionsParam) {
     }
 
     this.addListeners();
-
-    return this;
-};
+}
