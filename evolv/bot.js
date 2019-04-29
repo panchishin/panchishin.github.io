@@ -6,7 +6,7 @@ function makeBot(xParam,yParam,facingParam,speedParam) {
     this.x = xParam;
     this.y = yParam;
     let facing = facingParam; // facing 0 is East, pi/2 is North
-    let speed = speedParam;
+    this.speed = speedParam;
     this.size = 0.02;
 
     this.drawFacing = function(MAX_SIZE,x,y) {
@@ -54,8 +54,8 @@ function makeBot(xParam,yParam,facingParam,speedParam) {
         facing += (Math.random()-.5) * Math.PI * deltaSeconds;
         let dx = Math.sin(facing);
         let dy = Math.cos(facing);
-        this.x += dx * speed * deltaSeconds;
-        this.y += dy * speed * deltaSeconds;
+        this.x += dx * this.speed * deltaSeconds;
+        this.y += dy * this.speed * deltaSeconds;
 
         this.x = (this.x+2)%1;
         this.y = (this.y+2)%1;
