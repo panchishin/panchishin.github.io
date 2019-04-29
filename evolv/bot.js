@@ -5,14 +5,14 @@ function makeBot(xParam,yParam,facingParam,speedParam) {
 
     this.x = xParam;
     this.y = yParam;
-    let facing = facingParam; // facing 0 is East, pi/2 is North
+    this.facing = facingParam; // this.facing 0 is East, pi/2 is North
     this.speed = speedParam;
     this.size = 0.02;
 
     this.drawFacing = function(MAX_SIZE,x,y) {
         context.strokeStyle = "rgba(100,100,100,1)";
-        let dx = Math.sin(facing);
-        let dy = Math.cos(facing);
+        let dx = Math.sin(this.facing);
+        let dy = Math.cos(this.facing);
         context.beginPath();
         context.moveTo(MAX_SIZE*x,MAX_SIZE*y);
         context.lineTo(MAX_SIZE*(x+dx/10),MAX_SIZE*(y+dy/10));
@@ -29,8 +29,8 @@ function makeBot(xParam,yParam,facingParam,speedParam) {
     this.drawBody = function(MAX_SIZE,x,y) {
         context.fillStyle = "rgba(200,0,0,1)";
         let that = this;
-        function rotateX(angle) { return MAX_SIZE*(x+Math.sin(facing+angle)*that.size) }
-        function rotateY(angle) { return MAX_SIZE*(y+Math.cos(facing+angle)*that.size) }
+        function rotateX(angle) { return MAX_SIZE*(x+Math.sin(that.facing+angle)*that.size) }
+        function rotateY(angle) { return MAX_SIZE*(y+Math.cos(that.facing+angle)*that.size) }
         context.beginPath();
         context.moveTo(rotateX(0),rotateY(0));
         context.lineTo(rotateX(Math.PI*0.75),rotateY(Math.PI*0.75));
@@ -51,9 +51,9 @@ function makeBot(xParam,yParam,facingParam,speedParam) {
     }
 
     this.physics = function(deltaSeconds) {
-        facing += (Math.random()-.5) * Math.PI * deltaSeconds;
-        let dx = Math.sin(facing);
-        let dy = Math.cos(facing);
+        this.facing += (Math.random()-.5) * Math.PI * deltaSeconds;
+        let dx = Math.sin(this.facing);
+        let dy = Math.cos(this.facing);
         this.x += dx * this.speed * deltaSeconds;
         this.y += dy * this.speed * deltaSeconds;
 
