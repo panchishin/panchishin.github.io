@@ -2,6 +2,8 @@
 
 ## 'index'
 
+[hexis](/hexis/game.html)
+
 [flying ace](/flyingace.html)
 
 [jump](/jump/index.html)

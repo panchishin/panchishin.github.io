@@ -1,0 +1,51 @@
+<html>
+
+<head><link rel="stylesheet" href="game.css"/></head>
+
+<body>
+
+	<h1>Hexis</h1>
+	<div class="config">
+
+		<div class="controls">
+			<div class="difficulty" value="1">Lvl 1</div>
+			<div class="difficulty" value="2">Lvl 2</div>
+			<div class="difficulty" value="3">Lvl 3</div>
+			<div class="difficulty" value="4">Lvl 4</div>
+			<div class="difficulty" value="5">Lvl 5</div>
+		</div>
+		<br>
+		<div class="controls">
+			<div>Rules</div>
+		</div>
+		<div class="controls">
+			<ul class="rules"></ul>
+		</div>
+		<div class="controls">
+			<div class="start">Start</div>
+		</div>
+	</div>
+
+	<div class="game">
+		<div class="controls">
+			<div class="new">New</div>
+			<div class="undo">Undo</div>
+			<div class="redo">Redo</div>
+			<div class="computer">Computer</div>
+			<div class="settings">Settings</div>
+		</div>
+
+		<div class="board"></div>
+		<div class="controls"><p class="output"></p></div>
+	</div>
+
+</body>
+
+<script src="jquery.js"></script>
+<script src="model.js"></script>
+<script src="generateMoves.js"></script>
+<script src="score.js"></script>
+<script src="minimax.js"></script>
+<script src="game.js"></script>
+
+</html>

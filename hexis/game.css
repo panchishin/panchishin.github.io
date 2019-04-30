@@ -1,0 +1,98 @@
+
+body {
+	background-color : black ;
+	text-align : center ;
+	overflow : hidden;
+	-webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+
+}
+
+div {
+	margin : 0em;
+	padding : 0em;
+}
+
+div.config {
+	display : none;
+}
+
+div.game {
+}
+
+div.board {
+	display : inline-block ;
+	text-align : left ;
+	margin : 1em;
+}
+
+div.board > div.row {
+}
+
+div.board > div.row > div {
+	display : inline-block ;
+	margin : -0.10em 0.05em;
+	padding : 12px ;
+	border-radius: 24px;
+	border-width: 4px;
+	border-color: transparent;
+	border-style: solid;
+}
+
+div.board > div.row > div.space.empty:not(.red):not(.blue) {
+	background-color : #444 ;
+}	
+
+div.board > div.row > div.space.red {
+	background-color : #d44 ;
+}	
+
+div.board > div.row > div.space.blue {
+	background-color : #44d ;
+}	
+
+div.board > div.row > div.space.justPlayed.red {
+	border-color: #d44;
+	background-color : grey ;
+}
+div.board > div.row > div.space.justPlayed.blue {
+	border-color: #44d;
+	background-color : grey ;
+}
+
+div.controls > ul , {
+	display : block ;
+}
+
+ul {
+	display : inline-block;
+	text-align: left; 
+	background: #ccc ;
+	width: 30em;
+	margin : 1em;
+	padding : 0.5em;
+	border-radius: 4px;
+	list-style: none;
+}
+
+li.disabled {
+	text-decoration: line-through;
+}
+
+div.controls > div , p , h1 {
+	display : inline-block ;
+	width : 5em ; height : 1em;
+	margin : .25em ; padding : .5em ;
+	background : #ccc ;
+	border-radius: 4px;
+}
+div.controls > div.highlight {
+	background: #777 ;
+}
+
+p { width : 20em ; height : 2.5em ; margin: 1em; }
+
