@@ -36,20 +36,3 @@
 
 [Day 09 snowflakes](/canvas_bootcamp/09.html)
 
-[Day 10 tile placement with weight](/canvas_bootcamp/10.html)
-
-[Day 11 with neighbour weight](/canvas_bootcamp/11.html)
-
-## To do libraries
-
-[matter.js](http://brm.io/matter-js/)
-
-[fabric](http://fabricjs.com/)
-
-[electron for bundling](https://electronjs.org)
-
-[pixijs for graphics](http://www.pixijs.com/gallery)
-[matterjs]
-
-phaser2 CE + electron + typescript + webpack
-
