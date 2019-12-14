@@ -35,7 +35,8 @@
         size: 30 - Math.random()*10,
         leftAngle:.5-Math.random()*.6, leftLength:.9-Math.random()*.3,
         rightAngle:.5-Math.random()*.6, rightLength:.9-Math.random()*.3,
-        birth:Date.now()
+        birth:Date.now(),
+        leafColor: Math.round(Math.random()*360)
       };
     },
     'mutate' : function mutateConfig(parent) {
@@ -43,6 +44,7 @@
       Object.keys(parent).forEach(function(key){
         newSeed[key] = parent[key]+Math.random()*.2-.1
       })
+      newSeed.leafColor = ( newSeed.leafColor + Math.round(Math.random()*40) + 340 )%360
       newSeed.selected = false;
       if (Math.random()>.9) {
         newSeed = {
@@ -72,12 +74,12 @@
         lean = calculateLean();
         step = 9;
         if (specimen.selected) {
-          context.strokeStyle = "hsl(180, 60%, 20%)";
-          context.fillStyle = "hsl(180, 60%, 40%)";
+          context.strokeStyle = "hsl(0, 20%, 20%)";
+          context.fillStyle = "hsl(0, 20%, 20%)";
         } else {
           var fade = (!('fadeout' in specimen) ? 0 : Math.round(( Date.now() - specimen.fadeout )*100/2000) )
           context.strokeStyle = "hsl(0, 0%, "+fade+"%)";
-          context.fillStyle = "hsl(45, 60%, "+(40+fade*.6)+"%)";
+          context.fillStyle = "hsl("+specimen.leafColor+", 60%, "+(40+fade*.6)+"%)";
         }
       }
       if (size>3 && step>0) {
@@ -118,8 +120,10 @@
           specimen.fadeout = Date.now();
         }
       })
-      for (var x=0; x<6; x++) {
+      for (var x=0; x<3; x++) {
         tree.list.push( tree.new() )
+      }
+      for (var x=0; x<12; x++) {
         tree.list.push( tree.mutate(selected[0]) )
       }
     }
@@ -152,8 +156,9 @@
       return !(('fadeout' in specimen) && (Date.now() > specimen.fadeout + 2000))
     })
 
-
-    window.requestAnimationFrame(drawit);
+    setTimeout(function() {
+      window.requestAnimationFrame(drawit);
+    },30)
   }
   var lean = 0.0
 
@@ -164,7 +169,7 @@
 
 <body>
   <h1>Canvas Bootcamp day 8</h1>
-  <canvas id="canvas" width="600" height="400">what?  no canvas?  get a new browser</canvas>
+  <canvas id="canvas" width="1000" height="600">what?  no canvas?  get a new browser</canvas>
   <p>Click on any tree to make new trees like it</p>
   <h2 id="infobox">Frames per seconds ---</h2>
 </body>
