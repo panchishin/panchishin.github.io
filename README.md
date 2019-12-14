@@ -1,4 +1,9 @@
-# panchishin.github.io
+# Genetic Selection
+
+[Genetic Selection on Youtube](https://youtu.be/qIdqVHM8YsE)
+
+[Interactive Preview on Github](https://panchishin.github.io/canvas_bootcamp/08.html)
+
 
 ## 'index'
 
