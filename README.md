@@ -1,6 +1,13 @@
-# panchishin.github.io
+# Genetic Selection
 
-## 'index'
+<img src="./canvas_bootcamp/genetic_selection_16x9.png" alt="Genetic Selection" width="300"/>
+
+[Genetic Selection on Youtube](https://youtu.be/qIdqVHM8YsE)
+
+[Interactive Preview on Github](https://panchishin.github.io/canvas_bootcamp/08.html)
+
+
+# Mini Projects
 
 [hexis](/hexis/game.html)
 
