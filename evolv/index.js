@@ -4,7 +4,7 @@ const context = canvas.getContext('2d');
 
 
 let MAX_SIZE = 0;
-let MAX_FOOD = 100;
+let MAX_FOOD = 100 / sizeScale;
 let FOOD_VALUE = 20;
 
 let x = .5;
@@ -18,14 +18,10 @@ let foods = [];
 let cameraX = 0;
 let cameraY = 0;
 
-function addBot() {
-    bots.push(RandomBot());
-}
 
-function triangle(){ return (Math.random()-.5)*(Math.random()-.5) }
+function triangle(){ return (Math.random()-.5)*(Math.random()-.5)*.75 }
 
-function addFood() {
-    let center = Math.floor(Math.random()*2) // + Math.sin(Date.now()/900))
+function addFood(center) {
     if (center == 0) {
         foods.push( new Food( .25+triangle(), .25+triangle() ) )
     }
@@ -33,43 +29,35 @@ function addFood() {
         foods.push( new Food( .75+triangle(), .75+triangle() ) )   
     }
     if (center == 2) {
-        foods.push( new Food( .80+triangle(), .2+triangle() ) )   
+        foods.push( new Food( Math.random(), Math.random() ) )
     }
 }
 
-for(let i=0;i<20;i++) addBot();
-for(let i=0;i<MAX_FOOD;i++) addFood();
-
-
-const controller = new makeController({
-    'default' : { desc : 'default', funct : function(keyCode,deltaSeconds){ console.log("undefined action '"+keyCode+"'") } },
-    '37' : { desc : 'left' , 
-        funct : function(keyCode,deltaSeconds) { cameraX=(cameraX-move+2)%1 }
-    },
-    '39' : { desc : 'right' , 
-        funct : function(keyCode,deltaSeconds) { cameraX=(cameraX+move+2)%1 }
-    },
-    '38' : { desc : 'up' , 
-        funct : function(keyCode,deltaSeconds) { cameraY=(cameraY-move+2)%1 }
-    },
-    '40' : { desc : 'down' , 
-        funct : function(keyCode,deltaSeconds) { cameraY=(cameraY+move+2)%1 }
-    }
-});
+for(let c=0; c<360; c+=60){ let b = RandomBot(c); bots.push(b); bots.push(b.spawn()) }
 
 
 let lastDraw = 0;
 let lastAddFood = 0;
 
+let startTime = Date.now()/1000;
+
 function draw() {
     let now = Date.now()/1000;
-    let deltaSeconds = now - lastDraw;
-    if ( lastAddFood + .2 * (.01 + Math.sin(Date.now()/1000)) < now ) {
-        if ( foods.length < MAX_FOOD ) {
-            addFood();
+    let season = Math.sin((now-startTime)*2*Math.PI/20);
+    if (season > -.2) {
+        if ( lastAddFood + .005 < now ) {
+            if ( foods.length < MAX_FOOD ) {
+                addFood(Math.floor(Math.random()*2));
+            }
+            lastAddFood = now
         }
-        lastAddFood = now
+    } else if (season > -.5) {
+        if ( lastAddFood + .02 < now ) {
+            addFood(2)
+            lastAddFood = now
+        }
     }
+    let deltaSeconds = now - lastDraw;
     if ( lastDraw == 0 ) {
         lastDraw = now;
     } else if ( deltaSeconds > .01 ) {
@@ -113,6 +101,11 @@ function physics(deltaSeconds,now) {
             bots.push(bots[bi].spawn())
         }
     }
+    /*for(let fo=foods.length-1 ; fo>=0 ; fo--) {
+        if (!foods[fo].useful()) {
+            foods.splice(fo,1)
+        }
+    }*/   
 
 }
 

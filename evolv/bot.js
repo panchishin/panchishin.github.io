@@ -1,18 +1,19 @@
 
 let showBoidDebug = false;
+let sizeScale = 0.75
 
 function flip(x){ return (x+Math.PI)%(Math.PI*2) }
 function norm(x){ return (x+Math.PI*2)%(Math.PI*2) }
 
-function RandomBot() {
+function RandomBot(color) {
     return new Bot(Math.random(),   // x
         Math.random(),              // y
         Math.random()*Math.PI*2,    // facing
-        Math.random()*.4+.05,       // speed param
+        (Math.random()*.4+.05)*sizeScale,       // speed param
         Math.random()*2+1,          // lambda turn
         Math.random()*50+125,       // birth energy
-        Math.random()*360,          // color
-        Math.random()*0.01+0.015,   // size
+        color,          // color
+        (Math.random()*0.01+0.015)*sizeScale,   // size
         100)                        // energy
 }
 
@@ -28,11 +29,11 @@ function Bot(xParam,yParam,facingParam,speedParam,
     this.lambdaTurn = lambdaTurn;
     this.birthEnergy = birthEnergy;
     this.color = ( Math.round(color) + 360 ) % 360;
-    this.age = 0;
+    this.age = Math.random()*20;
     this.closestFood = null;
 
     this.canSpawn = function(){
-        return this.energy >(100 * this.size/0.02 + 10) && this.energy >= this.birthEnergy && this.size > 0.005 && this.size < 0.25 ;
+        return this.energy >(100 * this.size/0.02) && this.energy >= this.birthEnergy && this.size > 0.005 && this.size < 0.25 ;
     }
 
     this.spawn = function(){
@@ -45,17 +46,17 @@ function Bot(xParam,yParam,facingParam,speedParam,
                    this.birthEnergy*(.9 + Math.random()*.2),
                    this.color + Math.random()*10 - 5,
                    this.size*(.9 + Math.random()*.2),
-                   90 * this.size/0.02)
+                   50 * this.size/0.02)
 
         return result
     }
 
     this.eat = function(value){
-        this.energy += value
+        this.energy += value * sizeScale;
     }
 
     this.isAlive = function() {
-        return this.energy >= 0 && this.age < 30;  // 2 min
+        return this.energy >= 0 && this.age < 120;  // 2 min
     }
 
     this.drawFacing = function(MAX_SIZE,x,y) {
@@ -90,16 +91,16 @@ function Bot(xParam,yParam,facingParam,speedParam,
 
     this.drawBody = function(MAX_SIZE,x,y) {
         let brightness = Math.max( 20, Math.min(100,this.energy/2) )
-        context.fillStyle = "rgba("+color+",0,0,1)";
         context.fillStyle = "hsla("+this.color+",100%,"+brightness+"%,1)";
 
         let that = this;
-        function rotateX(angle) { return MAX_SIZE*(x+Math.sin(that.facing+angle)*that.size) }
-        function rotateY(angle) { return MAX_SIZE*(y+Math.cos(that.facing+angle)*that.size) }
+        function rotateX(angle,len) { return MAX_SIZE*(x+Math.sin(that.facing+angle)*that.size*len) }
+        function rotateY(angle,len) { return MAX_SIZE*(y+Math.cos(that.facing+angle)*that.size*len) }
         context.beginPath();
-        context.moveTo(rotateX(0),rotateY(0));
-        context.lineTo(rotateX(Math.PI*0.75),rotateY(Math.PI*0.75));
-        context.lineTo(rotateX(Math.PI*1.25),rotateY(Math.PI*1.25));
+        context.moveTo(rotateX(0,1),rotateY(0,1));
+        context.lineTo(rotateX(Math.PI*.75,1),rotateY(Math.PI*.75,1));
+        context.lineTo(rotateX(Math.PI,.4),rotateY(Math.PI,.4));
+        context.lineTo(rotateX(Math.PI*1.25,1),rotateY(Math.PI*1.25,1));
         context.fill();
 
         context.moveTo(rotateX(0),rotateY(0));
@@ -117,7 +118,7 @@ function Bot(xParam,yParam,facingParam,speedParam,
     }
 
     this.physics = function(deltaSeconds) {
-        this.energy -= deltaSeconds * (3*this.speed + 3*this.lambdaTurn + 1000*this.size*this.size);
+        this.energy -= deltaSeconds * (3*this.speed*this.size*sizeScale/.025 + 3*this.lambdaTurn + 1000*this.size*this.size/(sizeScale*sizeScale));
         this.age += deltaSeconds;
 
         let dx = Math.sin(this.facing);
@@ -160,6 +161,19 @@ function Bot(xParam,yParam,facingParam,speedParam,
             } else {
                 this.facing = new_facing*(deltaSeconds*this.lambdaTurn) + this.facing*(1-deltaSeconds*this.lambdaTurn)
             }
+        } else {
+            this.facing = norm(this.facing)
+            let new_facing = norm( Math.random()*.1 )
+
+            if (Math.abs(this.facing - new_facing)>Math.PI) {
+                this.facing = flip(this.facing)
+                new_facing = flip(new_facing)
+                this.facing = new_facing*(deltaSeconds*this.lambdaTurn) + this.facing*(1-deltaSeconds*this.lambdaTurn)
+                this.facing = flip(this.facing)
+            } else {
+                this.facing = new_facing*(deltaSeconds*this.lambdaTurn) + this.facing*(1-deltaSeconds*this.lambdaTurn)
+            }
+
         }
 
     }
@@ -173,12 +187,14 @@ function Food(xParam,yParam,sizeParam) {
     this.x = Math.min(1, Math.max(0, xParam || Math.random()));
     this.y = Math.min(1, Math.max(0, yParam || Math.random()))
     this.size = sizeParam || 0.01;
-    this.focused = 0
+    this.size *= sizeScale;
+    this.focused = 0;
+    this.age = 0;
 
     this.draw = function(MAX_SIZE,cameraX,cameraY) {
         let nx = ((this.x-cameraX+2)%1)
         let ny = ((this.y-cameraY+2)%1)
-        context.fillStyle = "rgba(0,200,"+this.focused+",1)";
+        context.fillStyle = "rgba(0,200,"+this.focused+",.25)";
         context.beginPath();
         context.arc(MAX_SIZE*nx,MAX_SIZE*ny, MAX_SIZE*this.size, 0, Math.PI * 2, true);
         context.fill();    
@@ -190,6 +206,11 @@ function Food(xParam,yParam,sizeParam) {
 
     this.physics = function(deltaSeconds) {
         this.focused = Math.max(0, this.focused-deltaSeconds*100)
+        this.age += deltaSeconds
+    }
+
+    this.useful = function() {
+        return this.age < 10
     }
 }
 
