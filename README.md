@@ -43,3 +43,5 @@
 
 [Day 09 snowflakes](/canvas_bootcamp/09.html)
 
+
+(it's not a religion)
