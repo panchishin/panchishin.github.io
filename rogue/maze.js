@@ -2,7 +2,7 @@ const WALL = "#";
 const SPACE = " ";
 const DOOR = "D";
 const HERO = "@";
-const CHAMBER = ".";
+const STEPS = ".";
 const EXIT = "E";
 
 function randint(lowerbound,upperbound) {
@@ -139,6 +139,7 @@ function increaseDoors() {numDoors = Math.min(3,numDoors+1); start()}
 
 function moveTo(i,j) {
 	if (0<=i && i<g.length && 0<=j && j<g.length && g[i][j] != WALL) {
+		if (g[i][j] == SPACE) g[i][j] = STEPS;
 		[start_i,start_j] = [i,j]
 	}
 }
