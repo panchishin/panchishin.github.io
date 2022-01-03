@@ -172,7 +172,7 @@ let actions = {
     },
 };
 
-document.onkeyup = (e) => {
+document.onkeydown = (e) => {
     let action = (e.code in actions) ? e.code : "default";
     actions[action].funct();
 	refresh();
