@@ -37,6 +37,7 @@ function assert(statement) {
 let start_i = 0;
 let start_j = 0;
 let light = false;
+let footprints = false;
 let known;
 
 function illuminate(g, focus_i, focus_j, distance=4){
@@ -176,21 +177,22 @@ function increaseMaze() {mazeSize++; start()}
 function increaseChambers() {numChambers = Math.max(0,Math.min(Math.floor(mazeSize/2-2),numChambers+1)); start()}
 function increaseDoors() {numDoors = Math.min(3,numDoors+1); start()}
 function toggleLight() {light = !light; refresh()}
+function toggleFootprints() {footprints = !footprints; refresh()}
 
 function moveTo(i,j) {
 	if (0<=i && i<g.length && 0<=j && j<g.length && g[i][j] != WALL) {
-		if (g[start_i][start_j] == SPACE) {
+		if (g[start_i][start_j] == SPACE && footprints) {
 			g[start_i][start_j] = STEPS;
 		}
 		[start_i,start_j] = [i,j]
 		if (g[start_i][start_j] == EXIT) {
-			let chance = randint(1,7);
-			if (chance <= 3) {
+			let chance = randint(1,5);
+			if (chance <= 2) {
 				mazeSize++;
-			} else if (chance == 4 && mazeSize > 8) {
-				numChambers++;
-			} else if (chance == 5 && numChambers > 1) {
-				numDoors++;
+			} else if (chance == 3) {
+				numChambers = Math.max(0,Math.min(Math.floor(mazeSize/2-2),numChambers+1))
+			} else if (chance == 4 && numChambers >= 1) {
+				numDoors = Math.min(3,numDoors+1);
 			}
 			start();
 		}
