@@ -36,6 +36,25 @@ function assert(statement) {
 
 let start_i = 0;
 let start_j = 0;
+let light = false;
+let known;
+
+function illuminate(g, focus_i, focus_j){
+	let n = g.length;
+	const distance = 4;
+	for (let i=-distance; i<=distance; i++) {
+		for (let j=-distance; j<=distance; j++) {
+			if (i*i + j*j <= distance*distance) {
+				let I;
+				let J;
+				[I,J] = [focus_i+i, focus_j+j];
+				if (0<=I && I<n && 0<=J && J<n) {
+					known[I][J] = true;
+				}
+			}
+		}
+	}
+}
 
 function maze(n, chambers=0, doors=0) {
 	n = n*2+1
@@ -45,6 +64,10 @@ function maze(n, chambers=0, doors=0) {
 	var G = Array(n);
 	for (var i = 0; i < n; i++) G[i] = Array(n).fill(WALL);
 
+	known = Array(n);
+	for (var i = 0; i < n; i++) known[i] = Array(n).fill(false);
+
+
 	function placeChamber() {
 		let I = randint(1,n-6);
 		let J = randint(1,n-6);
@@ -52,6 +75,7 @@ function maze(n, chambers=0, doors=0) {
 		J += J%2==0 ? 1 : 0;
 
 		for(let i=0; i<5; i++) for(let j=0; j<5; j++) G[I+i][J+j] = SPACE;
+		illuminate(G, I+2, J+2);
 
 		for(let door=0; door<doors; door++) {
 			[i,j] = [randint(0,1)*6-1 , randint(0,2)*2];
@@ -101,9 +125,9 @@ function maze(n, chambers=0, doors=0) {
 
 	[iexit, jexit, tmax] = [1,1, 0];
 
-
 	DFS(start_i, start_j, 0);
 	G[iexit][jexit] = EXIT;
+	illuminate(G, iexit, jexit);
 
 	return G;
 }
@@ -112,29 +136,12 @@ let mazeSize = 3;
 let numChambers = 0;
 let numDoors = 0;
 let g;
-let light = false;
-let known;
 
-function illuminate(){
-	let n = g.length;
-	const distance = 4;
-	for (let i=-distance; i<=distance; i++) {
-		for (let j=-distance; j<=distance; j++) {
-			if (i*i + j*j <= distance*distance) {
-				let I;
-				let J;
-				[I,J] = [start_i+i, start_j+j];
-				if (0<=I && I<n && 0<=J && J<n) {
-					known[I][J] = true;
-				}
-			}
-		}
-	}
-}
+
 
 function refresh(){
+	illuminate(g, start_i, start_j);
 	let n = g.length;
-	illuminate();
 	let text = [];
 	for (let i=0; i<n; i++) {
 		let line = []
@@ -143,7 +150,7 @@ function refresh(){
 			else if (light || known[i][j]) {
 				line.push( g[i][j] );
 			} else {
-				line.push( "?" );
+				line.push( " " );
 			}
 		}
 		text.push(line.join(" "));
@@ -153,10 +160,6 @@ function refresh(){
 
 function start(){
 	g = maze(mazeSize, numChambers, numDoors);
-
-	let n = g.length;
-	known = Array(n);
-	for (var i = 0; i < n; i++) known[i] = Array(n).fill(false);
 
 	for (let i=g.length; i>0; i--) {
 		let row = []
@@ -180,6 +183,17 @@ function moveTo(i,j) {
 			g[start_i][start_j] = STEPS;
 		}
 		[start_i,start_j] = [i,j]
+		if (g[start_i][start_j] == EXIT) {
+			let chance = randint(1,7);
+			if (chance <= 3) {
+				mazeSize++;
+			} else if (chance == 4 && mazeSize > 8) {
+				numChambers++;
+			} else if (chance == 5 && numChambers > 1) {
+				numDoors++;
+			}
+			start();
+		}
 	}
 }
 
