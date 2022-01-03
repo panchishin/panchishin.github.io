@@ -79,7 +79,7 @@ function maze(n, chambers=0, doors=0) {
 		illuminate(G, I+Math.floor(size/2), J+Math.floor(size/2), size+1);
 
 		for(let door=0; door<doors; door++) {
-			[i,j] = [randint(0,1)*(size+1)-1 , randint(0,2)*2];
+			[i,j] = [randint(0,1)*(size+1)-1 , randint(0,Math.floor(size/2))*2];
 			if (randint(0,1) == 0) [i,j] = [j,i];
 			if (G[I+i][J+j] == WALL) {
 				G[I+i][J+j] = DOOR;
