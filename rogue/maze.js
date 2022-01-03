@@ -69,16 +69,17 @@ function maze(n, chambers=0, doors=0) {
 
 
 	function placeChamber() {
-		let I = randint(1,n-6);
-		let J = randint(1,n-6);
+		const size = 3 + randint(0,1)*2;
+		let I = randint(1,n-size-1);
+		let J = randint(1,n-size-1);
 		I += I%2==0 ? 1 : 0;
 		J += J%2==0 ? 1 : 0;
 
-		for(let i=0; i<5; i++) for(let j=0; j<5; j++) G[I+i][J+j] = SPACE;
-		illuminate(G, I+2, J+2);
+		for(let i=0; i<size; i++) for(let j=0; j<size; j++) G[I+i][J+j] = SPACE;
+		illuminate(G, I+Math.floor(size/2), J+Math.floor(size/2));
 
 		for(let door=0; door<doors; door++) {
-			[i,j] = [randint(0,1)*6-1 , randint(0,2)*2];
+			[i,j] = [randint(0,1)*(size+1)-1 , randint(0,2)*2];
 			if (randint(0,1) == 0) [i,j] = [j,i];
 			if (G[I+i][J+j] == WALL) {
 				G[I+i][J+j] = DOOR;
@@ -153,7 +154,7 @@ function refresh(){
 				line.push( " " );
 			}
 		}
-		text.push(line.join(" "));
+		text.push(line.join(""));
 	}
 	document.getElementById("maze").innerHTML = text.join("\n");
 }

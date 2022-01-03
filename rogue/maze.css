@@ -13,3 +13,7 @@ button {
     border: none;
     border-radius: 0.5em
 }
+
+pre#maze {
+    letter-spacing: 6px;
+}
