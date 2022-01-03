@@ -39,9 +39,8 @@ let start_j = 0;
 let light = false;
 let known;
 
-function illuminate(g, focus_i, focus_j){
+function illuminate(g, focus_i, focus_j, distance=4){
 	let n = g.length;
-	const distance = 4;
 	for (let i=-distance; i<=distance; i++) {
 		for (let j=-distance; j<=distance; j++) {
 			if (i*i + j*j <= distance*distance) {
@@ -69,14 +68,14 @@ function maze(n, chambers=0, doors=0) {
 
 
 	function placeChamber() {
-		const size = 3 + randint(0,1)*2;
+		const size = 1 + randint(0,(n>=11?3:2))*2;
 		let I = randint(1,n-size-1);
 		let J = randint(1,n-size-1);
 		I += I%2==0 ? 1 : 0;
 		J += J%2==0 ? 1 : 0;
 
-		for(let i=0; i<size; i++) for(let j=0; j<size; j++) G[I+i][J+j] = SPACE;
-		illuminate(G, I+Math.floor(size/2), J+Math.floor(size/2));
+		for(let i=0; i<size; i++) for(let j=0; j<size; j++) G[I+i][J+j] = STEPS;
+		illuminate(G, I+Math.floor(size/2), J+Math.floor(size/2), size+1);
 
 		for(let door=0; door<doors; door++) {
 			[i,j] = [randint(0,1)*(size+1)-1 , randint(0,2)*2];
