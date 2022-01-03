@@ -1,0 +1,15 @@
+body {
+	margin : 1em;
+	background-color: black;
+	color : white;
+}
+
+button {
+    width: 8em;
+    height: 2.5em;
+    padding: 0.5em;
+    background-color: darkslategrey;
+    color: white;
+    border: none;
+    border-radius: 0.5em
+}

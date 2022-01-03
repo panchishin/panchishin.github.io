@@ -9,6 +9,8 @@
 
 # Mini Projects
 
+[rogue](/rogue/maze.html)
+
 [hexis](/hexis/game.html)
 
 [flying ace](/flyingace.html)
