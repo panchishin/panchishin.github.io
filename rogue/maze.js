@@ -112,15 +112,39 @@ let mazeSize = 3;
 let numChambers = 0;
 let numDoors = 0;
 let g;
+let light = false;
+let known;
+
+function illuminate(){
+	let n = g.length;
+	const distance = 4;
+	for (let i=-distance; i<=distance; i++) {
+		for (let j=-distance; j<=distance; j++) {
+			if (i*i + j*j <= distance*distance) {
+				let I;
+				let J;
+				[I,J] = [start_i+i, start_j+j];
+				if (0<=I && I<n && 0<=J && J<n) {
+					known[I][J] = true;
+				}
+			}
+		}
+	}
+}
 
 function refresh(){
 	let n = g.length;
+	illuminate();
 	let text = [];
 	for (let i=0; i<n; i++) {
 		let line = []
 		for (let j=0; j<n; j++) {
 			if (i==start_i && j==start_j) line.push(HERO);
-			else line.push( g[i][j] );
+			else if (light || known[i][j]) {
+				line.push( g[i][j] );
+			} else {
+				line.push( "?" );
+			}
 		}
 		text.push(line.join(" "));
 	}
@@ -129,6 +153,18 @@ function refresh(){
 
 function start(){
 	g = maze(mazeSize, numChambers, numDoors);
+
+	let n = g.length;
+	known = Array(n);
+	for (var i = 0; i < n; i++) known[i] = Array(n).fill(false);
+
+	for (let i=g.length; i>0; i--) {
+		let row = []
+		for (let j=g.length; j>0; j--) {
+			row.push(false);
+		}
+		known.push(row)
+	}
 	refresh();
 };
 
@@ -136,6 +172,7 @@ function regenerate() {start()}
 function increaseMaze() {mazeSize++; start()}
 function increaseChambers() {numChambers = Math.max(0,Math.min(Math.floor(mazeSize/2-2),numChambers+1)); start()}
 function increaseDoors() {numDoors = Math.min(3,numDoors+1); start()}
+function toggleLight() {light = !light; refresh()}
 
 function moveTo(i,j) {
 	if (0<=i && i<g.length && 0<=j && j<g.length && g[i][j] != WALL) {
@@ -169,7 +206,7 @@ let actions = {
         funct : function() { 
 			moveTo(start_i+1,start_j);
         }
-    },
+    }
 };
 
 document.onkeydown = (e) => {
