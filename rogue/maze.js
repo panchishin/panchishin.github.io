@@ -196,6 +196,7 @@ function start(){
 		}
 		known.push(row)
 	}
+	document.getElementById("maze").classList.remove("danger");
 	tunnelVisionOut(refresh);
 };
 
