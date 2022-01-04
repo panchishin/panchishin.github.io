@@ -19,28 +19,48 @@ let numDoors = 1;
 let g;
 let tunnelVision = 1;
 
-const MAX_MAZE_SIZE = 15;
+let totalSteps = 0;
+let totalExits = 0;
+let totalMaps = 0;
+
+const MAX_MAZE_SIZE = 13;
 const MAX_DOORS = 2;
 const MAX_CHAMBERS = 10;
+
+function addMessage(message) {
+	let span = document.createElement("span");
+	span.innerHTML = message;
+	let div = document.createElement("div")
+	div.appendChild(span)
+	let log = document.getElementById("messagelog");
+	log.insertBefore(div, log.firstChild);
+}
 
 function upgrade() {
 	if (numChambers < mazeSize - 5) {
 		numChambers += 1;
+		if (numChambers == 1) addMessage("Dungeons can a chamber");
+		if (numChambers > 1) addMessage("Dungeons can have " + numChambers + " chambers");
 		return
 	}
-	if (numChambers > 4 && numDoors == 1) {
+	if (numChambers >= 3 && numDoors == 1) {
 		numDoors = 2;
+		addMessage("Chambers can now have 2 doors");
 		return;
 	} 
 	if (mazeSize >= 7 && light) {
 		light = false;
+		addMessage("Light is scarce");
 		return;
 	}
 	if (mazeSize < MAX_MAZE_SIZE) {
 		mazeSize += 2;
+		addMessage("Dungeons have grown to size " + (mazeSize*2+1));
 		return;
 	}
 }
+
+// for (let x=0; x<5; x++) upgrade();
 
 function randint(lowerbound,upperbound) {
 	return Math.floor(Math.random() * (upperbound-lowerbound+1)) + lowerbound;
@@ -187,6 +207,9 @@ function refresh(){
 }
 
 function start(){
+	totalMaps++
+	document.getElementById("totalmaps").innerHTML = totalMaps;
+
 	g = maze(mazeSize, numChambers, numDoors);
 
 	for (let i=g.length; i>0; i--) {
@@ -200,21 +223,16 @@ function start(){
 	tunnelVisionOut(refresh);
 };
 
-function decaySteps() {
-	for (let i=0; i<g.length; i++) {
-		let j = randint(1,g.length)-1
-		if (randint(0,1) == 0) {
-			if (g[i][j]==STEPS) g[i][j] = SPACE;
-		} else {
-			if (g[j][i]==STEPS) g[j][i] = SPACE;
-		}
-	}
+document.getElementsByClassName("runsimulation")[0].onclick = () => {
+	if (canMove) { tunnelVisionIn(start) }
 }
+
 
 function moveTo(i,j) {
 	if (0<=i && i<g.length && 0<=j && j<g.length && g[i][j] != WALL) {
+		totalSteps++;
+		document.getElementById("totalsteps").innerHTML = totalSteps;
 		if (g[start_i][start_j] == SPACE && footprints) {
-			// decaySteps();
 			g[start_i][start_j] = STEPS;
 		}
 		if (g[start_i][start_j] != CHAMBER && g[i][j] == CHAMBER) {
@@ -225,6 +243,8 @@ function moveTo(i,j) {
 		}
 		[start_i,start_j] = [i,j]
 		if (g[start_i][start_j] == EXIT) {
+			totalExits++;
+			document.getElementById("totalexits").innerHTML = totalExits;
 			upgrade();
 			tunnelVisionIn(start);
 		}
@@ -233,12 +253,13 @@ function moveTo(i,j) {
 
 function tunnelVisionIn(callback) {
 	canMove = false;
-	tunnelVision = Math.floor(g.length * 1.45 + 1);
+	document.getElementById("maze").classList.add("paused");
+	tunnelVision = Math.floor(g.length/2);
 	function zoom() {
 		if (tunnelVision > 1) {
 			tunnelVision -= 1;
 			refresh();
-			setTimeout(zoom, 50);
+			setTimeout(zoom, 100);
 		} else {
 			callback()
 		}
@@ -247,15 +268,17 @@ function tunnelVisionIn(callback) {
 }
 
 function tunnelVisionOut(callback) {
-	maxTunnelVision = Math.floor(g.length * 1.45 + 1);
+	maxTunnelVision = Math.floor(g.length);
 	tunnelVision = 0
 	function zoom() {
 		if (tunnelVision < maxTunnelVision) {
 			tunnelVision += 1;
 			refresh();
-			setTimeout(zoom,50);
+			setTimeout(zoom, 100);
 		} else {
+			tunnelVision = g.length*2;
 			canMove = true;
+			document.getElementById("maze").classList.remove("paused");
 			callback()
 		}
 	}
