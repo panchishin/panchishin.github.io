@@ -15,5 +15,13 @@ button {
 }
 
 pre#maze {
-    letter-spacing: 6px;
+    letter-spacing: .5em;
+    width: fit-content;
+    background-color: black;
+    padding: .8em .6em 1em 1em;
+    /*text-align: center;*/
+    border-color: darkslategrey;
+    border-width: 1em;
+    border-style: solid;
+    border-radius: 0.5em
 }

@@ -3,7 +3,43 @@ const SPACE = " ";
 const DOOR = "D";
 const HERO = "@";
 const STEPS = ".";
+const CHAMBER = ",";
 const EXIT = "E";
+
+
+let start_i = 0;
+let start_j = 0;
+let light = true;
+let footprints = true;
+let known;
+let mazeSize = 3;
+let numChambers = 0;
+let numDoors = 1;
+let g;
+let tunnelVision = 1;
+
+const MAX_MAZE_SIZE = 15;
+const MAX_DOORS = 2;
+const MAX_CHAMBERS = 10;
+
+function upgrade() {
+	if (numChambers < mazeSize - 5) {
+		numChambers += 1;
+		return
+	}
+	if (numChambers > 4 && numDoors == 1) {
+		numDoors = 2;
+		return;
+	} 
+	if (mazeSize >= 7 && light) {
+		light = false;
+		return;
+	}
+	if (mazeSize < MAX_MAZE_SIZE) {
+		mazeSize += 2;
+		return;
+	}
+}
 
 function randint(lowerbound,upperbound) {
 	return Math.floor(Math.random() * (upperbound-lowerbound+1)) + lowerbound;
@@ -34,13 +70,7 @@ function assert(statement) {
 	}
 }
 
-let start_i = 0;
-let start_j = 0;
-let light = false;
-let footprints = false;
-let known;
-
-function illuminate(g, focus_i, focus_j, distance=4){
+function illuminate(g, focus_i, focus_j, distance=3){
 	let n = g.length;
 	for (let i=-distance; i<=distance; i++) {
 		for (let j=-distance; j<=distance; j++) {
@@ -69,14 +99,14 @@ function maze(n, chambers=0, doors=0) {
 
 
 	function placeChamber() {
-		const size = 1 + randint(0,(n>=11?3:2))*2;
+		const size = 3;
 		let I = randint(1,n-size-1);
 		let J = randint(1,n-size-1);
 		I += I%2==0 ? 1 : 0;
 		J += J%2==0 ? 1 : 0;
 
-		for(let i=0; i<size; i++) for(let j=0; j<size; j++) G[I+i][J+j] = STEPS;
-		illuminate(G, I+Math.floor(size/2), J+Math.floor(size/2), size+1);
+		for(let i=0; i<size; i++) for(let j=0; j<size; j++) G[I+i][J+j] = CHAMBER;
+		illuminate(G, I+Math.floor(size/2), J+Math.floor(size/2), size);
 
 		for(let door=0; door<doors; door++) {
 			[i,j] = [randint(0,1)*(size+1)-1 , randint(0,Math.floor(size/2))*2];
@@ -133,13 +163,6 @@ function maze(n, chambers=0, doors=0) {
 	return G;
 }
 
-let mazeSize = 3;
-let numChambers = 0;
-let numDoors = 0;
-let g;
-
-
-
 function refresh(){
 	illuminate(g, start_i, start_j);
 	let n = g.length;
@@ -147,8 +170,11 @@ function refresh(){
 	for (let i=0; i<n; i++) {
 		let line = []
 		for (let j=0; j<n; j++) {
-			if (i==start_i && j==start_j) line.push(HERO);
-			else if (light || known[i][j]) {
+			if ((start_i-i)**2 + (start_j-j)**2 > tunnelVision*tunnelVision) {
+				line.push( "?" );
+			} else if (i==start_i && j==start_j) {
+				line.push(HERO);
+			} else if (light || known[i][j]) {
 				line.push( g[i][j] );
 			} else {
 				line.push( " " );
@@ -169,34 +195,61 @@ function start(){
 		}
 		known.push(row)
 	}
-	refresh();
+	tunnelVisionOut(refresh);
 };
 
-function regenerate() {start()}
-function increaseMaze() {mazeSize++; start()}
-function increaseChambers() {numChambers = Math.max(0,Math.min(Math.floor(mazeSize/2-2),numChambers+1)); start()}
-function increaseDoors() {numDoors = Math.min(3,numDoors+1); start()}
-function toggleLight() {light = !light; refresh()}
-function toggleFootprints() {footprints = !footprints; refresh()}
+function decaySteps() {
+	for (let i=0; i<g.length; i++) {
+		let j = randint(1,g.length)-1
+		if (randint(0,1) == 0) {
+			if (g[i][j]==STEPS) g[i][j] = SPACE;
+		} else {
+			if (g[j][i]==STEPS) g[j][i] = SPACE;
+		}
+	}
+}
 
 function moveTo(i,j) {
 	if (0<=i && i<g.length && 0<=j && j<g.length && g[i][j] != WALL) {
 		if (g[start_i][start_j] == SPACE && footprints) {
+			decaySteps();
 			g[start_i][start_j] = STEPS;
 		}
 		[start_i,start_j] = [i,j]
 		if (g[start_i][start_j] == EXIT) {
-			let chance = randint(1,5);
-			if (chance <= 2) {
-				mazeSize++;
-			} else if (chance == 3) {
-				numChambers = Math.max(0,Math.min(Math.floor(mazeSize/2-2),numChambers+1))
-			} else if (chance == 4 && numChambers >= 1) {
-				numDoors = Math.min(3,numDoors+1);
-			}
-			start();
+			upgrade();
+			tunnelVisionIn(start);
 		}
 	}
+}
+
+function tunnelVisionIn(callback) {
+	tunnelVision = Math.floor(g.length * 1.45 + 1);
+	function zoom() {
+		if (tunnelVision > 1) {
+			tunnelVision -= 1;
+			refresh();
+			setTimeout(zoom, 50);
+		} else {
+			callback()
+		}
+	}
+	zoom();
+}
+
+function tunnelVisionOut(callback) {
+	maxTunnelVision = Math.floor(g.length * 1.45 + 1);
+	tunnelVision = 0
+	function zoom() {
+		if (tunnelVision < maxTunnelVision) {
+			tunnelVision += 1;
+			refresh();
+			setTimeout(zoom,50);
+		} else {
+			callback()
+		}
+	}
+	zoom();
 }
 
 let actions = {
