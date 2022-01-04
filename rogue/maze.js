@@ -213,7 +213,7 @@ function decaySteps() {
 function moveTo(i,j) {
 	if (0<=i && i<g.length && 0<=j && j<g.length && g[i][j] != WALL) {
 		if (g[start_i][start_j] == SPACE && footprints) {
-			decaySteps();
+			// decaySteps();
 			g[start_i][start_j] = STEPS;
 		}
 		if (g[start_i][start_j] != CHAMBER && g[i][j] == CHAMBER) {
