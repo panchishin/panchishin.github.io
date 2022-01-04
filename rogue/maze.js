@@ -11,6 +11,7 @@ let start_i = 0;
 let start_j = 0;
 let light = true;
 let footprints = true;
+let canMove = false;
 let known;
 let mazeSize = 3;
 let numChambers = 0;
@@ -224,6 +225,7 @@ function moveTo(i,j) {
 }
 
 function tunnelVisionIn(callback) {
+	canMove = false;
 	tunnelVision = Math.floor(g.length * 1.45 + 1);
 	function zoom() {
 		if (tunnelVision > 1) {
@@ -246,6 +248,7 @@ function tunnelVisionOut(callback) {
 			refresh();
 			setTimeout(zoom,50);
 		} else {
+			canMove = true;
 			callback()
 		}
 	}
@@ -279,7 +282,9 @@ let actions = {
 };
 
 document.onkeydown = (e) => {
-    let action = (e.code in actions) ? e.code : "default";
-    actions[action].funct();
-	refresh();
+	if (canMove) {
+		let action = (e.code in actions) ? e.code : "default";
+		actions[action].funct();
+		refresh();
+	}
 };
