@@ -19,9 +19,9 @@ pre#maze {
     width: fit-content;
     background-color: black;
     padding: .8em .6em 1em 1em;
-    /*text-align: center;*/
     border-color: darkslategrey;
     border-width: 1em;
     border-style: solid;
-    border-radius: 0.5em
+    border-radius: 0.5em;
+    color: lawngreen;
 }
