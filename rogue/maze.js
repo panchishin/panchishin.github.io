@@ -216,6 +216,12 @@ function moveTo(i,j) {
 			decaySteps();
 			g[start_i][start_j] = STEPS;
 		}
+		if (g[start_i][start_j] != CHAMBER && g[i][j] == CHAMBER) {
+			document.getElementById("maze").classList.add("danger");
+		}
+		if (g[start_i][start_j] == CHAMBER && g[i][j] != CHAMBER) {
+			document.getElementById("maze").classList.remove("danger");
+		}
 		[start_i,start_j] = [i,j]
 		if (g[start_i][start_j] == EXIT) {
 			upgrade();

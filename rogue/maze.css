@@ -14,7 +14,7 @@ button {
     border-radius: 0.5em
 }
 
-pre#maze {
+#maze {
     letter-spacing: .5em;
     width: fit-content;
     background-color: black;
@@ -24,4 +24,8 @@ pre#maze {
     border-style: solid;
     border-radius: 0.5em;
     color: lawngreen;
+}
+
+#maze.danger {
+    color: orangered;
 }
