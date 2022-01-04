@@ -263,9 +263,6 @@ function tunnelVisionOut(callback) {
 }
 
 let actions = {
-    default : { desc : 'default', 
-		funct : function(){ } 
-	},
     'ArrowLeft' : { desc : 'left' , 
         funct : function() {
 			moveTo(start_i,start_j-1);
@@ -290,8 +287,9 @@ let actions = {
 
 document.onkeydown = (e) => {
 	if (canMove) {
-		let action = (e.code in actions) ? e.code : "default";
-		actions[action].funct();
-		refresh();
+		if (e.code in actions) {
+			actions[e.code].funct();
+			refresh();
+		}
 	}
 };
