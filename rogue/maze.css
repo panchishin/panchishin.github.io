@@ -59,7 +59,7 @@ fieldset {
     border-width: .15rem 0 0 0;
     border-style: solid;
     border-color: #ddd;
-    min-width: 20rem;
+    min-width: 18rem;
 
 }
 
@@ -75,6 +75,20 @@ fieldset {
     font-family: monospace
 }
 
+#messagelog div {
+    -webkit-animation: bounce .5s ease-out;
+    -moz-animation: bounce .5s ease-out;
+    animation: bounce .5s ease-out;
+}
+
+#messagelog div:nth-child(n+10) {
+    opacity:65%;
+}
+
+#messagelog div:nth-child(n+13) {
+    opacity:35%;
+}
+
 legend {
     font-size: larger;
     width: inherit;
@@ -87,4 +101,32 @@ legend {
 .hidden {
     visibility:hidden;
     display:none;
+}
+
+
+/* Webkit, Chrome and Safari */
+@-webkit-keyframes bounce {
+	0% {-webkit-transform:translateX(-2rem);}
+	25% {-webkit-transform:translateX(2rem);}
+	50% {-webkit-transform:translateX(-1rem);}
+	75% {-webkit-transform:translateX(1rem);}
+	100% {-webkit-transform:translateX(0);}
+}
+
+/* Mozilla Firefox 15 below */
+@-moz-keyframes bounce {
+	0% {-moz-transform:translateX(-2rem);}
+	25% {-moz-transform:translateX(2rem);}
+	50% {-moz-transform:translateX(-1rem);}
+	75% {-moz-transform:translateX(1rem);}
+	100% {-moz-transform:translateX(0);}
+}
+
+/* W3, Opera 12+, Firefox 16+ */
+@keyframes bounce {
+	0% {transform:translateX(-2rem);}
+	25% {transform:translateX(2rem);}
+	50% {transform:translateX(-1rem);}
+	75% {transform:translateX(1rem);}
+	100% {transform:translateX(0);}
 }

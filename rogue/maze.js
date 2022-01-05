@@ -35,33 +35,39 @@ function addMessage(message) {
 	div.appendChild(span)
 	let log = document.getElementById("messagelog");
 	log.insertBefore(div, log.firstChild);
+	if (document.getElementById("messagelog").children.length > 15) {
+		document.getElementById("messagelog").lastChild.remove();
+	}
 }
 
 function upgrade() {
 	if (numChambers < mazeSize - 5) {
 		numChambers += 1;
-		if (numChambers == 1) addMessage("Dungeons can have a chamber");
-		if (numChambers > 1) addMessage("Dungeons can have " + numChambers + " chambers");
+		if (numChambers == 1) {
+			addMessage("Dungeons can now have a chamber.");
+			addMessage("Chambers can now have a door (marked with a 'D').");
+		}
+		if (numChambers > 1) addMessage("Dungeons now have " + numChambers + " chambers.");
 		return
 	}
 	if (numChambers >= 3 && numDoors == 1) {
 		numDoors = 2;
-		addMessage("Chambers can now have 2 doors");
+		addMessage("Chambers can now have 2 doors.");
 		return;
 	} 
 	if (mazeSize >= 7 && light) {
 		light = false;
-		addMessage("Light is scarce");
+		addMessage("Light is scarce. Exploration illuminates the dungeon.");
 		return;
 	}
 	if (mazeSize < MAX_MAZE_SIZE) {
 		mazeSize += 1;
-		addMessage("Dungeons have grown to size " + (mazeSize*2+1));
+		addMessage("Dungeons have grown to size " + (mazeSize*2+1) + ".");
 		return;
 	}
 }
 
-// for (let x=0; x<5; x++) upgrade();
+// for (let x=0; x<50; x++) upgrade();
 
 function randint(lowerbound,upperbound) {
 	return Math.floor(Math.random() * (upperbound-lowerbound+1)) + lowerbound;
@@ -246,6 +252,9 @@ document.getElementsByClassName("runsimulation")[0].onclick = () => {
 function moveTo(i,j) {
 	if (0<=i && i<g.length && 0<=j && j<g.length && g[i][j] != WALL) {
 		totalSteps++;
+		if (totalSteps == 1) addMessage("Achievement : You discovered how to walk!");
+		if (totalSteps == 100) addMessage("Achievement : 100 steps!");
+		if (totalSteps == 250) addMessage("Achievement : 250 steps!");
 		document.getElementById("totalsteps").innerHTML = totalSteps;
 		if (g[start_i][start_j] == SPACE && footprints) {
 			g[start_i][start_j] = STEPS;
@@ -320,7 +329,11 @@ let actions = {
         funct : function() { 
 			moveTo(start_i+1,start_j);
         }
-    }
+    },
+	'KeyU' : { funct: function() { if (canMove) {
+		if (mazeSize < 7) { addMessage("You found the Upgrade cheat!") }
+		upgrade(); start();
+	} } }
 };
 
 document.onkeydown = (e) => {
@@ -332,11 +345,20 @@ document.onkeydown = (e) => {
 	}
 };
 
+// prevent window from scrolling when using the arrow functions
+window.addEventListener("keydown", function(e) {
+    if (e.code in actions) {
+        e.preventDefault();
+    }
+}, false);
+
 function incrementTimer() {
 	secondsPlayed++;
-	if (secondsPlayed == 120) {
-		document.getElementById("secondsplayed").parentElement.classList.remove("hidden");
-	}
+	if (secondsPlayed == 120) document.getElementById("secondsplayed").parentElement.classList.remove("hidden");
+	if (secondsPlayed == 10) addMessage("10 seconds have passed since you began.");
+	if (secondsPlayed == 60) addMessage("Wow, you've been playing for 1 minute!");
+	if (secondsPlayed == 60*5) addMessage("It's been 5 minutes and you are still here?");
+
 	document.getElementById("secondsplayed").innerHTML = secondsPlayed;
 }
 
