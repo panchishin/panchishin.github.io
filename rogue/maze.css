@@ -11,15 +11,16 @@ body {
 	margin : 1rem;
 	background-color: black;
 	color : #ccc;
+    line-height: 1.3;
 }
 
 #maze {
-    letter-spacing: .75rem;
+    letter-spacing: .4rem;
     background-color: #1e1e1e;
     color: lawngreen;
     transition: color .15s ease-in-out;
     width: fit-content;
-    padding: .4rem 0rem .4rem .6rem;
+    padding: 0.4rem 0.2rem 0.4rem 0.6rem;
 }
 
 #maze.danger {

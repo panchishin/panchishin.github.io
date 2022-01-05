@@ -278,9 +278,10 @@ function moveTo(i,j) {
 function tunnelVisionIn(callback) {
 	canMove = false;
 	document.getElementById("maze").classList.add("paused");
-	tunnelVision = Math.floor(g.length/2);
+	tunnelVision = Math.floor(g.length);
 	function zoom() {
 		if (tunnelVision > 1) {
+			tunnelVision *= 0.8;
 			tunnelVision -= 1;
 			refresh();
 			setTimeout(zoom, 100);
@@ -297,6 +298,7 @@ function tunnelVisionOut(callback) {
 	function zoom() {
 		if (tunnelVision < maxTunnelVision) {
 			tunnelVision += 1;
+			tunnelVision *= 1.2;
 			refresh();
 			setTimeout(zoom, 100);
 		} else {
@@ -329,6 +331,8 @@ let actions = {
         funct : function() { 
 			moveTo(start_i+1,start_j);
         }
+    },
+	'KeyL' : { funct: function() { light = !light; }
     },
 	'KeyU' : { funct: function() { if (canMove) {
 		if (mazeSize < 7) { addMessage("You found the Upgrade cheat!") }
