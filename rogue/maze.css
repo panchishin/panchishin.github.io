@@ -64,16 +64,15 @@ fieldset {
 }
 
 #stats div>span:nth-child(1) {
-    /* min-width: 15rem; */
     width: 8rem;
     display: inline-block;
 }
 
 #stats div>span:nth-child(2) {
-    /* min-width: 15rem; */
     width: 4rem;
     text-align: right;
     display: inline-block;
+    font-family: monospace
 }
 
 legend {
@@ -83,4 +82,9 @@ legend {
     margin-bottom: 0px;
     margin-left: 0rem;
     text-align: center;
+}
+
+.hidden {
+    visibility:hidden;
+    display:none;
 }

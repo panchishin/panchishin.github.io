@@ -22,6 +22,7 @@ let tunnelVision = 1;
 let totalSteps = 0;
 let totalExits = 0;
 let totalMaps = 0;
+let secondsPlayed = 0;
 
 const MAX_MAZE_SIZE = 13;
 const MAX_DOORS = 2;
@@ -54,7 +55,7 @@ function upgrade() {
 		return;
 	}
 	if (mazeSize < MAX_MAZE_SIZE) {
-		mazeSize += 2;
+		mazeSize += 1;
 		addMessage("Dungeons have grown to size " + (mazeSize*2+1));
 		return;
 	}
@@ -209,6 +210,20 @@ function refresh(){
 function start(){
 	totalMaps++
 	document.getElementById("totalmaps").innerHTML = totalMaps;
+	if (mazeSize > 5) {
+		document.getElementById("mazesize").parentElement.classList.remove("hidden");
+	}
+	document.getElementById("mazesize").innerHTML = mazeSize*2+1;
+
+	if (numChambers > 0) {
+		document.getElementById("numchambers").parentElement.classList.remove("hidden");
+	}
+	document.getElementById("numchambers").innerHTML = numChambers;
+
+	if (numChambers > 1) {
+		document.getElementById("numdoors").parentElement.classList.remove("hidden");
+	}
+	document.getElementById("numdoors").innerHTML = numDoors;
 
 	g = maze(mazeSize, numChambers, numDoors);
 
@@ -316,3 +331,13 @@ document.onkeydown = (e) => {
 		}
 	}
 };
+
+function incrementTimer() {
+	secondsPlayed++;
+	if (secondsPlayed == 120) {
+		document.getElementById("secondsplayed").parentElement.classList.remove("hidden");
+	}
+	document.getElementById("secondsplayed").innerHTML = secondsPlayed;
+}
+
+setInterval(incrementTimer,1000);
