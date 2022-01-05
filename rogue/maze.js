@@ -39,7 +39,7 @@ function addMessage(message) {
 function upgrade() {
 	if (numChambers < mazeSize - 5) {
 		numChambers += 1;
-		if (numChambers == 1) addMessage("Dungeons can a chamber");
+		if (numChambers == 1) addMessage("Dungeons can have a chamber");
 		if (numChambers > 1) addMessage("Dungeons can have " + numChambers + " chambers");
 		return
 	}
