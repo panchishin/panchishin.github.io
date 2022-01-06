@@ -15,7 +15,7 @@ let canMove = false;
 let known;
 let mazeSize = 3;
 let numChambers = 0;
-let numDoors = 1;
+let numDoors = 0;
 let g;
 let tunnelVision = 1;
 
@@ -23,14 +23,19 @@ let totalSteps = 0;
 let totalExits = 0;
 let totalMaps = 0;
 let secondsPlayed = 0;
+let achievements = [];
+let messages = [];
+let enteredAChamber = false;
 
 const MAX_MAZE_SIZE = 13;
 const MAX_DOORS = 2;
 const MAX_CHAMBERS = 10;
 
-function addMessage(message) {
+function addMessage(message, cssclass=null) {
+	messages.unshift(message)
 	let span = document.createElement("span");
 	span.innerHTML = message;
+	if (cssclass != null) span.classList.add(cssclass)
 	let div = document.createElement("div")
 	div.appendChild(span)
 	let log = document.getElementById("messagelog");
@@ -40,16 +45,33 @@ function addMessage(message) {
 	}
 }
 
+function addAchievement(message) {
+	addMessage("Achievement : " + message + "!", "achievements");
+	achievements.unshift(message);
+	updateStat("achievements",achievements.length,achievements.length>0);
+}
+
+function updateStat(statName, statValue, display) {
+	if (display) {
+		document.getElementById(statName).parentElement.classList.remove("hidden");
+	}
+	document.getElementById(statName).innerHTML = statValue;
+}
+
 function upgrade() {
 	if (numChambers < mazeSize - 5) {
 		numChambers += 1;
 		if (numChambers == 1) {
 			addMessage("Dungeons can now have a chamber.");
-			addMessage("Chambers can now have a door (marked with a 'D').");
 		}
 		if (numChambers > 1) addMessage("Dungeons now have " + numChambers + " chambers.");
 		return
 	}
+	if (numChambers >= 1 && numDoors == 0) {
+		numDoors = 1;
+		addMessage("Chambers can now have a door (marked with a 'D').");
+		return;
+	} 
 	if (numChambers >= 3 && numDoors == 1) {
 		numDoors = 2;
 		addMessage("Chambers can now have 2 doors.");
@@ -57,7 +79,7 @@ function upgrade() {
 	} 
 	if (mazeSize >= 7 && light) {
 		light = false;
-		addMessage("Light is scarce. Exploration illuminates the dungeon.");
+		addAchievement("Light is too easy. Exploration illuminates the dungeon");
 		return;
 	}
 	if (mazeSize < MAX_MAZE_SIZE) {
@@ -210,26 +232,15 @@ function refresh(){
 		}
 		text.push(line.join(""));
 	}
-	document.getElementById("maze").innerHTML = text.join("\n");
+	updateStat("maze",text.join("\n"),true);
 }
 
 function start(){
 	totalMaps++
-	document.getElementById("totalmaps").innerHTML = totalMaps;
-	if (mazeSize > 5) {
-		document.getElementById("mazesize").parentElement.classList.remove("hidden");
-	}
-	document.getElementById("mazesize").innerHTML = mazeSize*2+1;
-
-	if (numChambers > 0) {
-		document.getElementById("numchambers").parentElement.classList.remove("hidden");
-	}
-	document.getElementById("numchambers").innerHTML = numChambers;
-
-	if (numChambers > 1) {
-		document.getElementById("numdoors").parentElement.classList.remove("hidden");
-	}
-	document.getElementById("numdoors").innerHTML = numDoors;
+	updateStat("totalmaps",totalMaps,true);
+	updateStat("mazesize",mazeSize>=MAX_MAZE_SIZE?"max":mazeSize*2+1,mazeSize>5);
+	updateStat("numchambers",numChambers,numChambers > 0);
+	updateStat("numdoors",numDoors,numChambers > 1);
 
 	g = maze(mazeSize, numChambers, numDoors);
 
@@ -252,14 +263,19 @@ document.getElementsByClassName("runsimulation")[0].onclick = () => {
 function moveTo(i,j) {
 	if (0<=i && i<g.length && 0<=j && j<g.length && g[i][j] != WALL) {
 		totalSteps++;
-		if (totalSteps == 1) addMessage("Achievement : You discovered how to walk!");
-		if (totalSteps == 100) addMessage("Achievement : 100 steps!");
-		if (totalSteps == 250) addMessage("Achievement : 250 steps!");
-		document.getElementById("totalsteps").innerHTML = totalSteps;
+		if (totalSteps == 1) addAchievement("You discovered how to walk");
+		if (totalSteps == 100) addAchievement("100 steps");
+		if (totalSteps == 250) addAchievement("250 steps");
+
+		updateStat("totalsteps",totalSteps,totalSteps>0);
 		if (g[start_i][start_j] == SPACE && footprints) {
 			g[start_i][start_j] = STEPS;
 		}
 		if (g[start_i][start_j] != CHAMBER && g[i][j] == CHAMBER) {
+			if (!enteredAChamber) {
+				addAchievement("Explored first chamber")
+				enteredAChamber = true;
+			}
 			document.getElementById("maze").classList.add("danger");
 		}
 		if (g[start_i][start_j] == CHAMBER && g[i][j] != CHAMBER) {
@@ -268,7 +284,8 @@ function moveTo(i,j) {
 		[start_i,start_j] = [i,j]
 		if (g[start_i][start_j] == EXIT) {
 			totalExits++;
-			document.getElementById("totalexits").innerHTML = totalExits;
+			if (totalExits == 1) addAchievement("First exit found")
+			updateStat("totalexits",totalExits,totalExits>0);
 			upgrade();
 			tunnelVisionIn(start);
 		}
@@ -360,8 +377,11 @@ function incrementTimer() {
 	secondsPlayed++;
 	if (secondsPlayed == 120) document.getElementById("secondsplayed").parentElement.classList.remove("hidden");
 	if (secondsPlayed == 10) addMessage("10 seconds have passed since you began.");
-	if (secondsPlayed == 60) addMessage("Wow, you've been playing for 1 minute!");
+	if (secondsPlayed == 60) addMessage("Wow, you've been playing for 1 minute");
 	if (secondsPlayed == 60*5) addMessage("It's been 5 minutes and you are still here?");
+	if (secondsPlayed == 60*10) addAchievement("10 min of game time");
+	if (secondsPlayed == 60*30) addAchievement("30 min of game time");
+	if (secondsPlayed == 60*60) addAchievement("60 min of game time");
 
 	document.getElementById("secondsplayed").innerHTML = secondsPlayed;
 }

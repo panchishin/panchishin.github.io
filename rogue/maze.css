@@ -61,19 +61,28 @@ fieldset {
     border-style: solid;
     border-color: #ddd;
     min-width: 18rem;
+}
 
+fieldset.mapview {
+    text-align: -webkit-center;
 }
 
 #stats div>span:nth-child(1) {
     width: 8rem;
     display: inline-block;
+    -webkit-animation: bounce .5s ease-out;
+    -moz-animation: bounce .5s ease-out;
+    animation: bounce .5s ease-out;
 }
 
 #stats div>span:nth-child(2) {
     width: 4rem;
     text-align: right;
     display: inline-block;
-    font-family: monospace
+    font-family: monospace;
+    -webkit-animation: bounce .5s ease-out;
+    -moz-animation: bounce .5s ease-out;
+    animation: bounce .5s ease-out;
 }
 
 #messagelog div {
@@ -90,6 +99,10 @@ fieldset {
     opacity:35%;
 }
 
+.achievements {
+    color: gold;
+}
+
 legend {
     font-size: larger;
     width: inherit;
@@ -103,7 +116,6 @@ legend {
     visibility:hidden;
     display:none;
 }
-
 
 /* Webkit, Chrome and Safari */
 @-webkit-keyframes bounce {
