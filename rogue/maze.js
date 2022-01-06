@@ -1,10 +1,12 @@
-const WALL = "#";
+const WALL = "▓";
 const SPACE = " ";
-const DOOR = "D";
+const DOOR = "╪";
 const HERO = "@";
 const STEPS = ".";
 const CHAMBER = ",";
 const EXIT = "E";
+const COIN = "c";
+const SLUG = "~";
 
 
 let start_i = 0;
@@ -26,10 +28,17 @@ let secondsPlayed = 0;
 let achievements = [];
 let messages = [];
 let enteredAChamber = false;
+let coins = 0;
+let slugs = 0;
+let inventoryCoins = 0;
+let killsSlugs = 0;
+let deaths = 0;
 
 const MAX_MAZE_SIZE = 13;
 const MAX_DOORS = 2;
 const MAX_CHAMBERS = 10;
+const MAX_GOOD_THINGS = 3;
+const MAX_BAD_THINGS = 3;
 
 function addMessage(message, cssclass=null) {
 	messages.unshift(message)
@@ -63,24 +72,45 @@ function upgrade() {
 		numChambers += 1;
 		if (numChambers == 1) {
 			addMessage("Dungeons can now have a chamber.");
+		} else {
+			addMessage("Dungeons now have " + numChambers + " chambers.");
 		}
-		if (numChambers > 1) addMessage("Dungeons now have " + numChambers + " chambers.");
 		return
 	}
 	if (numChambers >= 1 && numDoors == 0) {
 		numDoors = 1;
-		addMessage("Chambers can now have a door (marked with a 'D').");
+		addMessage("Chambers can now have a door (marked with a '"+DOOR+"').");
 		return;
 	} 
 	if (numChambers >= 3 && numDoors == 1) {
 		numDoors = 2;
 		addMessage("Chambers can now have 2 doors.");
 		return;
-	} 
+	}
 	if (mazeSize >= 7 && light) {
 		light = false;
 		addAchievement("Light is too easy. Exploration illuminates the dungeon");
 		return;
+	}
+	if (coins < mazeSize - 4 && coins < MAX_GOOD_THINGS) {
+		coins += 1;
+		if (coins == 1) {
+			addAchievement("Unlocked Coins "+COIN)
+			addMessage("Coins may be laying about.");
+		} else {
+			addMessage("More coins to find.");
+		}
+		return
+	}
+	if (slugs < coins && slugs < MAX_BAD_THINGS) {
+		slugs += 1;
+		if (slugs == 1) {
+			addAchievement("Unlocked Slugs "+SLUG)
+			addMessage("Slugs "+SLUG+" may be lurking about.");
+		} else {
+			addMessage("More slugs.");
+		}
+		return
 	}
 	if (mazeSize < MAX_MAZE_SIZE) {
 		mazeSize += 1;
@@ -172,13 +202,14 @@ function maze(n, chambers=0, doors=0) {
 	}
 
 	function placeItem(legalTile) {
-		while(true) {
+		for(let x=0 ; x<100 ; x++) {
 			let I = randint(1,n-2);
 			let J = randint(1,n-2);
 			I += I%2==0 ? 1 : 0;
 			J += J%2==0 ? 1 : 0;
 			if (G[I][J] == legalTile) return [I,J];
 		}
+		throw("This shouldn't happen");
 	}
 
 	[start_i, start_j] = placeItem(WALL)
@@ -208,8 +239,21 @@ function maze(n, chambers=0, doors=0) {
 
 	DFS(start_i, start_j, 0);
 	G[iexit][jexit] = EXIT;
-	illuminate(G, iexit, jexit);
 
+	// place coins
+	for (let x=0; x<coins; x++) {
+		[I, J] = placeItem(SPACE, true)
+		console.log("placing coin " + I + " " + J);
+		G[I][J] = COIN;
+	}
+	// place slugs
+	for (let x=0; x<slugs; x++) {
+		[I, J] = placeItem(SPACE, true)
+		console.log("placing slug " + I + " " + J);
+		G[I][J] = SLUG;
+	}
+	illuminate(G, iexit, jexit);
+	
 	return G;
 }
 
@@ -262,6 +306,7 @@ document.getElementsByClassName("runsimulation")[0].onclick = () => {
 
 function moveTo(i,j) {
 	if (0<=i && i<g.length && 0<=j && j<g.length && g[i][j] != WALL) {
+
 		totalSteps++;
 		if (totalSteps == 1) addAchievement("You discovered how to walk");
 		if (totalSteps == 100) addAchievement("100 steps");
@@ -282,6 +327,41 @@ function moveTo(i,j) {
 			document.getElementById("maze").classList.remove("danger");
 		}
 		[start_i,start_j] = [i,j]
+
+		if (g[start_i][start_j] == COIN) {
+			inventoryCoins++;
+			g[start_i][start_j] = STEPS;
+			updateStat("inventoryCoins",inventoryCoins,true)
+			if (coins == 1) addAchievement("Coins");
+		}
+
+		if (g[start_i][start_j] == SLUG) {
+			if (randint(1,6)==6) {
+				// adventurer death
+				if (inventoryCoins>0){
+					inventoryCoins = 0;
+					updateStat("inventoryCoins",inventoryCoins,true);
+				}
+				deaths++;
+				updateStat("deaths",deaths,true);
+				addMessage("Death");
+				mazeSize = Math.max(5,mazeSize-1);
+				slugs = Math.max(0,slugs-1);
+				coins = Math.max(0,coins-1);
+				numChambers = 0;
+				tunnelVisionIn(start);
+			} else {
+				// slug death
+				killsSlugs++;
+				if (killsSlugs == 1) addAchievement("First slug kill");
+				else if (killsSlugs == 5) addAchievement("Fifth slug kill");
+				else if (killsSlugs == 10) addAchievement("Tenth slug kill");
+				else addMessage("The dungeon slug as been squished");
+				g[start_i][start_j] = STEPS;
+				updateStat("killsSlugs",killsSlugs,true);
+			}
+		}
+
 		if (g[start_i][start_j] == EXIT) {
 			totalExits++;
 			if (totalExits == 1) addAchievement("First exit found")

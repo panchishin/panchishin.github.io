@@ -23,5 +23,8 @@ caves vs buildings
 essence of
 	dungeon, wilderness, earth, air, fire, water, life, skills, magic, crafting, intelligence
 
+if idle
+	give usability hints on features the user hasn't exercised, like walking, toggling stats/map/log/achievements/help
+
 
 
