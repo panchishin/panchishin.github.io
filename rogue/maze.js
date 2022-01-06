@@ -1,6 +1,6 @@
 const WALL = "▓";
 const SPACE = " ";
-const DOOR = "╪";
+const DOOR = "D";
 const HERO = "@";
 const STEPS = ".";
 const CHAMBER = ",";
