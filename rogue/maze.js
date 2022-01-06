@@ -1,4 +1,4 @@
-const WALL = "▓";
+const WALL = "#";
 const SPACE = " ";
 const DOOR = "D";
 const HERO = "@";
