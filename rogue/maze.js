@@ -307,7 +307,7 @@ function slugAI(i,j,depth) {
 	let n=mazeSize*2+1;
 	let I,J;
 	for ( [I, J] of shuffle([[i+1, j], [i-1, j], [i, j+1], [i, j-1]] ) ) {
-		if (0 <= I && I < n && 0 <= J && J < n && g[I][J] != WALL && g[I][J] != DOOR) {
+		if (0 <= I && I < n && 0 <= J && J < n && g[I][J] != WALL && g[I][J] != DOOR && g[I][J] != EXIT) {
 			let distance;
 			let move;
 			if (depth > 0) {
