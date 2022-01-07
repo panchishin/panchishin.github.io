@@ -243,13 +243,11 @@ function maze(n, chambers=0, doors=0) {
 	// place coins
 	for (let x=0; x<coins; x++) {
 		[I, J] = placeItem(SPACE, true)
-		console.log("placing coin " + I + " " + J);
 		G[I][J] = COIN;
 	}
 	// place slugs
 	for (let x=0; x<slugs; x++) {
 		[I, J] = placeItem(SPACE, true)
-		console.log("placing slug " + I + " " + J);
 		G[I][J] = SLUG;
 	}
 	illuminate(G, iexit, jexit);
@@ -303,6 +301,53 @@ document.getElementsByClassName("runsimulation")[0].onclick = () => {
 	if (canMove) { tunnelVisionIn(start) }
 }
 
+function slugAI(i,j,depth) {
+	let best_move = null;
+	let best_distance = 100000;
+	let n=mazeSize*2+1;
+	let I,J;
+	for ( [I, J] of shuffle([[i+1, j], [i-1, j], [i, j+1], [i, j-1]] ) ) {
+		if (0 <= I && I < n && 0 <= J && J < n && g[I][J] != WALL) {
+			let distance;
+			let move;
+			if (depth > 0) {
+				[move, distance] = slugAI(I,J,depth-1)
+			} else {
+				distance = (start_i-I)**2 + (start_j-J)**2;
+			}
+			if (distance <= best_distance) {
+				best_move = [I,J];
+				best_distance = distance;
+			}
+		}
+	}
+	return [best_move, best_distance];
+}
+
+function moveSlugs() {
+	canMove = false;
+	let n=mazeSize*2+1;
+	let slugLocations = []
+	for(let i=1; i<n; i++) for(let j=1; j<n-1; j++) {
+		if (g[i][j] == SLUG) {
+			slugLocations.push([i,j]);
+		}
+	}
+	for(let loc of slugLocations) {
+		let i,j;
+		[i,j] = loc;
+		let move;
+		let distance;
+		[move, distance] = slugAI(i,j,4);
+		if (move != null) {
+			g[i][j] = SPACE;
+			illuminate(g,i,j,0);
+			g[move[0]][move[1]] = SLUG;
+			illuminate(g,move[0],move[1],0);
+		}
+	}
+	canMove = true;
+}
 
 function moveTo(i,j) {
 	if (0<=i && i<g.length && 0<=j && j<g.length && g[i][j] != WALL) {
@@ -323,6 +368,7 @@ function moveTo(i,j) {
 			}
 			document.getElementById("maze").classList.add("danger");
 		}
+		if (g[start_i][start_j] == CHAMBER) moveSlugs();
 		if (g[start_i][start_j] == CHAMBER && g[i][j] != CHAMBER) {
 			document.getElementById("maze").classList.remove("danger");
 		}
