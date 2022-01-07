@@ -307,7 +307,7 @@ function slugAI(i,j,depth) {
 	let n=mazeSize*2+1;
 	let I,J;
 	for ( [I, J] of shuffle([[i+1, j], [i-1, j], [i, j+1], [i, j-1]] ) ) {
-		if (0 <= I && I < n && 0 <= J && J < n && g[I][J] != WALL) {
+		if (0 <= I && I < n && 0 <= J && J < n && g[I][J] != WALL && g[I][J] != DOOR) {
 			let distance;
 			let move;
 			if (depth > 0) {
@@ -368,11 +368,11 @@ function moveTo(i,j) {
 			}
 			document.getElementById("maze").classList.add("danger");
 		}
-		if (g[start_i][start_j] == CHAMBER) moveSlugs();
 		if (g[start_i][start_j] == CHAMBER && g[i][j] != CHAMBER) {
 			document.getElementById("maze").classList.remove("danger");
 		}
 		[start_i,start_j] = [i,j]
+		if (g[start_i][start_j] == CHAMBER) moveSlugs();
 
 		if (g[start_i][start_j] == COIN) {
 			inventoryCoins++;
