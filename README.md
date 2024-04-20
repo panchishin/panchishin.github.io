@@ -11,6 +11,8 @@
 
 [rogue](/rogue/maze.html)
 
+[snake](/snake.html)
+
 [hexis](/hexis/game.html)
 
 [flying ace](/flyingace.html)
