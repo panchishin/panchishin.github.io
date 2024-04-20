@@ -1,0 +1,189 @@
+<html>
+    <head>
+        <title>Canvas</title>
+        <style>
+body {
+    margin: 0;
+    overflow: hidden;
+    background: black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+canvas {
+    display: block;
+    height: 500px;
+    width: 500px;
+    background: white;
+}
+        </style>
+        <script>
+// on document ready
+document.addEventListener('DOMContentLoaded', function () {
+
+// get the current time in milliseconds
+let start_time_ms = new Date().getTime();
+
+// get to elapse time since the start of the game
+function getElapsedTime() {
+    return new Date().getTime() - start_time_ms;
+}
+
+// main game interval
+let game_interval;
+
+// Get the canvas element
+let canvas = document.getElementById('canvas');
+let ctx = canvas.getContext('2d');
+
+// Set the canvas dimensions
+canvas.width = 500;
+canvas.height = 500;
+
+// Calculate the pixel size
+let pixelSize = Math.min(canvas.width, canvas.height) / 25;
+
+// Initialize the game state
+var snake, food, direction, score, gameover;
+
+// Function to generate a random food position
+function generateFood() {
+    var x = Math.floor(Math.random() * 25);
+    var y = Math.floor(Math.random() * 25);
+    food = { x: x, y: y };
+}
+
+
+function initializeGameState() {
+    // Initialize the game state
+    snake = [
+        { x: 12, y: 12 },
+        { x: 11, y: 12 },
+        { x: 10, y: 12 }
+    ];
+    gameover = false;
+    direction = { x: 1, y: 0 };
+    score = 3;
+    generateFood();
+}
+initializeGameState();
+
+function fillText(text, x, y, color) {
+    ctx.fillStyle = 'white';
+    ctx.fillText(text, x-1, y-1);
+    ctx.fillStyle = color;
+    ctx.fillText(text, x, y);
+}
+
+// Function to draw the game state
+function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = 'black';
+    for (var i = 0; i < snake.length; i++) {
+        ctx.fillRect(snake[i].x * pixelSize, snake[i].y * pixelSize, pixelSize, pixelSize);
+    }
+    if (food) {
+        ctx.fillStyle = 'red';
+        ctx.fillRect(food.x * pixelSize, food.y * pixelSize, pixelSize, pixelSize);
+    }
+    ctx.font = '24px Arial';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'top';
+    fillText('Score: ' + score, 10, 10, 'black');
+    if (getElapsedTime() < 5000) {
+        ctx.font = '18px Arial';
+        fillText('Use wasd to move', 10, 40, 'grey');
+    }
+    if (gameover) {
+        ctx.font = '48px Arial';
+        fillText('GAME OVER', 100, 100, 'red');
+        ctx.font = '24px Arial';
+        fillText("press 'r' to restart", 150, 150, 'grey');
+    }
+}
+
+// Function to update the game state
+function update() {
+    // Move the snake
+    var newX = snake[0].x + direction.x;
+    var newY = snake[0].y + direction.y;
+    snake.unshift({ x: newX, y: newY });
+
+    // Check for collision with food
+    if (food && food.x === newX && food.y === newY) {
+        score++;
+        generateFood();
+        set_interval();
+    } else {
+        snake.pop();
+    }
+
+    let collision = false;
+    // Check for collision with self
+    for (var i = 1; i < snake.length; i++) {
+        if (snake[i].x === newX && snake[i].y === newY) {
+            collision = true;
+            break;
+        }
+    }
+
+    // Check for collision with walls
+    if (newX < 0 || newX > 25 || newY < 0 || newY > 25) {
+        collision = true;
+    }
+
+    if (collision) {
+        gameover = true;
+        return;
+    }
+}
+
+// Function to handle key presses
+function handleKeyPress(event) {
+    switch (event.key) {
+        case 'w':
+            direction = { x: 0, y: -1 };
+            break;
+        case 'a':
+            direction = { x: -1, y: 0 };
+            break;
+        case 's':
+            direction = { x: 0, y: 1 };
+            break;
+        case 'd':
+            direction = { x: 1, y: 0 };
+            break;
+        case 'r':
+            initialize_game_state()
+            break;
+    }
+    console.log(direction);
+}
+
+
+
+// Initialize the game
+generateFood();
+draw();
+
+function set_interval() {
+    if (game_interval) clearInterval(game_interval);
+    game_interval = setInterval(function () {
+        if (!gameover) update();
+        draw();
+    }, 250-score*10);
+}
+
+set_interval();
+
+// Add event listener for key presses
+document.addEventListener('keydown', handleKeyPress);
+
+
+});            
+        </script>
+    </head>
+<body>
+<canvas id="canvas"></canvas>
+</body>
+</html>
