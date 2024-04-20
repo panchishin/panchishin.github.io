@@ -48,8 +48,8 @@ var snake, food, direction, score, gameover;
 
 // Function to generate a random food position
 function generateFood() {
-    var x = Math.floor(Math.random() * 25);
-    var y = Math.floor(Math.random() * 25);
+    var x = Math.floor(Math.random() * 21)+2;
+    var y = Math.floor(Math.random() * 21)+2;
     food = { x: x, y: y };
 }
 
@@ -128,7 +128,7 @@ function update() {
     }
 
     // Check for collision with walls
-    if (newX < 0 || newX > 25 || newY < 0 || newY > 25) {
+    if (newX < 0 || newX >= 25 || newY < 0 || newY >= 25) {
         collision = true;
     }
 
@@ -154,7 +154,7 @@ function handleKeyPress(event) {
             direction = { x: 1, y: 0 };
             break;
         case 'r':
-            initialize_game_state()
+            initializeGameState()
             break;
     }
     console.log(direction);
@@ -171,7 +171,7 @@ function set_interval() {
     game_interval = setInterval(function () {
         if (!gameover) update();
         draw();
-    }, 250-score*10);
+    }, Math.max(75, 250-score*5));
 }
 
 set_interval();
