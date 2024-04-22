@@ -25,6 +25,8 @@ document.addEventListener('DOMContentLoaded', function () {
     let messages = [];
     let achievements = 0;
     let greenapples = 0;
+    let movesSinceLastFood = 0;
+    let hunger = 0;
     
     // Function to generate a random food position
     function generateFood() {
@@ -43,6 +45,7 @@ document.addEventListener('DOMContentLoaded', function () {
         gameover = false;
         direction = { x: 0, y: 0 };
         size = 3;
+        movesSinceLastFood = 0;
         generateFood();
         updateFPS();
         resetStartTime();
@@ -113,6 +116,7 @@ document.addEventListener('DOMContentLoaded', function () {
     function checkFoodCollision(newX, newY) {
         if (food && food.x === newX && food.y === newY) {
             size++;
+            movesSinceLastFood = 0;
             generateFood();
             updateFPS();
             greenapples++;
@@ -126,8 +130,22 @@ document.addEventListener('DOMContentLoaded', function () {
             if (greenapples > 5) document.getElementById('greenapples').parentElement.classList.remove('hidden');
             if (greenapples % 10 == 0) shake('greenapples');
             return true;
+        } else {
+            movesSinceLastFood++;
+            if (movesSinceLastFood % 100 == 0) {
+                hunger++;
+                if (hunger == 1) {
+                    addMessage('You are hungry');
+                }
+                if (hunger == 5) {
+                    addMessage('You are very hungry');
+                }
+                document.getElementById('hunger').innerText = hunger;
+                document.getElementById('hunger').parentElement.classList.remove('hidden');
+                shake('hunger');
+            }
+            return false;
         }
-        return false;
     }
 
     // Function to check for collision with self
@@ -226,18 +244,15 @@ document.addEventListener('DOMContentLoaded', function () {
     function updateStepsAndSize() {
         if (direction.x !== 0 || direction.y !== 0) {
             document.getElementById('totalsteps').innerText = totalSteps++;
-            if (((totalSteps < 100) && (totalSteps % 10 === 0))||(totalSteps % 100 === 0)){
-                shake('totalsteps')
-            }
+            if (totalSteps == 100) document.getElementById('totalsteps').parentElement.classList.remove('hidden');
+            if (totalSteps % 100 === 0) shake('totalsteps')
         }
 
         if (size > maxsize) {
             maxsize = size;
             document.getElementById('maxsize').innerText = maxsize;
-            if (maxsize % 2 === 0) {
-                shake('maxsize')
-            }
             if (maxsize % 5 === 0) {
+                shake('maxsize')
                 addAchievment("You have reached a max size of " + maxsize + "!");
             }
         }
