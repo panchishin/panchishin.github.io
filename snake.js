@@ -22,6 +22,9 @@ document.addEventListener('DOMContentLoaded', function () {
     let totalSteps = 0;
     let maxsize = 0;
     let deaths = 0;
+    let messages = [];
+    let achievements = 0;
+    let greenapples = 0;
     
     // Function to generate a random food position
     function generateFood() {
@@ -112,6 +115,16 @@ document.addEventListener('DOMContentLoaded', function () {
             size++;
             generateFood();
             updateFPS();
+            greenapples++;
+            if (greenapples == 1) {
+                addMessage('You ate a green apple');
+            }
+            if (greenapples == 10) {
+                addMessage('You\'ve eaten a few apples, congratulations.  You are a true master of the apple eating arts (no achievment)');
+            }
+            document.getElementById('greenapples').innerText = greenapples;
+            if (greenapples > 5) document.getElementById('greenapples').parentElement.classList.remove('hidden');
+            if (greenapples % 10 == 0) shake('greenapples');
             return true;
         }
         return false;
@@ -137,9 +150,45 @@ document.addEventListener('DOMContentLoaded', function () {
         return false;
     }
 
+    function addMessage(message, cssclass=null) {
+		messages.unshift(message)
+		let span = document.createElement("span");
+		span.innerHTML = message;
+		if (cssclass != null) span.classList.add(cssclass)
+		let div = document.createElement("div")
+		div.appendChild(span)
+		let log = document.getElementById("messagelog");
+		log.insertBefore(div, log.firstChild);
+		if (document.getElementById("messagelog").children.length > 15) {
+			document.getElementById("messagelog").lastChild.remove();
+		}
+	}
+
+    function addAchievment(message) {
+        achievements++
+        addMessage("Achievement : " + message, "achievements");
+        document.getElementById('achievements').parentElement.classList.remove('hidden');
+        document.getElementById('achievements').innerText = achievements;
+        shake('achievements');
+    }
+
     // Increment deaths
     function incrementDeaths() {
         deaths++;
+        if (deaths == 1) {
+            addMessage('You died');
+        }
+        if (deaths == 5) {
+            addMessage('You died 5 times.  It would be an achievement if it wasn\'t so sad');
+        }
+        if (deaths == 20) {
+            addAchievment('Respawn Wonder!  Death seems to be a common theme for you');
+        }
+        if (deaths == 100) {
+            addAchievment('So Much Respawn!  You are a true master of the art of dying');
+        }
+
+
         document.getElementById('deathcount').innerText = deaths;
         // remove the class `hidden` from the element
         document.getElementById('deathcount').parentElement.classList.remove('hidden');
@@ -187,6 +236,9 @@ document.addEventListener('DOMContentLoaded', function () {
             document.getElementById('maxsize').innerText = maxsize;
             if (maxsize % 2 === 0) {
                 shake('maxsize')
+            }
+            if (maxsize % 5 === 0) {
+                addAchievment("You have reached a max size of " + maxsize + "!");
             }
         }
     }
