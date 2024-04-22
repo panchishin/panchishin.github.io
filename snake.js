@@ -21,6 +21,7 @@ document.addEventListener('DOMContentLoaded', function () {
     let snake, food, direction, size, gameover;
     let totalSteps = 0;
     let maxsize = 0;
+    let deaths = 0;
     
     // Function to generate a random food position
     function generateFood() {
@@ -136,6 +137,15 @@ document.addEventListener('DOMContentLoaded', function () {
         return false;
     }
 
+    // Increment deaths
+    function incrementDeaths() {
+        deaths++;
+        document.getElementById('deathcount').innerText = deaths;
+        // remove the class `hidden` from the element
+        document.getElementById('deathcount').parentElement.classList.remove('hidden');
+        shake('deathcount');
+    }
+
     // Function to update the game state
     function update() {
         const { newX, newY } = moveSnake();
@@ -147,6 +157,7 @@ document.addEventListener('DOMContentLoaded', function () {
         let collision = checkSelfCollision(newX, newY) || checkWallCollision(newX, newY);
 
         if (collision) {
+            incrementDeaths();
             gameover = true;
             return;
         } else {
