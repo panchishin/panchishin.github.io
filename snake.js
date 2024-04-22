@@ -2,7 +2,8 @@
 document.addEventListener('DOMContentLoaded', function () {
 
     // get the current time in milliseconds
-    const start_time_ms = new Date().getTime();
+    let start_time_ms = new Date().getTime();
+    const resetStartTime = ()=>start_time_ms = new Date().getTime();
     const getElapsedTime = ()=>(new Date().getTime() - start_time_ms);
     
     // Get the canvas element
@@ -17,14 +18,14 @@ document.addEventListener('DOMContentLoaded', function () {
     let pixelSize = Math.min(canvas.width, canvas.height) / 25;
     
     // Initialize the game state
-    var snake, food, direction, size, gameover;
-    var totalSteps = 0;
-    var maxsize = 0;
+    let snake, food, direction, size, gameover;
+    let totalSteps = 0;
+    let maxsize = 0;
     
     // Function to generate a random food position
     function generateFood() {
-        var x = Math.floor(Math.random() * 21)+2;
-        var y = Math.floor(Math.random() * 21)+2;
+        let x = Math.floor(Math.random() * 21)+2;
+        let y = Math.floor(Math.random() * 21)+2;
         food = { x: x, y: y };
     }
     
@@ -39,12 +40,13 @@ document.addEventListener('DOMContentLoaded', function () {
         direction = { x: 0, y: 0 };
         size = 3;
         generateFood();
-        set_interval();
+        updateFPS();
+        resetStartTime();
     }
     
     // main game interval
     let game_interval = null;
-    function set_interval() {
+    function updateFPS() {
         if (game_interval) clearInterval(game_interval);
         game_interval = setInterval(function () {
             if (!gameover) update();
@@ -70,7 +72,7 @@ document.addEventListener('DOMContentLoaded', function () {
         ctx.fillStyle = 'lightgray';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         ctx.fillStyle = 'black';
-        for (var i = 0; i < snake.length; i++) {
+        for (let i = 0; i < snake.length; i++) {
             ctx.fillRect(snake[i].x * pixelSize, snake[i].y * pixelSize, pixelSize, pixelSize);
         }
         if (food) {
@@ -94,86 +96,99 @@ document.addEventListener('DOMContentLoaded', function () {
             fillText("press 'r' to respawn", 130, 150, 'lightgray');
         }
     }
-    
-// Function to move the snake
-function moveSnake() {
-    var newX = snake[0].x + direction.x;
-    var newY = snake[0].y + direction.y;
-    snake.unshift({ x: newX, y: newY });
-    return { newX, newY };
-}
-
-// Function to check for collision with food
-function checkFoodCollision(newX, newY) {
-    if (food && food.x === newX && food.y === newY) {
-        size++;
-        generateFood();
-        set_interval();
-        return true;
+        
+    // Function to move the snake
+    function moveSnake() {
+        let newX = snake[0].x + direction.x;
+        let newY = snake[0].y + direction.y;
+        snake.unshift({ x: newX, y: newY });
+        return { newX, newY };
     }
-    return false;
-}
 
-// Function to check for collision with self
-function checkSelfCollision(newX, newY) {
-    if (direction.x !== 0 || direction.y !== 0) {
-        for (var i = 1; i < snake.length; i++) {
-            if (snake[i].x === newX && snake[i].y === newY) {
-                return true;
+    // Function to check for collision with food
+    function checkFoodCollision(newX, newY) {
+        if (food && food.x === newX && food.y === newY) {
+            size++;
+            generateFood();
+            updateFPS();
+            return true;
+        }
+        return false;
+    }
+
+    // Function to check for collision with self
+    function checkSelfCollision(newX, newY) {
+        if (direction.x !== 0 || direction.y !== 0) {
+            for (let i = 1; i < snake.length; i++) {
+                if (snake[i].x === newX && snake[i].y === newY) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    // Function to check for collision with walls
+    function checkWallCollision(newX, newY) {
+        if (newX < 0 || newX >= 25 || newY < 0 || newY >= 25) {
+            return true;
+        }
+        return false;
+    }
+
+    // Function to update the game state
+    function update() {
+        const { newX, newY } = moveSnake();
+
+        if (!checkFoodCollision(newX, newY)) {
+            snake.pop();
+        }
+
+        let collision = checkSelfCollision(newX, newY) || checkWallCollision(newX, newY);
+
+        if (collision) {
+            gameover = true;
+            return;
+        } else {
+            updateStepsAndSize();
+            showSecondaryElements();
+        }
+    }
+
+    function shake(elementid) {
+        let element = document.getElementById(elementid).parentElement;
+        element.classList.remove('shake');
+        element.offsetWidth;
+        element.classList.add('shake');
+    }
+
+    // Function to update steps and size
+    function updateStepsAndSize() {
+        if (direction.x !== 0 || direction.y !== 0) {
+            document.getElementById('totalsteps').innerText = totalSteps++;
+            if (((totalSteps < 100) && (totalSteps % 10 === 0))||(totalSteps % 100 === 0)){
+                shake('totalsteps')
+            }
+        }
+
+        if (size > maxsize) {
+            maxsize = size;
+            document.getElementById('maxsize').innerText = maxsize;
+            if (maxsize % 2 === 0) {
+                shake('maxsize')
             }
         }
     }
-    return false;
-}
 
-// Function to check for collision with walls
-function checkWallCollision(newX, newY) {
-    if (newX < 0 || newX >= 25 || newY < 0 || newY >= 25) {
-        return true;
+    // Function to show secondary elements
+    function showSecondaryElements() {
+        if (size >= 4) {
+            document.querySelectorAll('.secondary').forEach((element) => {
+                element.classList.remove('hidden');
+            });
+        }
     }
-    return false;
-}
-
-// Function to update the game state
-function update() {
-    const { newX, newY } = moveSnake();
-
-    if (!checkFoodCollision(newX, newY)) {
-        snake.pop();
-    }
-
-    let collision = checkSelfCollision(newX, newY) || checkWallCollision(newX, newY);
-
-    if (collision) {
-        gameover = true;
-        return;
-    } else {
-        updateStepsAndSize();
-        showSecondaryElements();
-    }
-}
-
-// Function to update steps and size
-function updateStepsAndSize() {
-    document.getElementById('totalsteps').innerText = totalSteps++;
-    if (totalSteps % 10 === 0) document.getElementById('totalsteps').parentElement.classList.add('shake');
-
-    if (size > maxsize) {
-        maxsize = size;
-        document.getElementById('maxsize').innerText = maxsize;
-        document.getElementById('maxsize').parentElement.classList.add('shake');
-    }
-}
-
-// Function to show secondary elements
-function showSecondaryElements() {
-    if (size >= 5) {
-        document.querySelectorAll('.secondary').forEach((element) => {
-            element.classList.remove('hidden');
-        });
-    }
-}
-    
+        
     // Function to handle key presses
     function handleKeyPress(event) {
         switch (event.key) {

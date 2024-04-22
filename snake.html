@@ -11,14 +11,19 @@
     <div class="page">
 
         <div class="col secondary hidden">
-          <fieldset id="stats" class="stats">
+          <fieldset id="stats" class="">
               <legend>Stats</legend>
-              <div class="hidden"><span>Elapse (sec)</span><span id="secondsplayed">0</span></div>
               <div class=""><span>Total movement</span><span id="totalsteps">0</span></div>
               <div class=""><span>Max Size</span><span id="maxsize">0</span></div>
               <div class="hidden"><span class="achievements">Achievements</span><span id="achievements" class="achievements">0</span></div>
           </fieldset>
-        </div>
+          <fieldset id="messages">
+            <legend>Messages</legend>
+            <div id="messagelog">
+              <div><span>You are a snake</span></div>
+            </div>
+        </fieldset>
+      </div>
     
         <div class="col primary">
           <fieldset class="mapview">
@@ -29,9 +34,8 @@
     
         <div class="col secondary hidden">
           <fieldset>
-              <legend>Messages</legend>
-              <div id="messagelog">
-                <div><span>Use WASD or Arrows to change direction</span></div>
+              <legend>Upgrades</legend>
+              <div id="upgrades">
               </div>
           </fieldset>
         </div>
