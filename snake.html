@@ -15,6 +15,9 @@ canvas {
     height: 500px;
     width: 500px;
     background: white;
+    border-width: 10px;
+    border-color: gray;
+    border-style: solid;
 }
         </style>
         <script>
@@ -44,7 +47,7 @@ canvas.height = 500;
 let pixelSize = Math.min(canvas.width, canvas.height) / 25;
 
 // Initialize the game state
-var snake, food, direction, score, gameover;
+var snake, food, direction, size, gameover;
 
 // Function to generate a random food position
 function generateFood() {
@@ -52,7 +55,6 @@ function generateFood() {
     var y = Math.floor(Math.random() * 21)+2;
     food = { x: x, y: y };
 }
-
 
 function initializeGameState() {
     // Initialize the game state
@@ -63,10 +65,18 @@ function initializeGameState() {
     ];
     gameover = false;
     direction = { x: 1, y: 0 };
-    score = 3;
+    size = 3;
     generateFood();
+    set_interval();
 }
-initializeGameState();
+
+function set_interval() {
+    if (game_interval) clearInterval(game_interval);
+    game_interval = setInterval(function () {
+        if (!gameover) update();
+        draw();
+    }, Math.max(75, 250-size*5));
+}
 
 function fillText(text, x, y, color) {
     ctx.fillStyle = 'white';
@@ -80,25 +90,25 @@ function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.fillStyle = 'black';
     for (var i = 0; i < snake.length; i++) {
-        ctx.fillRect(snake[i].x * pixelSize, snake[i].y * pixelSize, pixelSize, pixelSize);
+        ctx.fillRect(snake[i].x * pixelSize, snake[i].y * pixelSize, pixelSize-1, pixelSize-1);
     }
     if (food) {
         ctx.fillStyle = 'red';
-        ctx.fillRect(food.x * pixelSize, food.y * pixelSize, pixelSize, pixelSize);
+        ctx.fillRect(food.x * pixelSize, food.y * pixelSize, pixelSize-1, pixelSize-1);
     }
     ctx.font = '24px Arial';
     ctx.textAlign = 'left';
     ctx.textBaseline = 'top';
-    fillText('Score: ' + score, 10, 10, 'black');
+    fillText('Size: ' + size, 10, 10, 'black');
     if (getElapsedTime() < 5000) {
         ctx.font = '18px Arial';
-        fillText('Use wasd to move', 10, 40, 'grey');
+        fillText('Use wasd to move', 10, 40, 'gray');
     }
     if (gameover) {
         ctx.font = '48px Arial';
         fillText('GAME OVER', 100, 100, 'red');
         ctx.font = '24px Arial';
-        fillText("press 'r' to restart", 150, 150, 'grey');
+        fillText("press 'r' to restart", 150, 150, 'gray');
     }
 }
 
@@ -111,7 +121,7 @@ function update() {
 
     // Check for collision with food
     if (food && food.x === newX && food.y === newY) {
-        score++;
+        size++;
         generateFood();
         set_interval();
     } else {
@@ -141,16 +151,16 @@ function update() {
 // Function to handle key presses
 function handleKeyPress(event) {
     switch (event.key) {
-        case 'w':
+        case 'w': case 'ArrowUp':
             direction = { x: 0, y: -1 };
             break;
-        case 'a':
+        case 'a': case 'ArrowLeft':
             direction = { x: -1, y: 0 };
             break;
-        case 's':
+        case 's': case 'ArrowDown':
             direction = { x: 0, y: 1 };
             break;
-        case 'd':
+        case 'd': case 'ArrowRight':
             direction = { x: 1, y: 0 };
             break;
         case 'r':
@@ -163,18 +173,7 @@ function handleKeyPress(event) {
 
 
 // Initialize the game
-generateFood();
-draw();
-
-function set_interval() {
-    if (game_interval) clearInterval(game_interval);
-    game_interval = setInterval(function () {
-        if (!gameover) update();
-        draw();
-    }, Math.max(75, 250-score*5));
-}
-
-set_interval();
+initializeGameState();
 
 // Add event listener for key presses
 document.addEventListener('keydown', handleKeyPress);
