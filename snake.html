@@ -25,15 +25,8 @@ canvas {
 document.addEventListener('DOMContentLoaded', function () {
 
 // get the current time in milliseconds
-let start_time_ms = new Date().getTime();
-
-// get to elapse time since the start of the game
-function getElapsedTime() {
-    return new Date().getTime() - start_time_ms;
-}
-
-// main game interval
-let game_interval;
+const start_time_ms = new Date().getTime();
+const getElapsedTime = ()=>(new Date().getTime() - start_time_ms);
 
 // Get the canvas element
 let canvas = document.getElementById('canvas');
@@ -70,6 +63,8 @@ function initializeGameState() {
     set_interval();
 }
 
+// main game interval
+let game_interval = null;
 function set_interval() {
     if (game_interval) clearInterval(game_interval);
     game_interval = setInterval(function () {
@@ -90,11 +85,11 @@ function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.fillStyle = 'black';
     for (var i = 0; i < snake.length; i++) {
-        ctx.fillRect(snake[i].x * pixelSize, snake[i].y * pixelSize, pixelSize-1, pixelSize-1);
+        ctx.fillRect(snake[i].x * pixelSize, snake[i].y * pixelSize, pixelSize, pixelSize);
     }
     if (food) {
         ctx.fillStyle = 'red';
-        ctx.fillRect(food.x * pixelSize, food.y * pixelSize, pixelSize-1, pixelSize-1);
+        ctx.fillRect(food.x * pixelSize, food.y * pixelSize, pixelSize, pixelSize);
     }
     ctx.font = '24px Arial';
     ctx.textAlign = 'left';
