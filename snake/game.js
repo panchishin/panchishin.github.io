@@ -31,10 +31,6 @@ export function SnakeGame(ui) {
         this.food = { x: x, y: y };
     };
 
-    this.draw = function() {
-        this.ui.draw(this);
-    };
-
     // Function to move the snake
     this.moveSnake = function() {
         let newX = this.snake[0].x + this.direction.x;
@@ -249,7 +245,7 @@ export function SnakeGame(ui) {
             if (!that.gameover) {
                 that.updateGameState();
             }
-            that.draw();
+            that.ui.draw(that);
         }, Math.max(75, 250-this.size*5));
     };
 
