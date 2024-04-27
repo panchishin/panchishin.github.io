@@ -4,9 +4,9 @@ export function SnakeGame(ui) {
 
         // Get the canvas element
     this.ui = ui;
-    this.speed_max = 20;
-    this.speed_start = 300
-    this.speed_scaling = 1.2;
+    this.speedmax = 20;
+    this.speedstart = 300
+    this.speedscaling = 1.2;
 
     this.resetStartTime = function() { this.start_time_ms = new Date().getTime(); };
     this.resetStartTime();
@@ -16,18 +16,17 @@ export function SnakeGame(ui) {
     this.reset = function() {
         this.resetStartTime();
 
-        // Initialize the game state
         this.food = 0;
-        this.totalSteps = 0;
+        this.totalsteps = 0;
         this.maxsize = 0;
         this.deaths = 0;
         this.achievements = 0;
         this.greenapples = 0;
         this.hunger = 0;
-        this.game_interval = null;
-        this.speed_max = 20;
-        this.speed_start = 300
-        this.speed_scaling = 1.2;
+        this.gameinterval = null;
+        this.speedmax = 20;
+        this.speedstart = 300
+        this.speedscaling = 1.2;
     };
     this.reset();
 
@@ -48,7 +47,7 @@ export function SnakeGame(ui) {
     this.checkFoodCollision = function(newX, newY) {
         if (this.food && this.food.x === newX && this.food.y === newY) {
             this.size++;
-            this.movesSinceLastFood = 0;
+            this.movessincelastfood = 0;
             this.generateFood();
             this.updateFPS();
             this.greenapples++;
@@ -66,8 +65,8 @@ export function SnakeGame(ui) {
 
             return true;
         } else {
-            this.movesSinceLastFood++;
-            if (this.movesSinceLastFood % 100 == 0) {
+            this.movessincelastfood++;
+            if (this.movessincelastfood % 100 == 0) {
                 this.hunger++;
                 if (this.hunger == 1) {
                     this.addMessage('You are hungry');
@@ -177,9 +176,9 @@ export function SnakeGame(ui) {
         if (this.direction.x !== 0 || this.direction.y !== 0) {
 
             // TODO change this to a callback notification for the UI to handle
-            document.getElementById('totalsteps').innerText = this.totalSteps++;
-            if (this.totalSteps == 100) document.getElementById('totalsteps').parentElement.classList.remove('hidden');
-            if (this.totalSteps % 100 === 0) this.shake('totalsteps')
+            document.getElementById('totalsteps').innerText = this.totalsteps++;
+            if (this.totalsteps == 100) document.getElementById('totalsteps').parentElement.classList.remove('hidden');
+            if (this.totalsteps % 100 === 0) this.shake('totalsteps')
         }
 
         if (this.size > this.maxsize) {
@@ -213,7 +212,7 @@ export function SnakeGame(ui) {
         this.gameover = false;
         this.direction = { x: 0, y: 0 };
         this.size = 3;
-        this.movesSinceLastFood = 0;
+        this.movessincelastfood = 0;
         this.generateFood();
         this.updateFPS();
         this.resetStartTime();
@@ -241,18 +240,18 @@ export function SnakeGame(ui) {
     };
 
     this.stopFPS = function() {
-        if (this.game_interval != null) clearInterval(this.game_interval);
+        if (this.gameinterval != null) clearInterval(this.gameinterval);
     };
 
     this.updateFPS = function() {
         this.stopFPS();
         const that = this;
-        this.game_interval = setInterval(function () {
+        this.gameinterval = setInterval(function () {
             if (!that.gameover) {
                 that.updateGameState();
             }
             that.ui.draw(that);
-        }, Math.max(this.speed_max, this.speed_start/Math.pow(this.speed_scaling,this.size-1)));    
+        }, Math.max(this.speedmax, this.speedstart/Math.pow(this.speedscaling,this.size-1)));    
     };
 
     this.initializeGameState();
