@@ -58,16 +58,6 @@ export function UI() {
         this.ctx.textAlign = 'left';
         this.ctx.textBaseline = 'top';
         this.ctx.fillStyle = 'lightgray';
-        if (game.direction.x !== 0 || game.direction.y !== 0) {
-            this.ctx.font = '24px Arial';
-            this.fillText('Size: ' + game.size, 10, 10);
-        }
-
-        // Render help
-        if (game.getElapsedTime() < 5000) {
-            this.ctx.font = '18px Arial';
-            this.fillText('Use wasd to move', 10, 40);
-        }
 
         // Render game over
         if (game.gameover) {
@@ -97,6 +87,8 @@ document.addEventListener('DOMContentLoaded', function () {
     // make a list of all the hidden elements under the element with id 'uselessTextBox'
     const hiddenElements = Array.from(document.getElementById('welcome').querySelectorAll('.hidden'));
     // every 5 seconds remove the hidden class from the next element in the list
+    ui.shakeElement(hiddenElements[0]);
+    hiddenElements.shift();
     let uselessTextBoxInterval = setInterval(() => {
         if (hiddenElements.length > 0) {
             ui.shakeElement(hiddenElements[0]);
