@@ -1,15 +1,9 @@
 'use strict';
 
-export function SnakeGame() {
+export function SnakeGame(ui) {
 
         // Get the canvas element
-    this.canvas = document.getElementById('canvas');
-    this.ctx = canvas.getContext('2d');
-        
-    // Set the canvas dimensions
-    this.canvas.width = 500;
-    this.canvas.height = 500;
-    this.pixelSize = Math.min(this.canvas.width, this.canvas.height) / 25;
+    this.ui = ui;
 
     this.resetStartTime = function() { this.start_time_ms = new Date().getTime(); };
     this.resetStartTime();
@@ -37,58 +31,8 @@ export function SnakeGame() {
         this.food = { x: x, y: y };
     };
 
-    this.fillText = function(text, x, y) {
-        this.ctx.fillStyle = 'black';
-        this.ctx.fillText(text, x-2, y-2);
-        this.ctx.fillStyle = 'black';
-        this.ctx.fillText(text, x+2, y+2);
-        this.ctx.fillStyle = 'black';
-        this.ctx.fillText(text, x+2, y-2);
-        this.ctx.fillStyle = 'black';
-        this.ctx.fillText(text, x-2, y+2);
-        this.ctx.fillStyle = 'gray';
-        this.ctx.fillText(text, x, y);
-    };
-
     this.draw = function() {
-        // clear the canvas
-        this.ctx.fillStyle = 'black';
-        this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-
-        // Render snake
-        this.ctx.fillStyle = 'white';
-        for (let i = 0; i < this.snake.length; i++) {
-            this.ctx.fillRect(this.snake[i].x * this.pixelSize, this.snake[i].y * this.pixelSize, this.pixelSize, this.pixelSize);
-        }
-
-        // Render food
-        if (this.food) {
-            this.ctx.fillStyle = 'green';
-            this.ctx.fillRect(this.food.x * this.pixelSize, this.food.y * this.pixelSize, this.pixelSize, this.pixelSize);
-        }
-
-        // Render size
-        this.ctx.textAlign = 'left';
-        this.ctx.textBaseline = 'top';
-        this.ctx.fillStyle = 'lightgray';
-        if (this.direction.x !== 0 || this.direction.y !== 0) {
-            this.ctx.font = '24px Arial';
-            this.fillText('Size: ' + this.size, 10, 10);
-        }
-
-        // Render help
-        if (this.getElapsedTime() < 5000) {
-            this.ctx.font = '18px Arial';
-            this.fillText('Use wasd to move', 10, 40);
-        }
-
-        // Render game over
-        if (this.gameover) {
-            this.ctx.font = '48px Arial';
-            this.fillText('Dead Snake', 100, 100);
-            this.ctx.font = '24px Arial';
-            this.fillText("press 'r' to respawn", 130, 150);
-        }
+        this.ui.draw(this);
     };
 
     // Function to move the snake

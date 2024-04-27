@@ -61,3 +61,14 @@ Or if the user unlocked Rotation (and selected it??) you could morph 180-Death p
 
 wontonimo — 04/21/2024 10:34 AM
 Like in evolve where there isn't just 1 resource, I was thinking the along the same lines.  Resources would be things like time alive, apples eaten, wall death, self collision death, starvation time
+
+
+wontonimo — Today at 12:01 PM
+what screen size works best for publishing games to crazygames and mathgames and those other platforms?
+or does it matter?
+
+Lomaz — Today at 12:02 PM
+const GAME_WIDTH = 1280;
+const GAME_HEIGHT = 720;
+is what i normally go with
+crazygames has a fixed size, don't rmember what it is

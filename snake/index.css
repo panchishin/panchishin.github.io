@@ -23,6 +23,7 @@ body {
     background-color: black;
     color : #ccc;
     line-height: 1.3;
+    height: 100%;
 }
 
 * { box-sizing: border-box; }
@@ -36,7 +37,12 @@ body {
 .col {
     display: inline-block;
     vertical-align: top;
-    width: 50%;
+}
+.col.primary {
+    width: calc(min(500px,100% - 1rem));
+}
+.col.secondary {
+    width: calc(100% - min(500px,100% - 1rem));
 }
 
 #welcome {
@@ -52,7 +58,7 @@ body {
 }
 
 @media only screen and (max-width: 900px) {
-    div.col {width: 100%;}
+    div.col, div.col.primary, div.col.secondary {width: 100%;}
     div.col.primary {-webkit-order:1;}
     div.col.secondary {-webkit-order:2;}    
     div.col.primary {order:1;}
@@ -104,10 +110,11 @@ fieldset > legend {
     font-family: monospace;
 }
 
-.stats div.shake>span {
+.shakeable div.shake>span {
     -webkit-animation: bounce .5s ease-out;
     -moz-animation: bounce .5s ease-out;
     animation: bounce .5s ease-out;
+    display: inline-block;
 }
 
 
