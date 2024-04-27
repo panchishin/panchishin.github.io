@@ -4,6 +4,9 @@ export function SnakeGame(ui) {
 
         // Get the canvas element
     this.ui = ui;
+    this.speed_max = 20;
+    this.speed_start = 300
+    this.speed_scaling = 1.2;
 
     this.resetStartTime = function() { this.start_time_ms = new Date().getTime(); };
     this.resetStartTime();
@@ -22,6 +25,9 @@ export function SnakeGame(ui) {
         this.greenapples = 0;
         this.hunger = 0;
         this.game_interval = null;
+        this.speed_max = 20;
+        this.speed_start = 300
+        this.speed_scaling = 1.2;
     };
     this.reset();
 
@@ -246,7 +252,7 @@ export function SnakeGame(ui) {
                 that.updateGameState();
             }
             that.ui.draw(that);
-        }, Math.max(75, 250-this.size*5));
+        }, Math.max(this.speed_max, this.speed_start/Math.pow(this.speed_scaling,this.size-1)));    
     };
 
     this.initializeGameState();
