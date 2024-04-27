@@ -104,7 +104,7 @@ document.addEventListener('DOMContentLoaded', function () {
         } else {
             clearInterval(uselessTextBoxInterval);
         }
-    }, 500);
+    }, 5000);
     
     document.getElementById('start').addEventListener('click', () => {
         game.stopFPS();
