@@ -5,14 +5,7 @@ export function SnakeGame(ui) {
     ui.setGame(this);
     this.ui = ui;
 
-    this.resetStartTime = function() { this.start_time_ms = new Date().getTime(); };
-    this.resetStartTime();
-
-    this.getElapsedTime = function() { return (new Date().getTime() - this.start_time_ms); };
-
     this.reset = function() {
-        this.resetStartTime();
-
         this.food = 0;
         this.totalsteps = 0;
         this.maxsize = 0;
@@ -162,7 +155,6 @@ export function SnakeGame(ui) {
         this.movessincelastfood = 0;
         this.generateFood();
         this.updateFPS();
-        this.resetStartTime();
     };
 
     this.handleKeyPress = function(event) {
