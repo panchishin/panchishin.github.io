@@ -138,13 +138,27 @@ fieldset > legend {
 /*-----------------------------------------------
             clicking actions 
 -----------------------------------------------*/
-button {
+button, .button {
     background-color: white;
     color: black;
     border: none;
+    width: 12rem;
+    padding: 0.1rem;
+    border-radius: 3px;
+    border-style: solid;
+    border-color: gray;
+    border-width: 3px;
 }
 /* we want a css effect when the button is pressed */
-button:active {
+button:active, .button:active {
+    /* make the button appear to be pressed by offsetting it*/
+    position:relative;
+    top: 5px;
+    left: 5px;
+}
+
+/* we want a css effect when the button is pressed */
+button:hover, .button:hover {
     background-color: darkgray;
     color: white
 }

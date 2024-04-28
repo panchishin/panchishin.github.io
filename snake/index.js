@@ -26,7 +26,7 @@ function saveToLocalStorage(saveLocation, obj) {
 // on document ready
 document.addEventListener('DOMContentLoaded', function () {
 
-    const ui = new UI();
+    let ui = new UI();
     let game = new SnakeGame(ui);
 
     // Initialize the game
@@ -34,7 +34,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     loadFromLocalStorage('snakegame', game);
     loadFromLocalStorage('snakeui', ui);
-    game.updateFPS();
 
     let saveInterval = setInterval(() => {
         saveToLocalStorage('snakegame', game);
@@ -58,11 +57,19 @@ document.addEventListener('DOMContentLoaded', function () {
         });
 
         ui.showSavedValues();
+        game.updateFPS();
 
     }
 
     // Add event listener for key presses
     document.addEventListener('keydown', (event)=>{game.handleKeyPress(event)});
+
+    document.getElementById('hardreset').addEventListener('click', () => {
+        clearInterval(saveInterval);
+        localStorage.clear();
+        window.location.reload();
+    });        
+
 
     if (game['introComplete']) {
         introComplete();
@@ -78,9 +85,11 @@ document.addEventListener('DOMContentLoaded', function () {
             } else {
                 clearInterval(uselessTextBoxInterval);
             }
-        }, 50);
+        }, 10000);
         
         document.getElementById('start').addEventListener('click', () => {
+            ui = new UI();
+            ui.showSavedValues();
             game.stopFPS();
             game = new SnakeGame(ui);
             game['introComplete'] = true;

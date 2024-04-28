@@ -97,9 +97,9 @@ export function UI() {
 
     this.addMessage = function(message, cssclass=null, record=true) {
         if (record) {
-            this.messages.unshift( {message:message, cssclass:cssclass} );
+            this.messages.push( {message:message, cssclass:cssclass} );
             while (this.messages.length > 10) {
-                this.messages.pop();
+                this.messages.shift();
             }
         }
         let span = document.createElement("span");

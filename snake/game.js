@@ -12,7 +12,7 @@ export function SnakeGame(ui) {
     this.achievements = 0;
     this.greenapples = 0;
     this.hunger = 0;
-    this.gameinterval = null;
+    this._gameinterval = null;
     this.speedmax = 20;
     this.speedstart = 300
     this.speedscaling = 1.2;
@@ -184,14 +184,14 @@ export function SnakeGame(ui) {
     };
 
     this.stopFPS = function() {
-        if (this.gameinterval != null) clearInterval(this.gameinterval);
+        if (this._gameinterval != null) clearInterval(this._gameinterval);
     };
 
     this.updateFPS = function() {
         this.stopFPS();
         const that = this;
         const msPerFrame = Math.max(this.speedmax, this.speedstart/Math.pow(this.speedscaling,this.size-1));
-        this.gameinterval = setInterval(function () {
+        this._gameinterval = setInterval(function () {
             if (!that.gameover) {
                 that.updateGameState();
             }
