@@ -17,6 +17,15 @@ export function SnakeGame(ui) {
     this.speedstart = 300
     this.speedscaling = 1.2;
 
+    this.snake = [
+        { x: 12, y: 12 }
+    ];
+    this.gameover = false;
+    this.direction = { x: 0, y: 0 };
+    this.size = 1;
+    this.movessincelastfood = 0;
+    this.food = { x: 10, y: 10 };
+
     this.generateFood = function() {
         let x = Math.floor(Math.random() * 21)+2;
         let y = Math.floor(Math.random() * 21)+2;
@@ -181,12 +190,13 @@ export function SnakeGame(ui) {
     this.updateFPS = function() {
         this.stopFPS();
         const that = this;
+        const msPerFrame = Math.max(this.speedmax, this.speedstart/Math.pow(this.speedscaling,this.size-1));
         this.gameinterval = setInterval(function () {
             if (!that.gameover) {
                 that.updateGameState();
             }
             that.ui.draw();
-        }, Math.max(this.speedmax, this.speedstart/Math.pow(this.speedscaling,this.size-1)));    
+        }, msPerFrame);
     };
 
     this.initializeGameState();
