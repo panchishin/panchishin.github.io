@@ -5,20 +5,17 @@ export function SnakeGame(ui) {
     ui.setGame(this);
     this.ui = ui;
 
-    this.reset = function() {
-        this.food = 0;
-        this.totalsteps = 0;
-        this.maxsize = 0;
-        this.deaths = 0;
-        this.achievements = 0;
-        this.greenapples = 0;
-        this.hunger = 0;
-        this.gameinterval = null;
-        this.speedmax = 20;
-        this.speedstart = 300
-        this.speedscaling = 1.2;
-    };
-    this.reset();
+    this.food = 0;
+    this.totalsteps = 0;
+    this.maxsize = 0;
+    this.deaths = 0;
+    this.achievements = 0;
+    this.greenapples = 0;
+    this.hunger = 0;
+    this.gameinterval = null;
+    this.speedmax = 20;
+    this.speedstart = 300
+    this.speedscaling = 1.2;
 
     this.generateFood = function() {
         let x = Math.floor(Math.random() * 21)+2;

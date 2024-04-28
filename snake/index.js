@@ -8,7 +8,7 @@ import { UI } from './ui.js';
 document.addEventListener('DOMContentLoaded', function () {
 
     const ui = new UI();
-    const game = new SnakeGame(ui);
+    let game = new SnakeGame(ui);
     
     // Initialize the game
     game.initializeGameState();
@@ -32,7 +32,8 @@ document.addEventListener('DOMContentLoaded', function () {
     
     document.getElementById('start').addEventListener('click', () => {
         game.stopFPS();
-        game.reset();
+        game = new SnakeGame(ui);
+        
         game.initializeGameState();
         
         // find element named 'welcome' and delete it
