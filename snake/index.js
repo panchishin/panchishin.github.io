@@ -8,7 +8,9 @@ function loadFromLocalStorage(saveLocation, obj) {
     if (localStorage.getItem(saveLocation)) {
         let data = JSON.parse(localStorage.getItem(saveLocation));
         for (let key in data) {
-            obj[key] = data[key];
+            if (!key.startsWith('_')) {
+                obj[key] = data[key];
+            }
         }
     }
 }
