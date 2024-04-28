@@ -49,16 +49,16 @@ export function SnakeGame(ui) {
             this.updateFPS();
             this.greenapples++;
             if (this.greenapples == 1) {
-                this.addMessage('You ate a green apple');
+                this.ui.addMessage('You ate a green apple');
             }
             if (this.greenapples == 10) {
-                this.addMessage('You\'ve eaten a few apples, congratulations.  You are a true master of the apple eating arts (no achievment)');
+                this.ui.addMessage('You\'ve eaten a few apples, congratulations.  You are a true master of the apple eating arts (no achievment)');
             }
 
             // TODO change this to a callback notification for the UI to handle
             document.getElementById('greenapples').innerText = this.greenapples;
             if (this.greenapples > 5) document.getElementById('greenapples').parentElement.classList.remove('hidden');
-            if (this.greenapples % 10 == 0) this.shake('greenapples');
+            if (this.greenapples % 10 == 0) this.ui.shakeId('greenapples');
 
             return true;
         } else {
@@ -66,16 +66,16 @@ export function SnakeGame(ui) {
             if (this.movessincelastfood % 100 == 0) {
                 this.hunger++;
                 if (this.hunger == 1) {
-                    this.addMessage('You are hungry');
+                    this.ui.addMessage('You are hungry');
                 }
                 if (this.hunger == 5) {
-                    this.addMessage('You are very hungry');
+                    this.ui.addMessage('You are very hungry');
                 }
 
                 // TODO change this to a callback notification for the UI to handle
                 document.getElementById('hunger').innerText = this.hunger;
                 document.getElementById('hunger').parentElement.classList.remove('hidden');
-                this.shake('hunger');
+                this.ui.shakeId('hunger');
             }
             return false;
         }
@@ -96,11 +96,6 @@ export function SnakeGame(ui) {
         return newX < 0 || newX >= 25 || newY < 0 || newY >= 25;
     };
 
-
-    this.addMessage = function(message) {
-        this.ui.addMessage(message);
-    };
-
     this.addAchievment = function(message) {
         this.achievements++
         this.ui.addAchievment(message);
@@ -110,10 +105,10 @@ export function SnakeGame(ui) {
     this.incrementDeaths = function() {
         this.deaths++;
         if (this.deaths == 1) {
-            this.addMessage('You died');
+            this.ui.addMessage('You died');
         }
         if (this.deaths == 5) {
-            this.addMessage('You died 5 times.  It would be an achievement if it wasn\'t so sad');
+            this.ui.addMessage('You died 5 times.  It would be an achievement if it wasn\'t so sad');
         }
         if (this.deaths == 20) {
             this.addAchievment('Respawn Wonder!  Death seems to be a common theme for you');
@@ -126,7 +121,7 @@ export function SnakeGame(ui) {
         document.getElementById('deathcount').innerText = this.deaths;
         // remove the class `hidden` from the element
         document.getElementById('deathcount').parentElement.classList.remove('hidden');
-        this.shake('deathcount');
+        this.ui.shakeId('deathcount');
     };
 
     // Function to update the game state
@@ -149,12 +144,7 @@ export function SnakeGame(ui) {
         }
     };
 
-    this.shake = function(elementid) {
-        let element = document.getElementById(elementid).parentElement;
-        element.classList.remove('shake');
-        element.offsetWidth;
-        element.classList.add('shake');
-    };
+
 
     // Function to update steps and size
     this.updateStepsAndSize = function() {
@@ -163,7 +153,7 @@ export function SnakeGame(ui) {
             // TODO change this to a callback notification for the UI to handle
             document.getElementById('totalsteps').innerText = this.totalsteps++;
             if (this.totalsteps == 100) document.getElementById('totalsteps').parentElement.classList.remove('hidden');
-            if (this.totalsteps % 100 === 0) this.shake('totalsteps')
+            if (this.totalsteps % 100 === 0) this.ui.shakeId('totalsteps')
         }
 
         if (this.size > this.maxsize) {
@@ -172,7 +162,7 @@ export function SnakeGame(ui) {
             document.getElementById('maxsize').innerText = this.maxsize;
             if (this.maxsize % 5 === 0) {
                 document.getElementById('maxsize').parentElement.classList.remove('hidden');
-                this.shake('maxsize')
+                this.ui.shakeId('maxsize')
                 this.addAchievment("You have reached a max size of " + this.maxsize + "!");
             }
         }
