@@ -2,12 +2,8 @@
 
 export function SnakeGame(ui) {
 
-    // Get the canvas element
     ui.setGame(this);
     this.ui = ui;
-    this.speedmax = 20;
-    this.speedstart = 300
-    this.speedscaling = 1.2;
 
     this.resetStartTime = function() { this.start_time_ms = new Date().getTime(); };
     this.resetStartTime();
