@@ -2,7 +2,8 @@
 
 export function SnakeGame(ui) {
 
-        // Get the canvas element
+    // Get the canvas element
+    ui.setGame(this);
     this.ui = ui;
     this.speedmax = 20;
     this.speedstart = 300
@@ -100,25 +101,13 @@ export function SnakeGame(ui) {
     };
 
 
-    this.addMessage = function(message, cssclass=null) {
-        let span = document.createElement("span");
-        span.innerHTML = message;
-        if (cssclass != null) span.classList.add(cssclass)
-        let div = document.createElement("div")
-        div.appendChild(span)
-        let log = document.getElementById("messagelog");
-        log.insertBefore(div, log.firstChild);
-        if (document.getElementById("messagelog").children.length > 15) {
-            document.getElementById("messagelog").lastChild.remove();
-        }
+    this.addMessage = function(message) {
+        this.ui.addMessage(message);
     };
 
     this.addAchievment = function(message) {
         this.achievements++
-        this.addMessage("Achievement : " + message, "achievements");
-        document.getElementById('achievements').parentElement.classList.remove('hidden');
-        document.getElementById('achievements').innerText = this.achievements;
-        this.shake('achievements');
+        this.ui.addAchievment(message);
     };
 
     // Increment deaths
@@ -250,7 +239,7 @@ export function SnakeGame(ui) {
             if (!that.gameover) {
                 that.updateGameState();
             }
-            that.ui.draw(that);
+            that.ui.draw();
         }, Math.max(this.speedmax, this.speedstart/Math.pow(this.speedscaling,this.size-1)));    
     };
 
