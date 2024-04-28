@@ -40,9 +40,14 @@ document.addEventListener('DOMContentLoaded', function () {
     function saveGame() {
         saveToLocalStorage('snakegame', game);
         saveToLocalStorage('snakeui', ui);
+
+        const element = document.getElementById('autosaved');
+        element.classList.remove('slidein');
+        element.offsetWidth;
+        element.classList.add('slidein');
     }
 
-    let saveInterval = setInterval(() => saveGame, 5000);
+    let saveInterval = setInterval(saveGame, 30000);
 
     function introComplete() {
         // find element named 'welcome' and delete it
@@ -72,8 +77,11 @@ document.addEventListener('DOMContentLoaded', function () {
         clearInterval(saveInterval);
         localStorage.clear();
         window.location.reload();
-    });        
+    });
 
+    document.getElementById('manualsave').addEventListener('click', () => {
+        saveGame();
+    });
 
     if (game['introComplete']) {
         introComplete();

@@ -50,6 +50,25 @@ body {
     height: calc(100% - 1rem);
 }
 
+#autosaved {
+    position: fixed;
+    bottom: 0;
+    right: -300px;
+    padding: 0.5rem;
+    background-color: black;
+    color: white;
+    border: 1px solid gray;
+    border-radius: 5px;
+    margin: 0.5rem;
+}
+
+#autosaved.slidein {
+    -webkit-animation: slidein 2.0s ease-out;
+    -moz-animation: slidein 2.0s ease-out;
+    animation: slidein 2.0s ease-out;
+    display: inline-block;
+}
+
 /*-----------------------------------------------
             responsive sizing of columns 
 -----------------------------------------------*/
@@ -194,4 +213,15 @@ button:hover, .button:hover {
 	50% {transform:translateX(-0.5rem);}
 	75% {transform:translateX(0.5rem);}
 	100% {transform:translateX(0);}
+}
+
+/*-----------------------------------------------
+            slide in effect for autosaved
+-----------------------------------------------*/
+
+@keyframes slidein {
+    0% {right: -300px;}
+    5% {right: 0;}
+    95% {right: 0;}
+    100% {right: -300px;}
 }
