@@ -4,38 +4,44 @@ import { SnakeGame } from './game.js';
 import { UI } from './ui.js';
 
 
+function loadFromLocalStorage(saveLocation, obj) {
+    if (localStorage.getItem(saveLocation)) {
+        let data = JSON.parse(localStorage.getItem(saveLocation));
+        for (let key in data) {
+            obj[key] = data[key];
+        }
+    }
+}
+
+function saveToLocalStorage(saveLocation, obj) {
+    let publicObj = {};
+    for (let key in obj) {
+        if (!key.startsWith('_')) {
+            publicObj[key] = obj[key];
+        }
+    }
+    localStorage.setItem(saveLocation, JSON.stringify(publicObj));
+}
+
 // on document ready
 document.addEventListener('DOMContentLoaded', function () {
 
     const ui = new UI();
     let game = new SnakeGame(ui);
-    
+
     // Initialize the game
     game.initializeGameState();
-    
-    // Add event listener for key presses
-    document.addEventListener('keydown', (event)=>{game.handleKeyPress(event)});
-    
-    // make a list of all the hidden elements under the element with id 'uselessTextBox'
-    const hiddenElements = Array.from(document.getElementById('welcome').querySelectorAll('.hidden'));
-    // every 5 seconds remove the hidden class from the next element in the list
-    ui.shakeElement(hiddenElements[0]);
-    hiddenElements.shift();
-    let uselessTextBoxInterval = setInterval(() => {
-        if (hiddenElements.length > 0) {
-            ui.shakeElement(hiddenElements[0]);
-            hiddenElements.shift();
-        } else {
-            clearInterval(uselessTextBoxInterval);
-        }
+
+    loadFromLocalStorage('snakegame', game);
+    loadFromLocalStorage('snakeui', ui);
+    game.updateFPS();
+
+    let saveInterval = setInterval(() => {
+        saveToLocalStorage('snakegame', game);
+        saveToLocalStorage('snakeui', ui);
     }, 5000);
-    
-    document.getElementById('start').addEventListener('click', () => {
-        game.stopFPS();
-        game = new SnakeGame(ui);
-        
-        game.initializeGameState();
-        
+
+    function introComplete() {
         // find element named 'welcome' and delete it
         document.getElementById('welcome').remove();
 
@@ -50,6 +56,38 @@ document.addEventListener('DOMContentLoaded', function () {
         document.querySelectorAll('fieldset').forEach((element) => {
             element.classList.remove('hidden');
         });
-    });
 
+        ui.showSavedValues();
+
+    }
+
+    // Add event listener for key presses
+    document.addEventListener('keydown', (event)=>{game.handleKeyPress(event)});
+
+    if (game['introComplete']) {
+        introComplete();
+    } else {
+        const hiddenElements = Array.from(document.getElementById('welcome').querySelectorAll('.hidden'));
+        // every 5 seconds remove the hidden class from the next element in the list
+        ui.shakeElement(hiddenElements[0]);
+        hiddenElements.shift();
+        let uselessTextBoxInterval = setInterval(() => {
+            if (hiddenElements.length > 0) {
+                ui.shakeElement(hiddenElements[0]);
+                hiddenElements.shift();
+            } else {
+                clearInterval(uselessTextBoxInterval);
+            }
+        }, 50);
+        
+        document.getElementById('start').addEventListener('click', () => {
+            game.stopFPS();
+            game = new SnakeGame(ui);
+            game['introComplete'] = true;
+            
+            game.initializeGameState();
+
+            introComplete();
+        });
+    }
 });

@@ -3,7 +3,7 @@
 export function SnakeGame(ui) {
 
     ui.setGame(this);
-    this.ui = ui;
+    this._ui = ui;
 
     this.food = 0;
     this.totalsteps = 0;
@@ -47,13 +47,13 @@ export function SnakeGame(ui) {
             this.updateFPS();
             this.greenapples++;
             if (this.greenapples == 1) {
-                this.ui.addMessage('You ate a green apple');
+                this._ui.addMessage('You ate a green apple');
             }
             if (this.greenapples == 10) {
-                this.ui.addMessage('You\'ve eaten a few apples, congratulations.  You are a true master of the apple eating arts (no achievment)');
+                this._ui.addMessage('You\'ve eaten a few apples, congratulations.  You are a true master of the apple eating arts (no achievment)');
             }
 
-            this.ui.updateStat('greenapples', this.greenapples);
+            this._ui.updateStat('greenapples', this.greenapples);
 
             return true;
         } else {
@@ -61,13 +61,13 @@ export function SnakeGame(ui) {
             if (this.movessincelastfood % 100 == 0) {
                 this.hunger++;
                 if (this.hunger == 1) {
-                    this.ui.addMessage('You are hungry');
+                    this._ui.addMessage('You are hungry');
                 }
                 if (this.hunger == 5) {
-                    this.ui.addMessage('You are very hungry');
+                    this._ui.addMessage('You are very hungry');
                 }
 
-                this.ui.updateStat('hunger', this.hunger);
+                this._ui.updateStat('hunger', this.hunger);
             }
             return false;
         }
@@ -90,16 +90,16 @@ export function SnakeGame(ui) {
 
     this.addAchievment = function(message) {
         this.achievements++
-        this.ui.addAchievment(message);
+        this._ui.addAchievment(message);
     };
 
     this.incrementDeaths = function() {
         this.deaths++;
         if (this.deaths == 1) {
-            this.ui.addMessage('You died');
+            this._ui.addMessage('You died');
         }
         if (this.deaths == 5) {
-            this.ui.addMessage('You died 5 times.  It would be an achievement if it wasn\'t so sad');
+            this._ui.addMessage('You died 5 times.  It would be an achievement if it wasn\'t so sad');
         }
         if (this.deaths == 20) {
             this.addAchievment('Respawn Wonder!  Death seems to be a common theme for you');
@@ -108,7 +108,7 @@ export function SnakeGame(ui) {
             this.addAchievment('So Much Respawn!  You are a true master of the art of dying');
         }
 
-        this.ui.updateStat('deathcount', this.deaths);
+        this._ui.updateStat('deathcount', this.deaths);
     };
 
     this.updateGameState = function() {
@@ -133,12 +133,12 @@ export function SnakeGame(ui) {
         if (this.direction.x !== 0 || this.direction.y !== 0) {
 
             this.totalsteps++;
-            this.ui.updateStat('totalsteps', this.totalsteps);
+            this._ui.updateStat('totalsteps', this.totalsteps);
         }
 
         if (this.size > this.maxsize) {
             this.maxsize = this.size;
-            this.ui.updateStat('maxsize', this.maxsize);
+            this._ui.updateStat('maxsize', this.maxsize);
 
             // TODO move this to the UI
             if (this.maxsize % 5 === 0) {
@@ -195,7 +195,7 @@ export function SnakeGame(ui) {
             if (!that.gameover) {
                 that.updateGameState();
             }
-            that.ui.draw();
+            that._ui.draw();
         }, msPerFrame);
     };
 

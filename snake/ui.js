@@ -2,18 +2,32 @@
 
 export function UI() {
 
-    this.canvas = document.getElementById('canvas');
-    this.ctx = canvas.getContext('2d');
-    this.canvas.width = 500;
-    this.canvas.height = 500;
-    this.pixelSize = Math.min(this.canvas.width, this.canvas.height) / 25;
-    this.game = null;
+    this._canvas = document.getElementById('canvas');
+    this._ctx = canvas.getContext('2d');
+    this._canvas.width = 500;
+    this._canvas.height = 500;
+    this._pixelSize = Math.min(this._canvas.width, this._canvas.height) / 25;
+    this._game = null;
+    this.messages = [];
+    this.visibleFields = {};
 
     this.setGame = function(game) {
-        this.game = game;
+        this._game = game;
+    }
+
+    this.showSavedValues = function() {
+        for (let key in this.visibleFields) {
+            this.updateStat(key, this.visibleFields[key]);
+        }
+        // clear the messages
+        document.getElementById('messagelog').innerHTML = '';
+        for (let item of this.messages) {
+            this.addMessage(item.message, item.cssclass, false);
+        }
     }
 
     this.updateStat = function(statId, value) {
+        this.visibleFields[statId] = value;
         const element = document.getElementById(statId);
         element.innerText = value;
 
@@ -38,50 +52,56 @@ export function UI() {
 
 
     this.fillText = function(text, x, y) {
-        this.ctx.fillStyle = 'black';
-        this.ctx.fillText(text, x-2, y-2);
-        this.ctx.fillStyle = 'black';
-        this.ctx.fillText(text, x+2, y+2);
-        this.ctx.fillStyle = 'black';
-        this.ctx.fillText(text, x+2, y-2);
-        this.ctx.fillStyle = 'black';
-        this.ctx.fillText(text, x-2, y+2);
-        this.ctx.fillStyle = 'gray';
-        this.ctx.fillText(text, x, y);
+        this._ctx.fillStyle = 'black';
+        this._ctx.fillText(text, x-2, y-2);
+        this._ctx.fillStyle = 'black';
+        this._ctx.fillText(text, x+2, y+2);
+        this._ctx.fillStyle = 'black';
+        this._ctx.fillText(text, x+2, y-2);
+        this._ctx.fillStyle = 'black';
+        this._ctx.fillText(text, x-2, y+2);
+        this._ctx.fillStyle = 'gray';
+        this._ctx.fillText(text, x, y);
     };
 
     this.draw = function() {
         // clear the canvas
-        this.ctx.fillStyle = 'black';
-        this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+        this._ctx.fillStyle = 'black';
+        this._ctx.fillRect(0, 0, this._canvas.width, this._canvas.height);
 
         // Render snake
-        this.ctx.fillStyle = 'white';
-        for (let i = 0; i < this.game.snake.length; i++) {
-            this.ctx.fillRect(this.game.snake[i].x * this.pixelSize, this.game.snake[i].y * this.pixelSize, this.pixelSize, this.pixelSize);
+        this._ctx.fillStyle = 'white';
+        for (let i = 0; i < this._game.snake.length; i++) {
+            this._ctx.fillRect(this._game.snake[i].x * this._pixelSize, this._game.snake[i].y * this._pixelSize, this._pixelSize, this._pixelSize);
         }
 
         // Render food
-        if (this.game.food) {
-            this.ctx.fillStyle = 'green';
-            this.ctx.fillRect(this.game.food.x * this.pixelSize, this.game.food.y * this.pixelSize, this.pixelSize, this.pixelSize);
+        if (this._game.food) {
+            this._ctx.fillStyle = 'green';
+            this._ctx.fillRect(this._game.food.x * this._pixelSize, this._game.food.y * this._pixelSize, this._pixelSize, this._pixelSize);
         }
 
         // Render size
-        this.ctx.textAlign = 'left';
-        this.ctx.textBaseline = 'top';
-        this.ctx.fillStyle = 'lightgray';
+        this._ctx.textAlign = 'left';
+        this._ctx.textBaseline = 'top';
+        this._ctx.fillStyle = 'lightgray';
 
         // Render game over
-        if (this.game.gameover) {
-            this.ctx.font = '48px Arial';
+        if (this._game.gameover) {
+            this._ctx.font = '48px Arial';
             this.fillText('Dead Snake', 100, 100);
-            this.ctx.font = '24px Arial';
+            this._ctx.font = '24px Arial';
             this.fillText("press 'r' to respawn", 130, 150);
         }
     };
 
-    this.addMessage = function(message, cssclass=null) {
+    this.addMessage = function(message, cssclass=null, record=true) {
+        if (record) {
+            this.messages.unshift( {message:message, cssclass:cssclass} );
+            while (this.messages.length > 10) {
+                this.messages.pop();
+            }
+        }
         let span = document.createElement("span");
         span.innerHTML = message;
         if (cssclass != null) span.classList.add(cssclass)
@@ -99,7 +119,7 @@ export function UI() {
 
         // update the count
         document.getElementById('achievements').parentElement.classList.remove('hidden');
-        document.getElementById('achievements').innerText = this.game.achievements;
+        document.getElementById('achievements').innerText = this._game.achievements;
         this.shakeId('achievements');
     };
 
