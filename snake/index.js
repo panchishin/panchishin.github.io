@@ -35,10 +35,12 @@ document.addEventListener('DOMContentLoaded', function () {
     loadFromLocalStorage('snakegame', game);
     loadFromLocalStorage('snakeui', ui);
 
-    let saveInterval = setInterval(() => {
+    function saveGame() {
         saveToLocalStorage('snakegame', game);
         saveToLocalStorage('snakeui', ui);
-    }, 5000);
+    }
+
+    let saveInterval = setInterval(() => saveGame, 5000);
 
     function introComplete() {
         // find element named 'welcome' and delete it
@@ -92,10 +94,9 @@ document.addEventListener('DOMContentLoaded', function () {
             ui.showSavedValues();
             game.stopFPS();
             game = new SnakeGame(ui);
-            game['introComplete'] = true;
-            
+            game['introComplete'] = true;            
             game.initializeGameState();
-
+            saveGame();
             introComplete();
         });
     }
