@@ -55,9 +55,8 @@ export function SnakeGame(ui) {
                 this.ui.addMessage('You\'ve eaten a few apples, congratulations.  You are a true master of the apple eating arts (no achievment)');
             }
 
-            // TODO change this to a callback notification for the UI to handle
-            document.getElementById('greenapples').innerText = this.greenapples;
-            if (this.greenapples > 5) document.getElementById('greenapples').parentElement.classList.remove('hidden');
+            this.ui.updateStat('greenapples', this.greenapples);
+            // TODO move this to the UI
             if (this.greenapples % 10 == 0) this.ui.shakeId('greenapples');
 
             return true;
@@ -72,10 +71,7 @@ export function SnakeGame(ui) {
                     this.ui.addMessage('You are very hungry');
                 }
 
-                // TODO change this to a callback notification for the UI to handle
-                document.getElementById('hunger').innerText = this.hunger;
-                document.getElementById('hunger').parentElement.classList.remove('hidden');
-                this.ui.shakeId('hunger');
+                this.ui.updateStat('hunger', this.hunger).shakeId('hunger');
             }
             return false;
         }
@@ -117,11 +113,7 @@ export function SnakeGame(ui) {
             this.addAchievment('So Much Respawn!  You are a true master of the art of dying');
         }
 
-        // TODO change this to a callback notification for the UI to handle
-        document.getElementById('deathcount').innerText = this.deaths;
-        // remove the class `hidden` from the element
-        document.getElementById('deathcount').parentElement.classList.remove('hidden');
-        this.ui.shakeId('deathcount');
+        this.ui.updateStat('deathcount', this.deaths).shakeId('deathcount');
     };
 
     // Function to update the game state
@@ -150,16 +142,19 @@ export function SnakeGame(ui) {
     this.updateStepsAndSize = function() {
         if (this.direction.x !== 0 || this.direction.y !== 0) {
 
-            // TODO change this to a callback notification for the UI to handle
-            document.getElementById('totalsteps').innerText = this.totalsteps++;
+            this.totalsteps++;
+            this.ui.updateStat('totalsteps', this.totalsteps);
+
+            // TODO move this to the UI
             if (this.totalsteps == 100) document.getElementById('totalsteps').parentElement.classList.remove('hidden');
             if (this.totalsteps % 100 === 0) this.ui.shakeId('totalsteps')
         }
 
         if (this.size > this.maxsize) {
             this.maxsize = this.size;
-            // TODO change this to a callback notification for the UI to handle
-            document.getElementById('maxsize').innerText = this.maxsize;
+            this.ui.updateStat('maxsize', this.maxsize);
+
+            // TODO move this to the UI
             if (this.maxsize % 5 === 0) {
                 document.getElementById('maxsize').parentElement.classList.remove('hidden');
                 this.ui.shakeId('maxsize')

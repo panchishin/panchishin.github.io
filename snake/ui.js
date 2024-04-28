@@ -13,6 +13,12 @@ export function UI() {
         this.game = game;
     }
 
+    this.updateStat = function(statId, value) {
+        document.getElementById(statId).innerText = value;
+        document.getElementById(statId).parentElement.classList.remove('hidden');
+        return this;
+    };
+
     this.shakeId = function(elementid) {
         let element = document.getElementById(elementid).parentElement;
         this.shakeElement(element);
