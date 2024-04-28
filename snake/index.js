@@ -49,43 +49,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     let saveInterval = setInterval(saveGame, 30000);
 
-    function introComplete() {
-        // find element named 'welcome' and delete it
-        document.getElementById('welcome').remove();
-
-        // hide all the stats
-        document.getElementById('stats').querySelectorAll('div').forEach((element) => {
-            element.classList.add('hidden');
-        });
-
-        // remove all elements in the element with id 'messagelog'
-        document.getElementById('messagelog').innerHTML = '';
-
-        document.querySelectorAll('fieldset').forEach((element) => {
-            element.classList.remove('hidden');
-        });
-
-        ui.showSavedValues();
-        game.updateFPS();
-
-    }
-
-    // Add event listener for key presses
-    document.addEventListener('keydown', (event)=>{game.handleKeyPress(event)});
-
-    document.getElementById('hardreset').addEventListener('click', () => {
-        clearInterval(saveInterval);
-        localStorage.clear();
-        window.location.reload();
-    });
-
-    document.getElementById('manualsave').addEventListener('click', () => {
-        saveGame();
-    });
-
-    if (game['introComplete']) {
-        introComplete();
-    } else {
+    function intro() {
         const hiddenElements = Array.from(document.getElementById('welcome').querySelectorAll('.hidden'));
         // every 5 seconds remove the hidden class from the next element in the list
         ui.shakeElement(hiddenElements[0]);
@@ -109,5 +73,43 @@ document.addEventListener('DOMContentLoaded', function () {
             saveGame();
             introComplete();
         });
+    };
+
+    function introComplete() {
+        // find element named 'welcome' and delete it
+        document.getElementById('welcome').remove();
+
+        // hide all the stats
+        document.getElementById('stats').querySelectorAll('div').forEach((element) => {
+            element.classList.add('hidden');
+        });
+
+        game.updateFPS();
+        ui.showSavedValues();
+
+        document.querySelectorAll('fieldset').forEach((element) => {
+            element.classList.remove('hidden');
+        });
+
+
+    }
+
+    // Add event listener for key presses
+    document.addEventListener('keydown', (event)=>{game.handleKeyPress(event)});
+
+    document.getElementById('hardreset').addEventListener('click', () => {
+        clearInterval(saveInterval);
+        localStorage.clear();
+        window.location.reload();
+    });
+
+    document.getElementById('manualsave').addEventListener('click', () => {
+        saveGame();
+    });
+
+    if (game['introComplete']) {
+        introComplete();
+    } else {
+        intro();
     }
 });
