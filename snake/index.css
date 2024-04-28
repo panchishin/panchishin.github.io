@@ -41,6 +41,7 @@ body {
 }
 .col.primary {
     width: calc(min(500px,100% - 1rem));
+    height: calc(min(500px,100% - 1rem));
 }
 .col.secondary {
     width: calc(100% - min(500px,100% - 1rem));
@@ -69,16 +70,15 @@ body {
     display: inline-block;
 }
 
+
 /*-----------------------------------------------
             responsive sizing of columns 
 -----------------------------------------------*/
 
-@media only screen and (min-width: 901px) and (max-width: 1100px) {
-    div.col {width: 50%;}
-}
 
-@media only screen and (max-width: 900px) {
-    div.col, div.col.primary, div.col.secondary {width: 100%;}
+@media only screen and (max-width: 1100px) {
+    div.col.primary {width: calc(min(500px, 100%-1px));}
+    div.col, div.col.secondary {width: 100%;}
     div.col.primary {-webkit-order:1;}
     div.col.secondary {-webkit-order:2;}    
     div.col.primary {order:1;}
@@ -146,7 +146,7 @@ fieldset > legend {
 #messagelog div:nth-child(n+10) { opacity:65%; }
 #messagelog div:nth-child(n+13) { opacity:35%; }
 
-.achievements { color: gold; }
+.achievements { color: goldenrod; }
 
 
 .hidden {
