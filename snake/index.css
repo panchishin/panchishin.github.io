@@ -12,7 +12,7 @@ canvas {
     height: calc(100% - 1rem);
     width: calc(100% - 1rem);
     border-width: 2px;
-    border-color: white;
+    border-color: gray;
     border-style: solid;
 }
 
@@ -71,7 +71,7 @@ fieldset {
     margin: .5rem;
     /* border-width: .15rem 0 0 0; */
     border-style: solid;
-    border-color: #ddd;
+    border-color: gray
     /* min-width: calc(100% - 10px);
     max-width: calc(100% - 10px); */
 }
@@ -83,12 +83,12 @@ fieldset.hidden {
 fieldset.mapview { text-align: -webkit-center; }
 
 fieldset > legend {
+    color: gray;
     font-size: larger;
-    width: inherit;
     padding: 0px .5rem;
     margin-bottom: 0px;
     margin-left: 0rem;
-    text-align: center;
+    text-align: left;
 }
 
 
@@ -139,10 +139,11 @@ fieldset > legend {
             clicking actions 
 -----------------------------------------------*/
 button, .button {
-    background-color: white;
-    color: black;
+    background-color: black;
+    color: white;
     border: none;
     width: 12rem;
+    height: 2.5rem;
     padding: 0.1rem;
     border-radius: 3px;
     border-style: solid;
