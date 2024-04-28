@@ -8,6 +8,7 @@
 
 canvas {
     margin: .5rem;
+    margin-top: 1.3rem;
     display: block;
     height: calc(100% - 1rem);
     width: calc(100% - 1rem);
