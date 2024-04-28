@@ -56,8 +56,6 @@ export function SnakeGame(ui) {
             }
 
             this.ui.updateStat('greenapples', this.greenapples);
-            // TODO move this to the UI
-            if (this.greenapples % 10 == 0) this.ui.shakeId('greenapples');
 
             return true;
         } else {
@@ -71,7 +69,7 @@ export function SnakeGame(ui) {
                     this.ui.addMessage('You are very hungry');
                 }
 
-                this.ui.updateStat('hunger', this.hunger).shakeId('hunger');
+                this.ui.updateStat('hunger', this.hunger);
             }
             return false;
         }
@@ -113,7 +111,7 @@ export function SnakeGame(ui) {
             this.addAchievment('So Much Respawn!  You are a true master of the art of dying');
         }
 
-        this.ui.updateStat('deathcount', this.deaths).shakeId('deathcount');
+        this.ui.updateStat('deathcount', this.deaths);
     };
 
     // Function to update the game state
@@ -143,10 +141,6 @@ export function SnakeGame(ui) {
 
             this.totalsteps++;
             this.ui.updateStat('totalsteps', this.totalsteps);
-
-            // TODO move this to the UI
-            if (this.totalsteps == 100) document.getElementById('totalsteps').parentElement.classList.remove('hidden');
-            if (this.totalsteps % 100 === 0) this.ui.shakeId('totalsteps')
         }
 
         if (this.size > this.maxsize) {
@@ -156,7 +150,6 @@ export function SnakeGame(ui) {
             // TODO move this to the UI
             if (this.maxsize % 5 === 0) {
                 document.getElementById('maxsize').parentElement.classList.remove('hidden');
-                this.ui.shakeId('maxsize')
                 this.addAchievment("You have reached a max size of " + this.maxsize + "!");
             }
         }

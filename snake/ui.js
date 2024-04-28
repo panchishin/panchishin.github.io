@@ -14,8 +14,13 @@ export function UI() {
     }
 
     this.updateStat = function(statId, value) {
-        document.getElementById(statId).innerText = value;
-        document.getElementById(statId).parentElement.classList.remove('hidden');
+        const element = document.getElementById(statId);
+        element.innerText = value;
+
+        const powerOfTwo = value && (value & (value - 1)) === 0;
+        if ((value < 32) || powerOfTwo) {
+            this.shakeElement(element.parentElement);
+        }
         return this;
     };
 
@@ -84,7 +89,7 @@ export function UI() {
         div.appendChild(span)
         let log = document.getElementById("messagelog");
         log.insertBefore(div, log.firstChild);
-        if (document.getElementById("messagelog").children.length > 15) {
+        if (document.getElementById("messagelog").children.length > 10) {
             document.getElementById("messagelog").lastChild.remove();
         }
     };
