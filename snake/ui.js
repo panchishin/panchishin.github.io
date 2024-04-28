@@ -17,7 +17,9 @@ export function UI() {
 
     this.showSavedValues = function() {
         for (let key in this.visibleFields) {
-            this.updateStat(key, this.visibleFields[key]);
+            const element = document.getElementById(key);
+            element.innerText = this.visibleFields[key];
+            element.parentElement.classList.remove('hidden');
         }
         // clear the messages
         document.getElementById('messagelog').innerHTML = '';
