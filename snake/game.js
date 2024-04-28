@@ -33,7 +33,6 @@ export function SnakeGame(ui) {
         this.food = { x: x, y: y };
     };
 
-    // Function to move the snake
     this.moveSnake = function() {
         let newX = this.snake[0].x + this.direction.x;
         let newY = this.snake[0].y + this.direction.y;
@@ -95,7 +94,6 @@ export function SnakeGame(ui) {
         this.ui.addAchievment(message);
     };
 
-    // Increment deaths
     this.incrementDeaths = function() {
         this.deaths++;
         if (this.deaths == 1) {
@@ -114,7 +112,6 @@ export function SnakeGame(ui) {
         this.ui.updateStat('deathcount', this.deaths);
     };
 
-    // Function to update the game state
     this.updateGameState = function() {
         const { newX, newY } = this.moveSnake();
 
@@ -133,9 +130,6 @@ export function SnakeGame(ui) {
         }
     };
 
-
-
-    // Function to update steps and size
     this.updateStepsAndSize = function() {
         if (this.direction.x !== 0 || this.direction.y !== 0) {
 
@@ -171,7 +165,6 @@ export function SnakeGame(ui) {
         this.resetStartTime();
     };
 
-    // Function to handle key presses
     this.handleKeyPress = function(event) {
         switch (event.key) {
             case 'w': case 'ArrowUp':
