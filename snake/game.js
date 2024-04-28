@@ -132,7 +132,6 @@ export function SnakeGame(ui) {
             return;
         } else {
             this.updateStepsAndSize();
-            this.showSecondaryElements();
         }
     };
 
@@ -160,15 +159,6 @@ export function SnakeGame(ui) {
                 this.ui.shakeId('maxsize')
                 this.addAchievment("You have reached a max size of " + this.maxsize + "!");
             }
-        }
-    };
-
-    // Function to show secondary elements
-    this.showSecondaryElements = function() {
-        if (this.size >= 4) {
-            document.querySelectorAll('.secondary').forEach((element) => {
-                element.classList.remove('hidden');
-            });
         }
     };
 
