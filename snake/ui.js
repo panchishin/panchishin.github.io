@@ -95,7 +95,7 @@ export function UI() {
     };
 
     this.addAchievment = function(message) {
-        this.addMessage("Achievement : " + message, "achievements");
+        this.addMessage("Achievement :&nbsp;" + message, "achievements");
 
         // update the count
         document.getElementById('achievements').parentElement.classList.remove('hidden');
