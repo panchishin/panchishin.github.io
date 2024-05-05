@@ -54,6 +54,7 @@ document.addEventListener('DOMContentLoaded', function () {
         // every 5 seconds remove the hidden class from the next element in the list
         ui.shakeElement(hiddenElements[0]);
         hiddenElements.shift();
+        const uselessDelay = document.location.href == 'http://localhost:8080/' ? 10000 : 100;
         let uselessTextBoxInterval = setInterval(() => {
             if (hiddenElements.length > 0) {
                 ui.shakeElement(hiddenElements[0]);
@@ -61,7 +62,7 @@ document.addEventListener('DOMContentLoaded', function () {
             } else {
                 clearInterval(uselessTextBoxInterval);
             }
-        }, 10000);
+        }, uselessDelay);
         
         document.getElementById('start').addEventListener('click', () => {
             ui = new UI();
