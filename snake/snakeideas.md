@@ -72,3 +72,14 @@ const GAME_WIDTH = 1280;
 const GAME_HEIGHT = 720;
 is what i normally go with
 crazygames has a fixed size, don't rmember what it is
+
+
+with Justin
+I haven't coded that yet.  The first upgrades will be things like 
+    auto respawn
+    auto turn right before death
+    auto turn left before death
+    prevent death by going backwards
+    faster start time
+    slower time speedup
+    add red apples

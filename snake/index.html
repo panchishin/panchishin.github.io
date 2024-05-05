@@ -12,10 +12,6 @@
 
     <div class="page">
 
-        <div class="col primary">
-            <canvas id="canvas"></canvas>
-        </div>
-
         <div class="col secondary">
             <fieldset id="welcome" class="shakeable">
                 <legend>Useless Text Box</legend>
@@ -26,30 +22,39 @@
                 <div class="hidden"><span>Move, eat, don't hit yourself or the walls.</span></div>
                 <div class="hidden"><span>Or maybe you want more?</span></div>
                 <div class="hidden"><span>How about tracking some numbers so you can see them go up?</span></div>
-                <div class="hidden"><span>Click => <button id="start">Yes</button></span></div>
+                <div class="hidden"><span>Click =></span><button id="start">Yes</button></div>
             </fieldset>
             <fieldset class="hidden stats shakeable" id="stats">
                 <legend>Stats</legend>
-                <div class="hidden"><span>Total movement</span><span id="totalsteps">0</span></div>
-                <div class="hidden"><span>Max Size</span><span id="maxsize">0</span></div>
-                <div class="hidden"><span>Green Apples Points</span><span id="greenapples">0</span></div>
-                <div class="hidden"><span>Death Points</span><span id="deathcount">0</span></div>
-                <div class="hidden"><span>Hunger Points</span><span id="hunger">0</span></div>
-                <div class="hidden"><span>Achievement Points</span><span id="achievements">0</span></div>
+                <div class="hidden achievements"><span>Total movement</span><span id="totalsteps">0</span></div>
+                <div class="hidden achievements"><span>Max Size</span><span id="maxsize">0</span></div>
+                <div class="hidden achievements"><span>Achievements</span><span id="achievements">0</span></div>
+                <div class="hidden"><span>Green Apples</span><span id="greenapples">0</span></div>
+                <div class="hidden"><span>Death</span><span id="deathcount">0</span></div>
+                <div class="hidden"><span>Hunger</span><span id="hunger">0</span></div>
             </fieldset>
             <fieldset class="hidden" id="messages">
                 <legend>Messages</legend>
                 <div id="messagelog">
                 </div>
             </fieldset>
+        </div>
+
+        <div class="col primary">
+            <canvas id="canvas"></canvas>
+        </div>
+
+
+        <div class="col secondary">
             <fieldset class="hidden">
                 <legend>Controls</legend>
                 <div>
                     <button id="manualsave">Manual Save</button>
                     <button id="hardreset">Hard Reset</button>
                 </div>
-                </fieldset>
+            </fieldset>
         </div>
+
     </div>
 
     <div id="autosaved">Auto Saved</div>

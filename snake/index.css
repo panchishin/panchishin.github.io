@@ -8,7 +8,7 @@
 
 canvas {
     margin: .5rem;
-    margin-top: 1.3rem;
+    margin-top: 1.1rem;
     display: block;
     height: calc(100% - 1rem);
     width: calc(100% - 1rem);
@@ -18,21 +18,28 @@ canvas {
 }
 
 body {
-    font-size : 18px;
-    font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-    /* margin : 1rem; */
-    background-color: black;
+    background-color: #222;
     color : #ccc;
-    line-height: 1.3;
+    line-height: normal;
     height: 100%;
 }
 
-* { box-sizing: border-box; }
+span {
+    vertical-align: top;
+}
+
+* { 
+    box-sizing: border-box;
+    vertical-align: top;
+
+    font-size : 14px;
+    font-family: "Lato", -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
+
+}
 
 .page {
     display: flex;
     flex-wrap: wrap;
-    justify-content: center;
 }
 
 .col {
@@ -44,7 +51,7 @@ body {
     height: calc(min(500px,100% - 1rem));
 }
 .col.secondary {
-    width: calc(100% - min(500px,100% - 1rem));
+    width: 30rem;
 }
 
 #welcome {
@@ -89,7 +96,7 @@ body {
 fieldset {
     /* padding: 0rem 0.75rem 0rem 1rem; */
     margin: .5rem;
-    /* border-width: .15rem 0 0 0; */
+    border-width: .15rem 0 0 0;
     border-style: solid;
     border-color: gray
     /* min-width: calc(100% - 10px);
@@ -117,14 +124,14 @@ fieldset > legend {
 -----------------------------------------------*/
 
 .stats div>span:nth-child(1) {
-    min-width: 20rem;
-    width: 20rem;
+    min-width: 15rem;
+    width: 15rem;
     display: inline-block;
 }
 
 .stats div>span:nth-child(2) {
-    min-width: 4rem;
-    width: 4rem;
+    min-width: 6rem;
+    width: 6rem;
     text-align: right;
     display: inline-block;
     font-family: monospace;
