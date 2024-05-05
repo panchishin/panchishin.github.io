@@ -61,7 +61,7 @@ document.addEventListener('DOMContentLoaded', function () {
             } else {
                 clearInterval(uselessTextBoxInterval);
             }
-        }, 10000);
+        }, 100);
         
         document.getElementById('start').addEventListener('click', () => {
             ui = new UI();

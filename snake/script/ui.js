@@ -10,6 +10,7 @@ export function UI() {
     this._game = null;
     this.messages = [];
     this.visibleFields = {};
+    this.maxMessages = 20;
 
     this.setGame = function(game) {
         this._game = game;
@@ -111,7 +112,7 @@ export function UI() {
         div.appendChild(span)
         let log = document.getElementById("messagelog");
         log.insertBefore(div, log.firstChild);
-        if (document.getElementById("messagelog").children.length > 10) {
+        if (document.getElementById("messagelog").children.length > this.maxMessages) {
             document.getElementById("messagelog").lastChild.remove();
         }
     };
