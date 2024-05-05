@@ -54,6 +54,28 @@ span {
     width: 30rem;
 }
 
+fieldset {
+    /* padding: 0rem 0.75rem 0rem 1rem; */
+    margin: .5rem;
+    border-width: .15rem 0 0 0;
+    border-style: solid;
+    border-color: gray;
+    min-height: 15em;
+}
+
+fieldset.hidden { border-width: 0 0 0 0; }
+
+fieldset.mapview { text-align: -webkit-center; }
+
+fieldset > legend {
+    color: gray;
+    font-size: larger;
+    padding: 0px .5rem;
+    margin-bottom: 0px;
+    margin-left: 0rem;
+    text-align: left;
+}
+
 #welcome {
     height: calc(100% - 1rem);
 }
@@ -90,32 +112,6 @@ span {
     div.col.secondary {-webkit-order:2;}    
     div.col.primary {order:1;}
     div.col.secondary {order:2;}
-}
-
-
-fieldset {
-    /* padding: 0rem 0.75rem 0rem 1rem; */
-    margin: .5rem;
-    border-width: .15rem 0 0 0;
-    border-style: solid;
-    border-color: gray
-    /* min-width: calc(100% - 10px);
-    max-width: calc(100% - 10px); */
-}
-
-fieldset.hidden {
-    border-width: 0 0 0 0;
-}
-
-fieldset.mapview { text-align: -webkit-center; }
-
-fieldset > legend {
-    color: gray;
-    font-size: larger;
-    padding: 0px .5rem;
-    margin-bottom: 0px;
-    margin-left: 0rem;
-    text-align: left;
 }
 
 
