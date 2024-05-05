@@ -224,7 +224,7 @@ button:hover, .button:hover {
 
 @keyframes slidein {
     0% {right: -300px;}
-    5% {right: 0;}
-    95% {right: 0;}
+    15% {right: 0;}
+    85% {right: 0;}
     100% {right: -300px;}
 }
