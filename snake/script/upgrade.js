@@ -49,8 +49,10 @@ var fullUpgradeList = {
     }
 }
 
+let order = 0;
 for (let upgrade in fullUpgradeList) {
     fullUpgradeList[upgrade].id = upgrade;
+    fullUpgradeList[upgrade].order = order;
 }
 
 
@@ -60,6 +62,7 @@ export function Upgrade(game, ui) {
     ui.setUpgrade(this);
 
     this.applied = {};
+    this.shown = {};
 
     this.canApplyUpgrade = function(upgradeId) {
         let canUpgrade = 1.0;
@@ -98,8 +101,12 @@ export function Upgrade(game, ui) {
         let available = [];
         for (let upgradeId in fullUpgradeList) {
             let upgrade = fullUpgradeList[upgradeId];
-            if (!!!this.applied[upgradeId] && (this.canApplyUpgrade(upgradeId) > 0.5)) {
-                available.push(upgrade);
+            if (!this.applied[upgradeId]) {
+                let canUpgrade = this.canApplyUpgrade(upgradeId) >= 0.5;
+                if (!!this.shown[upgradeId] || canUpgrade) {
+                    available.push(upgrade);
+                    this.shown[upgradeId] = true;
+                }
             }
         }
         return available;
