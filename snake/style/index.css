@@ -12,7 +12,7 @@ canvas {
     display: block;
     height: calc(100% - 1rem);
     width: calc(100% - 1rem);
-    border-width: 2px;
+    border-width: 1px;
     border-color: gray;
     border-style: solid;
 }
@@ -57,7 +57,7 @@ span {
 fieldset {
     /* padding: 0rem 0.75rem 0rem 1rem; */
     margin: .5rem;
-    border-width: .15rem 0 0 0;
+    border-width: 1px 0 0 0;
     border-style: solid;
     border-color: gray;
     min-height: 15em;
@@ -74,6 +74,18 @@ fieldset > legend {
     margin-bottom: 0px;
     margin-left: 0rem;
     text-align: left;
+}
+
+#info-box {
+    position: absolute;
+    background-color: black;
+    border: 1px solid gray;
+    padding: 10px;
+    display: none;
+}
+
+#info-box.show {
+    display: block;
 }
 
 #welcome {
@@ -161,7 +173,7 @@ fieldset > legend {
 /*-----------------------------------------------
             clicking actions 
 -----------------------------------------------*/
-button, .button {
+button {
     background-color: black;
     color: white;
     border: none;
@@ -171,10 +183,16 @@ button, .button {
     border-radius: 3px;
     border-style: solid;
     border-color: gray;
-    border-width: 3px;
+    border-width: 1px;
 }
+
+/* this is something weird that I don't understand why it is just in upgrades */
+#upgrades button {
+    margin: 0.15rem;
+}
+
 /* we want a css effect when the button is pressed */
-button:active, .button:active {
+button:active {
     /* make the button appear to be pressed by offsetting it*/
     position:relative;
     top: 5px;
@@ -182,9 +200,17 @@ button:active, .button:active {
 }
 
 /* we want a css effect when the button is pressed */
-button:hover, .button:hover {
+button:hover {
     background-color: darkgray;
     color: white
+}
+
+button[disabled] {
+    color: gray;
+}
+
+p.insufficient {
+    color: red;
 }
 
 /*-----------------------------------------------

@@ -2,7 +2,7 @@
 
 import { SnakeGame } from './game.js';
 import { UI } from './ui.js';
-
+import { Upgrade } from './upgrade.js';
 
 function loadFromLocalStorage(saveLocation, obj) {
     if (localStorage.getItem(saveLocation)) {
@@ -28,18 +28,28 @@ function saveToLocalStorage(saveLocation, obj) {
 // on document ready
 document.addEventListener('DOMContentLoaded', function () {
 
-    let ui = new UI();
-    let game = new SnakeGame(ui);
+    let ui;
+    let game;
+    let upgrade;
+
+    function resetGame(){
+        ui = new UI();
+        game = new SnakeGame(ui);
+        upgrade = new Upgrade(game, ui);
+    };
+    resetGame();
 
     // Initialize the game
     game.initializeGameState();
 
     loadFromLocalStorage('snakegame', game);
     loadFromLocalStorage('snakeui', ui);
+    loadFromLocalStorage('snakeupgrade', upgrade);
 
     function saveGame() {
         saveToLocalStorage('snakegame', game);
         saveToLocalStorage('snakeui', ui);
+        saveToLocalStorage('snakeupgrade', upgrade);
 
         const element = document.getElementById('autosaved');
         element.classList.remove('slidein');
@@ -66,10 +76,9 @@ document.addEventListener('DOMContentLoaded', function () {
         }, uselessDelay);
         
         document.getElementById('start').addEventListener('click', () => {
-            ui = new UI();
-            ui.showSavedValues();
             game.stopFPS();
-            game = new SnakeGame(ui);
+            resetGame();
+            ui.showSavedValues();
             game['introComplete'] = true;            
             game.initializeGameState();
             saveGame();
@@ -93,6 +102,8 @@ document.addEventListener('DOMContentLoaded', function () {
             element.classList.remove('hidden');
         });
 
+        setInterval(() => { ui.updateUpgrades() }, 250);
+        ui.updateUpgrades();
 
     }
 

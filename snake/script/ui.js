@@ -16,6 +16,10 @@ export function UI() {
         this._game = game;
     }
 
+    this.setUpgrade = function(upgrade) {
+        this._upgrade = upgrade;
+    }
+
     this.showSavedValues = function() {
         for (let key in this.visibleFields) {
             const element = document.getElementById(key);
@@ -126,4 +130,72 @@ export function UI() {
         this.shakeId('achievements');
     };
 
+    this.updateUpgrades = function() {
+        let availableUpgradeList = this._upgrade.listAvailableUpgrades();
+
+        // get the upgrade list
+        let displayedUpgradeList = document.getElementById('upgrades');
+        // go throug hte displayedUpgradeList and remove the children that are not in the availableUpgradeList
+        for (let i = 0; i < displayedUpgradeList.children.length; i++) {
+            let upgrade = displayedUpgradeList.children[i];
+            let upgradeId = upgrade.getAttribute('upgradeId');
+            if (!availableUpgradeList.find((upgrade) => upgrade.id === upgradeId)) {
+                upgrade.remove();
+            }
+        }
+        // create a list of all the ids in the displayedUpgradeList
+        let displayedUpgradeListIds = Array.from(displayedUpgradeList.children).map((element) => element.getAttribute('upgradeId'));
+        // create a list of availableUpgradeList where the id is not in displayedUpgradeListIds
+        let missingUpgradeList = availableUpgradeList.filter((upgrade) => !displayedUpgradeListIds.includes(upgrade.id));
+
+        const infoBox = document.getElementById("info-box");
+
+        // add the new upgrades to the list
+        for (let upgrade of missingUpgradeList) {
+            let upgradeElement = document.createElement('button');
+            upgradeElement.setAttribute('upgradeId', upgrade.id);
+            upgradeElement.innerText = upgrade.name;
+
+            upgradeElement.disabled = (1.0 != this._upgrade.canApplyUpgrade(upgrade.id))
+
+            upgradeElement.addEventListener('click', () => {
+                if (this._upgrade.applyUpgrade(upgrade.id)) {
+                    upgradeElement.remove();
+                    infoBox.classList.remove("show");
+                }
+            });
+            displayedUpgradeList.appendChild(upgradeElement);
+
+
+            let element = document.querySelector("#upgrades button[upgradeId=" + upgrade.id + "]");
+            let that = this;
+            element.addEventListener("mouseover", () => {
+                infoBox.innerHTML = `<p>${upgrade.description}</p>`;
+                for (let resource in upgrade.cost) {
+                    if (that._game[resource] < upgrade.cost[resource]) {
+                        infoBox.innerHTML += `\n<p class="insufficient">${resource}: ${upgrade.cost[resource]}</p>`;
+                    } else {
+                        infoBox.innerHTML += `\n<p>${resource}: ${upgrade.cost[resource]}</p>`;
+                    }
+                }
+                infoBox.classList.add("show");
+                infoBox.style.top = `${element.offsetTop + element.offsetHeight}px`;
+                infoBox.style.left = `${element.offsetLeft}px`;
+            });
+
+            element.addEventListener("mouseout", () => {
+                infoBox.classList.remove("show");
+
+            });
+        }
+
+        for (let upgrade of availableUpgradeList) {
+            try {
+                let element = document.querySelector("#upgrades button[upgradeId=" + upgrade.id + "]");
+                element.disabled = (1.0 != upgrade.canUpgrade);
+            } catch (e) {
+                console.log("Could not find " + upgrade.id);
+            }
+        }
+    }
 }
