@@ -1,52 +1,64 @@
 'use strict';
 
+function speedUpgrade(game) {
+    game.speedstart *= 0.75;
+    game.updateFPS();
+}
+
+function steadyUpgrade(game) {
+    game.speedscaling = ( game.speedscaling - 1 ) * 0.5 + 1;
+    game.updateFPS();
+}
+
 var fullUpgradeList = {
     'speed1' : {
-        name: 'Speed 1',
+        name: 'Bigger and Faster',
         description: 'Increases the start speed of snake',
         cost: {
-            maxsize: 20
+            maxsize: 20,
         },
-        applyEffect: (game) => {
-            game.speedstart *= 0.75;
-            game.updateFPS();
-        }
+        applyEffect: speedUpgrade
     },
     'steady1' : {
-        name: 'Steady 1',
+        name: 'Fearless of Death',
         description: 'Reduce the speed scaling of snake',
         cost: {
-            maxsize: 10,
+            deaths: 5,
         },
-        applyEffect: (game) => {
-            game.speedscaling = ( game.speedscaling - 1 ) * 0.5 + 1;
-            game.updateFPS();
-        }
+        applyEffect: steadyUpgrade
     },
     'speed2' : {
-        name: 'Speed 2',
+        name: 'Fed and Faster',
         description: 'Increases the start speed of snake',
         cost: {
-            greenapples: 10,
-            deaths: 5,
+            greenapples: 20,
         },
-        applyEffect: (game) => {
-            game.speedstart *= 0.75;
-            game.updateFPS();
-        }
+        applyEffect: speedUpgrade
     },
     'steady2' : {
-        name: 'Steady 2',
+        name: 'Fed and Steady',
         description: 'Reduce the speed scaling of snake',
         cost: {
             greenapples: 10,
-            deaths: 5,
         },
-        applyEffect: (game) => {
-            game.speedscaling = ( game.speedscaling - 1 ) * 0.5 + 1;
-            game.updateFPS();
-        }
-    }
+        applyEffect: steadyUpgrade
+    },
+    'speed3' : {
+        name: 'Hungry and Panicked',
+        description: 'Increases the start speed of snake',
+        cost: {
+            hunger: 10,
+        },
+        applyEffect: speedUpgrade
+    },
+    'steady4' : {
+        name: 'Mastery of Hunger',
+        description: 'Reduce the speed scaling of snake',
+        cost: {
+            hunger: 10,
+        },
+        applyEffect: steadyUpgrade
+    }    
 }
 
 let order = 0;
