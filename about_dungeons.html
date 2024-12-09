@@ -241,15 +241,6 @@
                     matchLocation = entityName.toLowerCase().indexOf(searchInput.toLowerCase());
                     score = 3; // Highest priority for exact name match
                 }
-                
-                // Check aliases
-                if (score === -1 && entityData.aliases) {
-                    const aliasMatch = entityData.aliases.find(alias => searchRegex.test(alias));
-                    if (aliasMatch) {
-                        matchLocation = aliasMatch.toLowerCase().indexOf(searchInput.toLowerCase());
-                        score = 2; // Second priority for alias match
-                    }
-                }
 
                 // Check description
                 if (score === -1 && searchRegex.test(entityData.description || '')) {
