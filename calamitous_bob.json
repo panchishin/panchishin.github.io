@@ -1,0 +1,1910 @@
+[
+ {
+  "chapter": 1,
+  "summary": "January 2013, Mopti airport, Mali. A French special forces corporal kicked a sleeping woman in armor. 'Wake up, Cinderella!' she said. The woman blinked awake and quickly prepared for action. 'Beardies downed a Gazelle near Konna; we need to blow it up,' the corporal instructed. The intruder checked their new host: magical talent present, attractive under layers of protection, surrounded by fit people. An armored transport arrived, and fit men and women loaded up, checking weapons.",
+  "chapter_entities": {
+   "Naskay": {
+    "type": "character",
+    "description": "A tall woman in the beige uniform of the French special forces who wakes up a reincarnated god named Viv."
+   },
+   "Viv": {
+    "type": "character",
+    "description": "Viv, A corporal in the French special forces."
+   },
+   "Mouq": {
+    "type": "character",
+    "description": "A character mentioned by Viv, possibly her superior or colleague in the French special forces."
+   },
+   "Konna": {
+    "type": "city",
+    "description": "A city where a Gazelle helicopter was downed according to the information gathered by Viv."
+   }
+  },
+  "all_entities": {
+   "Naskay": {
+    "type": "character",
+    "description": "A tall woman in the beige uniform of the French special forces who wakes up a reincarnated god named Viv."
+   },
+   "Viv": {
+    "type": "character",
+    "description": "Viv, a resilient corporal from the French special forces, finds herself in a perilous landscape of a once-thriving empire now overrun by deadly creatures. A survivor by nature, she must navigate this treacherous world to uncover its secrets and perhaps find a way home."
+   },
+   "Mouq": {
+    "type": "character",
+    "description": "A character mentioned by Viv, possibly her superior or colleague in the French special forces."
+   },
+   "Konna": {
+    "type": "city",
+    "description": "A city where a Gazelle helicopter was downed according to the information gathered by Viv."
+   },
+   "Necrach tentacular horror": {
+    "type": "monster",
+    "description": "An extremely dangerous undead creature that roams the dark city."
+   },
+   "Necrach City": {
+    "type": "city",
+    "description": "A city populated by dangerous creatures and remnants of a dead empire, where Viv finds herself."
+   },
+   "Black 11%": {
+    "type": "dungeon",
+    "description": "A dungeon or area with a specific mana distribution, though its exact nature is not detailed."
+   }
+  }
+ },
+ {
+  "chapter": 2,
+  "summary": "Viv found supplies under a tarp: pots, a shovel, sleeping bags, and dry travel rations. The city was populated by dangerous creatures, but she had discovered a potentially safe area. Night fell, bringing darkness without light. She inspected the surroundings, noting the presence of tentacular horrors and nightmarish legged beasts. Deciding to rest, she wrapped herself in a sleeping bag under the tarp, settling into the silence of the night.",
+  "chapter_entities": {
+   "Viv": {
+    "type": "character",
+    "description": "A survivor who finds herself in a dead empire with dangerous creatures."
+   },
+   "Necrach tentacular horror": {
+    "type": "monster",
+    "description": "An extremely dangerous undead creature that roams the dark city."
+   },
+   "Necrach City": {
+    "type": "city",
+    "description": "A city populated by dangerous creatures and remnants of a dead empire, where Viv finds herself."
+   },
+   "Black 11%": {
+    "type": "dungeon",
+    "description": "A dungeon or area with a specific mana distribution, though its exact nature is not detailed."
+   }
+  },
+  "all_entities": {
+   "Naskay": {
+    "type": "character",
+    "description": "A tall woman in the beige uniform of the French special forces who wakes up a reincarnated god named Viv."
+   },
+   "Viv": {
+    "type": "character",
+    "description": "Viv, a resilient corporal from the French special forces, finds herself in a perilous landscape of a once-thriving empire now overrun by deadly creatures. A survivor by nature, she must navigate this treacherous world to uncover its secrets and perhaps find a way home."
+   },
+   "Mouq": {
+    "type": "character",
+    "description": "A character mentioned by Viv, possibly her superior or colleague in the French special forces."
+   },
+   "Konna": {
+    "type": "city",
+    "description": "A city where a Gazelle helicopter was downed according to the information gathered by Viv."
+   },
+   "Necrach tentacular horror": {
+    "type": "monster",
+    "description": "An extremely dangerous undead creature that roams the dark city."
+   },
+   "Necrach City": {
+    "type": "city",
+    "description": "A city populated by dangerous creatures and remnants of a dead empire, where Viv finds herself."
+   },
+   "Black 11%": {
+    "type": "dungeon",
+    "description": "A dungeon or area with a specific mana distribution, though its exact nature is not detailed."
+   },
+   "Solfis": {
+    "type": "character",
+    "description": "A character with an interface that allows sentients to understand and interact with the forces of magic."
+   },
+   "Maradoc": {
+    "type": "organization",
+    "description": "God of Travels and Mysteries, a deity associated with journeys and mysteries."
+   },
+   "Nous": {
+    "type": "character",
+    "description": "A strange god of magic who granted the outlander an interface to understand and interact with magical forces."
+   },
+   "Nice": {
+    "type": "city",
+    "description": "A city where the outlander hoped her family would bury her in case of death, though this detail is not confirmed."
+   }
+  }
+ },
+ {
+  "chapter": 3,
+  "summary": "She found the circle and felt relief from the strange radiation. With basic supplies but no fire starter or books, she set up her tent. Her interface showed Maradoc and Nous, gods of travel and magic. She needed a backpack for carrying fabric and a sleeping bag. As night fell, she hoped to see family and friends again. Tears welled up as she thought about the mysterious nature of her death. In defiance, a small voice whispered, 'Always look on the bright side of life.'",
+  "chapter_entities": {
+   "Solfis": {
+    "type": "character",
+    "description": "A character with an interface that allows sentients to understand and interact with the forces of magic."
+   },
+   "Maradoc": {
+    "type": "organization",
+    "description": "God of Travels and Mysteries, a deity associated with journeys and mysteries."
+   },
+   "Nous": {
+    "type": "character",
+    "description": "A strange god of magic who granted the outlander an interface to understand and interact with magical forces."
+   },
+   "Nice": {
+    "type": "city",
+    "description": "A city where the outlander hoped her family would bury her in case of death, though this detail is not confirmed."
+   }
+  },
+  "all_entities": {
+   "Naskay": {
+    "type": "character",
+    "description": "A tall woman in the beige uniform of the French special forces who wakes up a reincarnated god named Viv."
+   },
+   "Viv": {
+    "type": "character",
+    "description": "Viv, a resilient corporal from the French special forces, finds herself in a perilous landscape where a once-thriving empire now teems with deadly creatures. A survivor by nature, she navigates this treacherous world to uncover its secrets and perhaps find a way home, all while escaping an unspecified situation that haunts her."
+   },
+   "Mouq": {
+    "type": "character",
+    "description": "A character mentioned by Viv, possibly her superior or colleague in the French special forces."
+   },
+   "Konna": {
+    "type": "city",
+    "description": "A city where a Gazelle helicopter was downed according to the information gathered by Viv."
+   },
+   "Necrach tentacular horror": {
+    "type": "monster",
+    "description": "An extremely dangerous undead creature that roams the dark city."
+   },
+   "Necrach City": {
+    "type": "city",
+    "description": "A city populated by dangerous creatures and remnants of a dead empire, where Viv finds herself."
+   },
+   "Black 11%": {
+    "type": "dungeon",
+    "description": "A dungeon or area with a specific mana distribution, though its exact nature is not detailed."
+   },
+   "Solfis": {
+    "type": "character",
+    "description": "Solfis is a golem who serves as an interface, enabling sentients to comprehend and engage with magical forces. He aids Viv in her escape and pledges to protect her, expressing his wish for her to become the rightful heir to the throne."
+   },
+   "Maradoc": {
+    "type": "organization",
+    "description": "God of Travels and Mysteries, a deity associated with journeys and mysteries."
+   },
+   "Nous": {
+    "type": "character",
+    "description": "A strange god of magic who granted the outlander an interface to understand and interact with magical forces."
+   },
+   "Nice": {
+    "type": "city",
+    "description": "A city where the outlander hoped her family would bury her in case of death, though this detail is not confirmed."
+   },
+   "trolley": {
+    "type": "dungeon",
+    "description": "A cart used by engineers for moving heavy objects, which Viv repurposes to transport the golem core."
+   }
+  }
+ },
+ {
+  "chapter": 4,
+  "summary": "Viv dragged the cart up a slope of accumulated dust. The skis glided smoothly, but pulling was still difficult. At the top, she felt a surge in power and relief. Sunlight and a cool breeze greeted her.\n'Power +1,' Viv said with satisfaction.\n'Thank you,' the golem replied softly.",
+  "chapter_entities": {
+   "Solfis": {
+    "type": "character",
+    "description": "A golem who assists Viv in her escape and expresses a desire to help her survive by naming her heir to the throne."
+   },
+   "Viv": {
+    "type": "character",
+    "description": "The protagonist, a former special forces member who is escaping from an unspecified situation."
+   },
+   "trolley": {
+    "type": "dungeon",
+    "description": "A cart used by engineers for moving heavy objects, which Viv repurposes to transport the golem core."
+   }
+  },
+  "all_entities": {
+   "Naskay": {
+    "type": "character",
+    "description": "A tall woman in the beige uniform of the French special forces who wakes up a reincarnated god named Viv."
+   },
+   "Viv": {
+    "type": "character",
+    "description": "Viv, a resilient corporal from the French special forces, has been freed from a prison and now navigates a perilous landscape teeming with deadly creatures. A survivor by nature, she uncovers secrets of an empire once thriving but now in decline, all while learning to manipulate mana to escape her haunting past."
+   },
+   "Mouq": {
+    "type": "character",
+    "description": "A character mentioned by Viv, possibly her superior or colleague in the French special forces."
+   },
+   "Konna": {
+    "type": "city",
+    "description": "A city where a Gazelle helicopter was downed according to the information gathered by Viv."
+   },
+   "Necrach tentacular horror": {
+    "type": "monster",
+    "description": "An extremely dangerous undead creature that roams the dark city."
+   },
+   "Necrach City": {
+    "type": "city",
+    "description": "A city populated by dangerous creatures and remnants of a dead empire, where Viv finds herself."
+   },
+   "Black 11%": {
+    "type": "dungeon",
+    "description": "A dungeon or area with a specific mana distribution, though its exact nature is not detailed."
+   },
+   "Solfis": {
+    "type": "character",
+    "description": "Solfis is a golem created by Viv, serving as an interface between sentients and magical forces. He aids Viv in her escape and pledges to protect both her and the city of Harran with unwavering dedication. Expressing his desire for Viv to become the rightful heir to the throne, Solfis remains steadfast in his mission to safeguard them at all costs."
+   },
+   "Maradoc": {
+    "type": "organization",
+    "description": "God of Travels and Mysteries, a deity associated with journeys and mysteries."
+   },
+   "Nous": {
+    "type": "character",
+    "description": "A strange god of magic who granted the outlander an interface to understand and interact with magical forces."
+   },
+   "Nice": {
+    "type": "city",
+    "description": "A city where the outlander hoped her family would bury her in case of death, though this detail is not confirmed."
+   },
+   "trolley": {
+    "type": "dungeon",
+    "description": "A cart used by engineers for moving heavy objects, which Viv repurposes to transport the golem core."
+   },
+   "Harran": {
+    "type": "city",
+    "description": "The city that Viv was imprisoned in, now under her protection according to the golem Solfis."
+   }
+  }
+ },
+ {
+  "chapter": 5,
+  "summary": "--Chapter end--\n\nYou have gained the skill: Mana manipulation.\nSkill assessment in progress.\nFocus +1\n\nThe golem reported that your chances of survival had improved. You felt a surge of power and declared, 'I'm a mother-fucking witch!'\nThe crystal in your hand emitted dark clouds as you manipulated mana, confirming your newfound ability.",
+  "chapter_entities": {
+   "Viv": {
+    "type": "character",
+    "description": "A character who has been freed from a prison and is learning to manipulate mana."
+   },
+   "Harran": {
+    "type": "city",
+    "description": "The city that Viv was imprisoned in, now under her protection according to the golem Solfis."
+   },
+   "Solfis": {
+    "type": "character",
+    "description": "A golem created by Viv who is assisting her and has a directive to protect the city of Harran at all costs."
+   }
+  },
+  "all_entities": {
+   "Naskay": {
+    "type": "character",
+    "description": "A tall woman in the beige uniform of the French special forces who wakes up a reincarnated god named Viv."
+   },
+   "Viv": {
+    "type": "character",
+    "description": "Viv, a resilient corporal from the French special forces, has been freed from a prison and now navigates a perilous landscape teeming with deadly creatures. A survivor by nature, she uncovers secrets of an empire once thriving but now in decline, all while learning to manipulate mana to escape her haunting past."
+   },
+   "Mouq": {
+    "type": "character",
+    "description": "A character mentioned by Viv, possibly her superior or colleague in the French special forces."
+   },
+   "Konna": {
+    "type": "city",
+    "description": "A city where a Gazelle helicopter was downed according to the information gathered by Viv."
+   },
+   "Necrach tentacular horror": {
+    "type": "monster",
+    "description": "An extremely dangerous undead creature that roams the dark city."
+   },
+   "Necrach City": {
+    "type": "city",
+    "description": "A city populated by dangerous creatures and remnants of a dead empire, where Viv finds herself."
+   },
+   "Black 11%": {
+    "type": "dungeon",
+    "description": "A dungeon or area with a specific mana distribution, though its exact nature is not detailed."
+   },
+   "Solfis": {
+    "type": "character",
+    "description": "Solfis is a war golem created by Viv, serving as an interface between sentients and magical forces. Since his creation, he has protected Viv and the city of Harran with unwavering dedication, aiding her in her escape and pledging to safeguard them at all costs. Expressing his desire for Viv to become the rightful heir to the throne, Solfis remains steadfast in his mission to protect both her and the city."
+   },
+   "Maradoc": {
+    "type": "organization",
+    "description": "God of Travels and Mysteries, a deity associated with journeys and mysteries."
+   },
+   "Nous": {
+    "type": "character",
+    "description": "A strange god of magic who granted the outlander an interface to understand and interact with magical forces."
+   },
+   "Nice": {
+    "type": "city",
+    "description": "A city where the outlander hoped her family would bury her in case of death, though this detail is not confirmed."
+   },
+   "trolley": {
+    "type": "dungeon",
+    "description": "A cart used by engineers for moving heavy objects, which Viv repurposes to transport the golem core."
+   },
+   "Harran": {
+    "type": "city",
+    "description": "The city that Viv was imprisoned in, now under her protection according to the golem Solfis."
+   },
+   "Harrak": {
+    "type": "city",
+    "description": "The capital city of ancient Harrakan, destroyed by a black magic event that turned its population into monsters."
+   },
+   "Lanneis slave pens": {
+    "type": "dungeon",
+    "description": "A location where slaves are kept, which Viv and Solfis must reach within two days."
+   }
+  }
+ },
+ {
+  "chapter": 6,
+  "summary": "Viv and Solfis left Harrak's ruined capital. The necrarchs swarmed around them, macabre reminders of uncontrolled magic. Solfis remained silent, his grief evident. They found a sheltered basement where Solfis guided her to push black smog into a mana isolation circuit, slowing the fallout's effects. As night fell, Viv lay down, thinking about Harrak's destruction and Solfis' nature as a war golem. She realized that perhaps the ancient Harrakans might have been responsible for their own downfall.",
+  "chapter_entities": {
+   "Solfis": {
+    "type": "character",
+    "description": "A war golem who has been protecting Viv since her arrival in the world of Necrarchs."
+   },
+   "Harrak": {
+    "type": "city",
+    "description": "The capital city of ancient Harrakan, destroyed by a black magic event that turned its population into monsters."
+   },
+   "Lanneis slave pens": {
+    "type": "dungeon",
+    "description": "A location where slaves are kept, which Viv and Solfis must reach within two days."
+   }
+  },
+  "all_entities": {
+   "Naskay": {
+    "type": "character",
+    "description": "A tall woman in the beige uniform of the French special forces who wakes up a reincarnated god named Viv."
+   },
+   "Viv": {
+    "type": "character",
+    "description": "Viv, a resilient corporal from the French special forces, has been freed from prison and now navigates a perilous landscape teeming with deadly creatures. A survivor by nature, she uncovers secrets of an empire once thriving but now in decline, all while learning to manipulate mana to escape her haunting past. With extreme compatibility and a divine spark of luck, Viv is currently making her way out of the Heartlands."
+   },
+   "Mouq": {
+    "type": "character",
+    "description": "A character mentioned by Viv, possibly her superior or colleague in the French special forces."
+   },
+   "Konna": {
+    "type": "city",
+    "description": "A city where a Gazelle helicopter was downed according to the information gathered by Viv."
+   },
+   "Necrach tentacular horror": {
+    "type": "monster",
+    "description": "An extremely dangerous undead creature that roams the dark city."
+   },
+   "Necrach City": {
+    "type": "city",
+    "description": "A city populated by dangerous creatures and remnants of a dead empire, where Viv finds herself."
+   },
+   "Black 11%": {
+    "type": "dungeon",
+    "description": "A dungeon or area with a specific mana distribution, though its exact nature is not detailed."
+   },
+   "Solfis": {
+    "type": "character",
+    "description": "Solfis is a war golem created by Viv, serving as an interface between sentients and magical forces. Since his creation, he has protected Viv and the city of Harran with unwavering dedication, aiding her in her escape and pledging to safeguard them at all costs. Expressing his desire for Viv to become the rightful heir to the throne, Solfis remains steadfast in his mission to protect both her and the city."
+   },
+   "Maradoc": {
+    "type": "organization",
+    "description": "God of Travels and Mysteries, a deity associated with journeys and mysteries."
+   },
+   "Nous": {
+    "type": "character",
+    "description": "A strange god of magic who granted the outlander an interface to understand and interact with magical forces."
+   },
+   "Nice": {
+    "type": "city",
+    "description": "A city where the outlander hoped her family would bury her in case of death, though this detail is not confirmed."
+   },
+   "trolley": {
+    "type": "dungeon",
+    "description": "A cart used by engineers for moving heavy objects, which Viv repurposes to transport the golem core."
+   },
+   "Harran": {
+    "type": "city",
+    "description": "The city that Viv was imprisoned in, now under her protection according to the golem Solfis."
+   },
+   "Harrak": {
+    "type": "city",
+    "description": "The capital city of ancient Harrakan, destroyed by a black magic event that turned its population into monsters."
+   },
+   "Lanneis slave pens": {
+    "type": "dungeon",
+    "description": "A location where slaves are kept, which Viv and Solfis must reach within two days."
+   },
+   "Heartlands": {
+    "type": "dungeon",
+    "description": "The area Viv is trying to leave from the south, containing dangerous dungeons and undead creatures."
+   },
+   "Black Apprentice": {
+    "type": "character",
+    "description": "A path in the Hedge Witch tradition that relies more on book study compared to Viv's current path of meditation and spoken guidance."
+   },
+   "This unit": {
+    "type": "organization",
+    "description": "An AI or entity guiding Viv, possibly a part of a larger organization responsible for her training or mission."
+   }
+  }
+ },
+ {
+  "chapter": 7,
+  "summary": "Viv recovered bandages and a dragonblood potion from the medical supplies. She left the Heartlands towards a lone peak to avoid conflict and mana poisoning. Her interface noted her current status with black mana dominance and budding mana channels. Despite feeling no immediate change, she was instructed on survival priorities and patience with her training. The guide emphasized avoiding combat until more advanced skills were learned.",
+  "chapter_entities": {
+   "Viv": {
+    "type": "character",
+    "description": "A character with extreme compatibility and a divine spark of luck, currently in the process of leaving the Heartlands."
+   },
+   "Heartlands": {
+    "type": "dungeon",
+    "description": "The area Viv is trying to leave from the south, containing dangerous dungeons and undead creatures."
+   },
+   "Black Apprentice": {
+    "type": "character",
+    "description": "A path in the Hedge Witch tradition that relies more on book study compared to Viv's current path of meditation and spoken guidance."
+   },
+   "This unit": {
+    "type": "organization",
+    "description": "An AI or entity guiding Viv, possibly a part of a larger organization responsible for her training or mission."
+   }
+  },
+  "all_entities": {
+   "Naskay": {
+    "type": "character",
+    "description": "A tall woman in the beige uniform of the French special forces who wakes up a reincarnated god named Viv."
+   },
+   "Viv": {
+    "type": "character",
+    "description": "Viv, a resilient corporal from the French special forces, has been freed from prison and now navigates a perilous landscape teeming with deadly creatures. A survivor by nature, she uncovers secrets of an empire once thriving but now in decline, all while learning to manipulate mana to escape her haunting past. With extreme compatibility and a divine spark of luck, Viv is currently making her way out of the Heartlands."
+   },
+   "Mouq": {
+    "type": "character",
+    "description": "A character mentioned by Viv, possibly her superior or colleague in the French special forces."
+   },
+   "Konna": {
+    "type": "city",
+    "description": "A city where a Gazelle helicopter was downed according to the information gathered by Viv."
+   },
+   "Necrach tentacular horror": {
+    "type": "monster",
+    "description": "An extremely dangerous undead creature that roams the dark city."
+   },
+   "Necrach City": {
+    "type": "city",
+    "description": "A city populated by dangerous creatures and remnants of a dead empire, where Viv finds herself."
+   },
+   "Black 11%": {
+    "type": "dungeon",
+    "description": "A dungeon or area with a specific mana distribution, though its exact nature is not detailed."
+   },
+   "Solfis": {
+    "type": "character",
+    "description": "Solfis is a war golem created by Viv, serving as an interface between sentients and magical forces. Since his creation, he has protected Viv and the city of Harran with unwavering dedication, aiding in her escape and pledging to safeguard them at all costs. Expressing his desire for Viv to become the rightful heir to the throne, Solfis remains steadfast in his mission. As a companion or guide to Viv, who may be a hedge witch given her knowledge of elemental mana and spells, Solfis plays a crucial role in their journey."
+   },
+   "Maradoc": {
+    "type": "organization",
+    "description": "God of Travels and Mysteries, a deity associated with journeys and mysteries."
+   },
+   "Nous": {
+    "type": "character",
+    "description": "A strange god of magic who granted the outlander an interface to understand and interact with magical forces."
+   },
+   "Nice": {
+    "type": "city",
+    "description": "A city where the outlander hoped her family would bury her in case of death, though this detail is not confirmed."
+   },
+   "trolley": {
+    "type": "dungeon",
+    "description": "A cart used by engineers for moving heavy objects, which Viv repurposes to transport the golem core."
+   },
+   "Harran": {
+    "type": "city",
+    "description": "The city that Viv was imprisoned in, now under her protection according to the golem Solfis."
+   },
+   "Harrak": {
+    "type": "city",
+    "description": "The capital city of ancient Harrakan, destroyed by a black magic event that turned its population into monsters."
+   },
+   "Lanneis slave pens": {
+    "type": "dungeon",
+    "description": "A location where slaves are kept, which Viv and Solfis must reach within two days."
+   },
+   "Heartlands": {
+    "type": "dungeon",
+    "description": "The area Viv is trying to leave from the south, containing dangerous dungeons and undead creatures."
+   },
+   "Black Apprentice": {
+    "type": "character",
+    "description": "A path in the Hedge Witch tradition that relies more on book study compared to Viv's current path of meditation and spoken guidance."
+   },
+   "This unit": {
+    "type": "organization",
+    "description": "An AI or entity guiding Viv, possibly a part of a larger organization responsible for her training or mission."
+   },
+   "Lanneis": {
+    "type": "city",
+    "description": "A location outside the main village where salt was found in a cache."
+   }
+  }
+ },
+ {
+  "chapter": 8,
+  "summary": "Viv applied her cloak spell and went into the corridor where she had eaten lunch. Her face turned red as she prepared to survey her domain. 'Sneaky Cloaky Lemon Squeezy,' she thought, recalling her fever-induced delirium. She felt stronger now, with improved endurance and resistance. 'Time to explore,' she decided, ready for whatever challenges lay ahead.",
+  "chapter_entities": {
+   "Solfis": {
+    "type": "character",
+    "description": "A companion or guide to Viv, possibly a hedge witch given her knowledge of elemental mana and spells."
+   },
+   "Lanneis": {
+    "type": "city",
+    "description": "A location outside the main village where salt was found in a cache."
+   }
+  },
+  "all_entities": {
+   "Naskay": {
+    "type": "character",
+    "description": "A tall woman in the beige uniform of the French special forces who wakes up a reincarnated god named Viv."
+   },
+   "Viv": {
+    "type": "character",
+    "description": "Viv, a resilient corporal from the French special forces, has been freed from prison and now navigates a perilous landscape teeming with deadly creatures. A survivor by nature, she uncovers secrets of an empire once thriving but now in decline, all while learning to manipulate mana to escape her haunting past. With extreme compatibility and a divine spark of luck, Viv is currently making her way out of the Heartlands."
+   },
+   "Mouq": {
+    "type": "character",
+    "description": "A character mentioned by Viv, possibly her superior or colleague in the French special forces."
+   },
+   "Konna": {
+    "type": "city",
+    "description": "A city where a Gazelle helicopter was downed according to the information gathered by Viv."
+   },
+   "Necrach tentacular horror": {
+    "type": "monster",
+    "description": "An extremely dangerous undead creature that roams the dark city."
+   },
+   "Necrach City": {
+    "type": "city",
+    "description": "A city populated by dangerous creatures and remnants of a dead empire, where Viv finds herself."
+   },
+   "Black 11%": {
+    "type": "dungeon",
+    "description": "A dungeon or area with a specific mana distribution, though its exact nature is not detailed."
+   },
+   "Solfis": {
+    "type": "character",
+    "description": "Solfis is a war golem created by Viv, serving as an interface between sentients and magical forces. Since his creation, he has protected Viv and the city of Harran with unwavering dedication, aiding in her escape and pledging to safeguard them at all costs. Expressing his desire for Viv to become the rightful heir to the throne, Solfis remains steadfast in his mission. As a companion or guide to Viv, who may be a hedge witch given her knowledge of elemental mana and spells, Solfis plays a crucial role in their journey."
+   },
+   "Maradoc": {
+    "type": "organization",
+    "description": "God of Travels and Mysteries, a deity associated with journeys and mysteries."
+   },
+   "Nous": {
+    "type": "character",
+    "description": "A strange god of magic who granted the outlander an interface to understand and interact with magical forces."
+   },
+   "Nice": {
+    "type": "city",
+    "description": "A city where the outlander hoped her family would bury her in case of death, though this detail is not confirmed."
+   },
+   "trolley": {
+    "type": "dungeon",
+    "description": "A cart used by engineers for moving heavy objects, which Viv repurposes to transport the golem core."
+   },
+   "Harran": {
+    "type": "city",
+    "description": "The city that Viv was imprisoned in, now under her protection according to the golem Solfis."
+   },
+   "Harrak": {
+    "type": "city",
+    "description": "The capital city of ancient Harrakan, destroyed by a black magic event that turned its population into monsters."
+   },
+   "Lanneis slave pens": {
+    "type": "dungeon",
+    "description": "A location where slaves are kept, which Viv and Solfis must reach within two days."
+   },
+   "Heartlands": {
+    "type": "dungeon",
+    "description": "Heartlands is a perilous region where Viviane has been residing, gathering resources amidst dangerous dungeons and undead creatures. From its southern reaches, it serves as both her shelter and a staging ground for an eventual escape from the hazardous fallout zone."
+   },
+   "Black Apprentice": {
+    "type": "character",
+    "description": "A path in the Hedge Witch tradition that relies more on book study compared to Viv's current path of meditation and spoken guidance."
+   },
+   "This unit": {
+    "type": "organization",
+    "description": "An AI or entity guiding Viv, possibly a part of a larger organization responsible for her training or mission."
+   },
+   "Lanneis": {
+    "type": "city",
+    "description": "A location outside the main village where salt was found in a cache."
+   },
+   "Viviane": {
+    "type": "character",
+    "description": "A black hedge witch who has been living in the Heartlands and is on her way to escape the fallout zone."
+   },
+   "Cassia the Unbroken": {
+    "type": "character",
+    "description": "A veiled mummy whose presence Viviane feels, reminding her of the heights one individual can attain through their deeds."
+   },
+   "Neriad": {
+    "type": "character",
+    "description": "An entity mentioned in gratitude by Viviane, though no details are provided about who or what it is."
+   }
+  }
+ },
+ {
+  "chapter": 9,
+  "summary": "Viv walked twenty paces before calming a panicked Arthur. The small dragon was upset about losing its habitat and dove under covers to inspect surroundings with mistrust. They traveled south.",
+  "chapter_entities": {
+   "Viviane": {
+    "type": "character",
+    "description": "A black hedge witch who has been living in the Heartlands and is on her way to escape the fallout zone."
+   },
+   "Cassia the Unbroken": {
+    "type": "character",
+    "description": "A veiled mummy whose presence Viviane feels, reminding her of the heights one individual can attain through their deeds."
+   },
+   "Neriad": {
+    "type": "character",
+    "description": "An entity mentioned in gratitude by Viviane, though no details are provided about who or what it is."
+   },
+   "Heartlands": {
+    "type": "dungeon",
+    "description": "The area where Viviane has been living and gathering resources before attempting to escape the fallout zone."
+   }
+  },
+  "all_entities": {
+   "Naskay": {
+    "type": "character",
+    "description": "A tall woman in the beige uniform of the French special forces who wakes up a reincarnated god named Viv."
+   },
+   "Viv": {
+    "type": "character",
+    "description": "Viv, a resilient corporal from the French special forces, has been freed from prison and now navigates a perilous landscape teeming with deadly creatures. A survivor by nature, she uncovers secrets of an empire once thriving but now in decline, all while learning to manipulate mana to escape her haunting past. With extreme compatibility and a divine spark of luck, Viv is currently making her way out of the Heartlands."
+   },
+   "Mouq": {
+    "type": "character",
+    "description": "A character mentioned by Viv, possibly her superior or colleague in the French special forces."
+   },
+   "Konna": {
+    "type": "city",
+    "description": "A city where a Gazelle helicopter was downed according to the information gathered by Viv."
+   },
+   "Necrach tentacular horror": {
+    "type": "monster",
+    "description": "An extremely dangerous undead creature that roams the dark city."
+   },
+   "Necrach City": {
+    "type": "city",
+    "description": "A city populated by dangerous creatures and remnants of a dead empire, where Viv finds herself."
+   },
+   "Black 11%": {
+    "type": "dungeon",
+    "description": "A dungeon or area with a specific mana distribution, though its exact nature is not detailed."
+   },
+   "Solfis": {
+    "type": "character",
+    "description": "Solfis is a war golem created by Viv, serving as an interface between sentients and magical forces. Since his creation, he has protected Viv and the city of Harran with unwavering dedication, aiding in her escape and pledging to safeguard them at all costs. Expressing his desire for Viv to become the rightful heir to the throne, Solfis remains steadfast in his mission. As a companion or guide to Viv, who may be a hedge witch given her knowledge of elemental mana and spells, Solfis plays a crucial role in their journey."
+   },
+   "Maradoc": {
+    "type": "organization",
+    "description": "God of Travels and Mysteries, a deity associated with journeys and mysteries."
+   },
+   "Nous": {
+    "type": "character",
+    "description": "A strange god of magic who granted the outlander an interface to understand and interact with magical forces."
+   },
+   "Nice": {
+    "type": "city",
+    "description": "A city where the outlander hoped her family would bury her in case of death, though this detail is not confirmed."
+   },
+   "trolley": {
+    "type": "dungeon",
+    "description": "A cart used by engineers for moving heavy objects, which Viv repurposes to transport the golem core."
+   },
+   "Harran": {
+    "type": "city",
+    "description": "The city that Viv was imprisoned in, now under her protection according to the golem Solfis."
+   },
+   "Harrak": {
+    "type": "city",
+    "description": "The capital city of ancient Harrakan, destroyed by a black magic event that turned its population into monsters."
+   },
+   "Lanneis slave pens": {
+    "type": "dungeon",
+    "description": "A location where slaves are kept, which Viv and Solfis must reach within two days."
+   },
+   "Heartlands": {
+    "type": "dungeon",
+    "description": "Heartlands is a perilous region where Viviane has been residing, gathering resources amidst dangerous dungeons and undead creatures. From its southern reaches, it serves as both her shelter and a staging ground for an eventual escape from the hazardous fallout zone."
+   },
+   "Black Apprentice": {
+    "type": "character",
+    "description": "A path in the Hedge Witch tradition that relies more on book study compared to Viv's current path of meditation and spoken guidance."
+   },
+   "This unit": {
+    "type": "organization",
+    "description": "An AI or entity guiding Viv, possibly a part of a larger organization responsible for her training or mission."
+   },
+   "Lanneis": {
+    "type": "city",
+    "description": "A location outside the main village where salt was found in a cache."
+   },
+   "Viviane": {
+    "type": "character",
+    "description": "Viviane is a tall, beautiful black hedge witch from the Heartlands, capable of communicating in Old Imperial. With a calm detachment, she can kill revenants, and she is currently making her way out of the dangerous fallout zone."
+   },
+   "Cassia the Unbroken": {
+    "type": "character",
+    "description": "A veiled mummy whose presence Viviane feels, reminding her of the heights one individual can attain through their deeds."
+   },
+   "Neriad": {
+    "type": "character",
+    "description": "An entity mentioned in gratitude by Viviane, though no details are provided about who or what it is."
+   },
+   "Bali": {
+    "type": "character",
+    "description": "One of the horses used by Cernit's group for their journey back to the fort."
+   },
+   "Squee": {
+    "type": "character",
+    "description": "A tamed drake that emerged from a cover on the sled, speaking in a mechanical voice."
+   },
+   "Old Imperial": {
+    "type": "organization",
+    "description": "The language and culture of an old empire, used for formal and classical education."
+   }
+  }
+ },
+ {
+  "chapter": 10,
+  "summary": "The witch Viviane killed revenants as they approached. Cernit and Benetti attached her sled to Bali's horse. She climbed behind Jor\u2019s larger mount. They returned at a slow pace, with Viviane casting 'yoink' spells on any revenants that got too close.",
+  "chapter_entities": {
+   "Viviane": {
+    "type": "character",
+    "description": "A tall, beautiful witch who can communicate in Old Imperial and has the ability to kill revenants with a calm detachment."
+   },
+   "Bali": {
+    "type": "character",
+    "description": "One of the horses used by Cernit's group for their journey back to the fort."
+   },
+   "Squee": {
+    "type": "character",
+    "description": "A tamed drake that emerged from a cover on the sled, speaking in a mechanical voice."
+   },
+   "Old Imperial": {
+    "type": "organization",
+    "description": "The language and culture of an old empire, used for formal and classical education."
+   }
+  },
+  "all_entities": {
+   "Naskay": {
+    "type": "character",
+    "description": "A tall woman in the beige uniform of the French special forces who wakes up a reincarnated god named Viv."
+   },
+   "Viv": {
+    "type": "character",
+    "description": "Viv, a resilient corporal from the French special forces, has been freed from prison and now navigates a perilous landscape teeming with deadly creatures. A survivor by nature, she uncovers secrets of an empire once thriving but now in decline, all while learning to manipulate mana to escape her haunting past. With extreme compatibility and a divine spark of luck, Viv is currently making her way out of the Heartlands."
+   },
+   "Mouq": {
+    "type": "character",
+    "description": "A character mentioned by Viv, possibly her superior or colleague in the French special forces."
+   },
+   "Konna": {
+    "type": "city",
+    "description": "A city where a Gazelle helicopter was downed according to the information gathered by Viv."
+   },
+   "Necrach tentacular horror": {
+    "type": "monster",
+    "description": "An extremely dangerous undead creature that roams the dark city."
+   },
+   "Necrach City": {
+    "type": "city",
+    "description": "A city populated by dangerous creatures and remnants of a dead empire, where Viv finds herself."
+   },
+   "Black 11%": {
+    "type": "dungeon",
+    "description": "A dungeon or area with a specific mana distribution, though its exact nature is not detailed."
+   },
+   "Solfis": {
+    "type": "character",
+    "description": "Solfis is a war golem created by Viv, serving as an interface between sentients and magical forces. Since his creation, he has protected Viv and the city of Harran with unwavering dedication, aiding in her escape and pledging to safeguard them at all costs. As a powerful companion and guide, Solfis plays a crucial role in their journey, expressing his desire for Viv to become the rightful heir to the throne. A hedge witch by nature, Viv's knowledge of elemental mana and spells complements Solfis' abilities, making them an unstoppable force. Solfis has saved Viv's life multiple times and now influences her decisions, solidifying his importance in their shared destiny."
+   },
+   "Maradoc": {
+    "type": "organization",
+    "description": "God of Travels and Mysteries, a deity associated with journeys and mysteries."
+   },
+   "Nous": {
+    "type": "character",
+    "description": "A strange god of magic who granted the outlander an interface to understand and interact with magical forces."
+   },
+   "Nice": {
+    "type": "city",
+    "description": "A city where the outlander hoped her family would bury her in case of death, though this detail is not confirmed."
+   },
+   "trolley": {
+    "type": "dungeon",
+    "description": "A cart used by engineers for moving heavy objects, which Viv repurposes to transport the golem core."
+   },
+   "Harran": {
+    "type": "city",
+    "description": "The city that Viv was imprisoned in, now under her protection according to the golem Solfis."
+   },
+   "Harrak": {
+    "type": "city",
+    "description": "The capital city of ancient Harrakan, destroyed by a black magic event that turned its population into monsters."
+   },
+   "Lanneis slave pens": {
+    "type": "dungeon",
+    "description": "A location where slaves are kept, which Viv and Solfis must reach within two days."
+   },
+   "Heartlands": {
+    "type": "dungeon",
+    "description": "Heartlands is a perilous region where Viviane has been residing, gathering resources amidst dangerous dungeons and undead creatures. From its southern reaches, it serves as both her shelter and a staging ground for an eventual escape from the hazardous fallout zone."
+   },
+   "Black Apprentice": {
+    "type": "character",
+    "description": "A path in the Hedge Witch tradition that relies more on book study compared to Viv's current path of meditation and spoken guidance."
+   },
+   "This unit": {
+    "type": "organization",
+    "description": "An AI or entity guiding Viv, possibly a part of a larger organization responsible for her training or mission."
+   },
+   "Lanneis": {
+    "type": "city",
+    "description": "A location outside the main village where salt was found in a cache."
+   },
+   "Viviane": {
+    "type": "character",
+    "description": "Viviane is a tall, beautiful black hedge witch from the Heartlands, capable of communicating in Old Imperial. With a calm detachment, she can kill revenants, and she is currently making her way out of the dangerous fallout zone."
+   },
+   "Cassia the Unbroken": {
+    "type": "character",
+    "description": "A veiled mummy whose presence Viviane feels, reminding her of the heights one individual can attain through their deeds."
+   },
+   "Neriad": {
+    "type": "character",
+    "description": "An entity mentioned in gratitude by Viviane, though no details are provided about who or what it is."
+   },
+   "Bali": {
+    "type": "character",
+    "description": "One of the horses used by Cernit's group for their journey back to the fort."
+   },
+   "Squee": {
+    "type": "character",
+    "description": "A tamed drake that emerged from a cover on the sled, speaking in a mechanical voice."
+   },
+   "Old Imperial": {
+    "type": "organization",
+    "description": "The language and culture of an old empire, used for formal and classical education."
+   },
+   "Cernit": {
+    "type": "character",
+    "description": "The commander of the fort, a poor man who can only offer Viv his stipend as payment for her services."
+   },
+   "Barran": {
+    "type": "organization",
+    "description": "A place where Viv will receive recognition as a mercenary after completing her service in the fort."
+   },
+   "Param": {
+    "type": "city",
+    "description": "The fragmented geopolitical environment where mercenaries are common, and Viv's letter of recommendation could open doors."
+   }
+  }
+ },
+ {
+  "chapter": 11,
+  "summary": "Viv agreed to Solfis's plan after considering her options. She would stay and train in exchange for better conditions. Negotiations went smoothly; Cernit could only offer his stipend, but he provided enough food for Arthur and a letter of recommendation. Viv would have her own quarters at the base of the tower and be treated as an independent mercenary witch after their mission. They shook hands on it, and Viv's new life in Param began.",
+  "chapter_entities": {
+   "Solfis": {
+    "type": "character",
+    "description": "A powerful individual who has saved Viv's life multiple times and now influences her decisions."
+   },
+   "Cernit": {
+    "type": "character",
+    "description": "The commander of the fort, a poor man who can only offer Viv his stipend as payment for her services."
+   },
+   "Barran": {
+    "type": "organization",
+    "description": "A place where Viv will receive recognition as a mercenary after completing her service in the fort."
+   },
+   "Param": {
+    "type": "city",
+    "description": "The fragmented geopolitical environment where mercenaries are common, and Viv's letter of recommendation could open doors."
+   }
+  },
+  "all_entities": {
+   "Naskay": {
+    "type": "character",
+    "description": "A tall woman in the beige uniform of the French special forces who wakes up a reincarnated god named Viv."
+   },
+   "Viv": {
+    "type": "character",
+    "description": "Viv, a resilient corporal from the French special forces, has been freed from prison and now navigates a perilous landscape teeming with deadly creatures. A survivor by nature, she uncovers secrets of an empire once thriving but now in decline, all while learning to manipulate mana to escape her haunting past. With extreme compatibility and a divine spark of luck, Viv is currently making her way out of the Heartlands."
+   },
+   "Mouq": {
+    "type": "character",
+    "description": "A character mentioned by Viv, possibly her superior or colleague in the French special forces."
+   },
+   "Konna": {
+    "type": "city",
+    "description": "A city where a Gazelle helicopter was downed according to the information gathered by Viv."
+   },
+   "Necrach tentacular horror": {
+    "type": "monster",
+    "description": "An extremely dangerous undead creature that roams the dark city."
+   },
+   "Necrach City": {
+    "type": "city",
+    "description": "A city populated by dangerous creatures and remnants of a dead empire, where Viv finds herself."
+   },
+   "Black 11%": {
+    "type": "dungeon",
+    "description": "A dungeon or area with a specific mana distribution, though its exact nature is not detailed."
+   },
+   "Solfis": {
+    "type": "character",
+    "description": "Solfis is a war golem created by hedge witch Viv, serving as an interface between sentients and magical forces. Since his creation, Solfis has protected Viv and the city of Harran with unwavering dedication, aiding in her escape and pledging to safeguard them at all costs. A powerful companion and guide, he plays a crucial role in their journey, expressing his desire for Viv to become the rightful heir to the throne. With a core that can speak Baran and the ability to kill targets in painful ways, Solfis has saved Viv's life multiple times and now influences her decisions, solidifying his importance in their shared destiny."
+   },
+   "Maradoc": {
+    "type": "organization",
+    "description": "God of Travels and Mysteries, a deity associated with journeys and mysteries."
+   },
+   "Nous": {
+    "type": "character",
+    "description": "A strange god of magic who granted the outlander an interface to understand and interact with magical forces."
+   },
+   "Nice": {
+    "type": "city",
+    "description": "A city where the outlander hoped her family would bury her in case of death, though this detail is not confirmed."
+   },
+   "trolley": {
+    "type": "dungeon",
+    "description": "A cart used by engineers for moving heavy objects, which Viv repurposes to transport the golem core."
+   },
+   "Harran": {
+    "type": "city",
+    "description": "The city that Viv was imprisoned in, now under her protection according to the golem Solfis."
+   },
+   "Harrak": {
+    "type": "city",
+    "description": "The capital city of ancient Harrakan, destroyed by a black magic event that turned its population into monsters."
+   },
+   "Lanneis slave pens": {
+    "type": "dungeon",
+    "description": "A location where slaves are kept, which Viv and Solfis must reach within two days."
+   },
+   "Heartlands": {
+    "type": "dungeon",
+    "description": "Heartlands is a perilous region where Viviane has been residing, gathering resources amidst dangerous dungeons and undead creatures. From its southern reaches, it serves as both her shelter and a staging ground for an eventual escape from the hazardous fallout zone."
+   },
+   "Black Apprentice": {
+    "type": "character",
+    "description": "A path in the Hedge Witch tradition that relies more on book study compared to Viv's current path of meditation and spoken guidance."
+   },
+   "This unit": {
+    "type": "organization",
+    "description": "An AI or entity guiding Viv, possibly a part of a larger organization responsible for her training or mission."
+   },
+   "Lanneis": {
+    "type": "city",
+    "description": "A location outside the main village where salt was found in a cache."
+   },
+   "Viviane": {
+    "type": "character",
+    "description": "Viviane is a tall, beautiful black hedge witch from the Heartlands, capable of communicating in Old Imperial. With a calm detachment, she can kill revenants, and she is currently making her way out of the dangerous fallout zone."
+   },
+   "Cassia the Unbroken": {
+    "type": "character",
+    "description": "A veiled mummy whose presence Viviane feels, reminding her of the heights one individual can attain through their deeds."
+   },
+   "Neriad": {
+    "type": "character",
+    "description": "An entity mentioned in gratitude by Viviane, though no details are provided about who or what it is."
+   },
+   "Bali": {
+    "type": "character",
+    "description": "One of the horses used by Cernit's group for their journey back to the fort."
+   },
+   "Squee": {
+    "type": "character",
+    "description": "A tamed drake that emerged from a cover on the sled, speaking in a mechanical voice."
+   },
+   "Old Imperial": {
+    "type": "organization",
+    "description": "The language and culture of an old empire, used for formal and classical education."
+   },
+   "Cernit": {
+    "type": "character",
+    "description": "The commander of the fort, a poor man who can only offer Viv his stipend as payment for her services."
+   },
+   "Barran": {
+    "type": "organization",
+    "description": "A place where Viv will receive recognition as a mercenary after completing her service in the fort."
+   },
+   "Param": {
+    "type": "city",
+    "description": "The fragmented geopolitical environment where mercenaries are common, and Viv's letter of recommendation could open doors."
+   },
+   "Hern": {
+    "type": "character",
+    "description": "A meatbag with one cheek left who is involved in stealing knight armors."
+   },
+   "Reyd": {
+    "type": "character",
+    "description": "A scarred man who is Hern's accomplice and a coward, as he fled the scene quickly."
+   },
+   "Arthur": {
+    "type": "character",
+    "description": "The winged form of Solfis, which defeated Hern and Reyd by attacking them."
+   }
+  }
+ },
+ {
+  "chapter": 12,
+  "summary": "The two intruders, Rayd and Hern, entered Solfis' chamber. Rayd suggested stealing knight armors for money, but Hern hesitated. The golem spoke in Baran, warning of the deadlands' dangers and its own relentless pursuit. Frightened, Hern attacked, only to be defeated by Arthur. Solfis returned to sleep as order was restored. He resumed calibrating his next arm.",
+  "chapter_entities": {
+   "Hern": {
+    "type": "character",
+    "description": "A meatbag with one cheek left who is involved in stealing knight armors."
+   },
+   "Reyd": {
+    "type": "character",
+    "description": "A scarred man who is Hern's accomplice and a coward, as he fled the scene quickly."
+   },
+   "Solfis": {
+    "type": "character",
+    "description": "A golem with a core that can speak Baran and has the ability to kill its targets in painful ways."
+   },
+   "Arthur": {
+    "type": "character",
+    "description": "The winged form of Solfis, which defeated Hern and Reyd by attacking them."
+   }
+  },
+  "all_entities": {
+   "Naskay": {
+    "type": "character",
+    "description": "A tall woman in the beige uniform of the French special forces who wakes up a reincarnated god named Viv."
+   },
+   "Viv": {
+    "type": "character",
+    "description": "Viv, a resilient corporal from the French special forces, has been freed from prison and now navigates a perilous landscape teeming with deadly creatures. A survivor by nature, she uncovers secrets of an empire once thriving but now in decline, all while learning to manipulate mana to escape her haunting past. With extreme compatibility and a divine spark of luck, Viv is currently making her way out of the Heartlands."
+   },
+   "Mouq": {
+    "type": "character",
+    "description": "A character mentioned by Viv, possibly her superior or colleague in the French special forces."
+   },
+   "Konna": {
+    "type": "city",
+    "description": "A city where a Gazelle helicopter was downed according to the information gathered by Viv."
+   },
+   "Necrach tentacular horror": {
+    "type": "monster",
+    "description": "An extremely dangerous undead creature that roams the dark city."
+   },
+   "Necrach City": {
+    "type": "city",
+    "description": "A city populated by dangerous creatures and remnants of a dead empire, where Viv finds herself."
+   },
+   "Black 11%": {
+    "type": "dungeon",
+    "description": "A dungeon or area with a specific mana distribution, though its exact nature is not detailed."
+   },
+   "Solfis": {
+    "type": "character",
+    "description": "Solfis is a war golem created by hedge witch Viv, serving as an interface between sentients and magical forces. Since his creation, Solfis has protected Viv and the city of Harran with unwavering dedication, aiding in her escape and pledging to safeguard them at all costs. A powerful companion and guide, he plays a crucial role in their journey, expressing his desire for Viv to become the rightful heir to the throne. With a core that can speak Baran and the ability to kill targets in painful ways, Solfis has saved Viv's life multiple times and now influences her decisions, solidifying his importance in their shared destiny."
+   },
+   "Maradoc": {
+    "type": "organization",
+    "description": "God of Travels and Mysteries, a deity associated with journeys and mysteries."
+   },
+   "Nous": {
+    "type": "character",
+    "description": "A strange god of magic who granted the outlander an interface to understand and interact with magical forces."
+   },
+   "Nice": {
+    "type": "city",
+    "description": "A city where the outlander hoped her family would bury her in case of death, though this detail is not confirmed."
+   },
+   "trolley": {
+    "type": "dungeon",
+    "description": "A cart used by engineers for moving heavy objects, which Viv repurposes to transport the golem core."
+   },
+   "Harran": {
+    "type": "city",
+    "description": "The city that Viv was imprisoned in, now under her protection according to the golem Solfis."
+   },
+   "Harrak": {
+    "type": "city",
+    "description": "The capital city of ancient Harrakan, destroyed by a black magic event that turned its population into monsters."
+   },
+   "Lanneis slave pens": {
+    "type": "dungeon",
+    "description": "A location where slaves are kept, which Viv and Solfis must reach within two days."
+   },
+   "Heartlands": {
+    "type": "dungeon",
+    "description": "Heartlands is a perilous region where Viviane has been residing, gathering resources amidst dangerous dungeons and undead creatures. From its southern reaches, it serves as both her shelter and a staging ground for an eventual escape from the hazardous fallout zone."
+   },
+   "Black Apprentice": {
+    "type": "character",
+    "description": "A path in the Hedge Witch tradition that relies more on book study compared to Viv's current path of meditation and spoken guidance."
+   },
+   "This unit": {
+    "type": "organization",
+    "description": "An AI or entity guiding Viv, possibly a part of a larger organization responsible for her training or mission."
+   },
+   "Lanneis": {
+    "type": "city",
+    "description": "A location outside the main village where salt was found in a cache."
+   },
+   "Viviane": {
+    "type": "character",
+    "description": "Viviane is a tall, beautiful black hedge witch from the Heartlands, capable of communicating in Old Imperial. With a calm detachment, she can kill revenants, and she is currently making her way out of the dangerous fallout zone."
+   },
+   "Cassia the Unbroken": {
+    "type": "character",
+    "description": "A veiled mummy whose presence Viviane feels, reminding her of the heights one individual can attain through their deeds."
+   },
+   "Neriad": {
+    "type": "character",
+    "description": "An entity mentioned in gratitude by Viviane, though no details are provided about who or what it is."
+   },
+   "Bali": {
+    "type": "character",
+    "description": "One of the horses used by Cernit's group for their journey back to the fort."
+   },
+   "Squee": {
+    "type": "character",
+    "description": "A tamed drake that emerged from a cover on the sled, speaking in a mechanical voice."
+   },
+   "Old Imperial": {
+    "type": "organization",
+    "description": "Old Imperial is a language and cultural heritage from an ancient empire, used for formal and classical education. It is also the native tongue of Cernit, hinting at a possible connection to an imperial city's history."
+   },
+   "Cernit": {
+    "type": "character",
+    "description": "Cernit, the commander of the fort, is a humble man who can only offer Viv her stipend as payment for her services. An officer under him once thanked Viv for her assistance and acknowledged a previous mistake in punishing a soldier unjustly."
+   },
+   "Barran": {
+    "type": "organization",
+    "description": "A place where Viv will receive recognition as a mercenary after completing her service in the fort."
+   },
+   "Param": {
+    "type": "city",
+    "description": "The fragmented geopolitical environment where mercenaries are common, and Viv's letter of recommendation could open doors."
+   },
+   "Hern": {
+    "type": "character",
+    "description": "A meatbag with one cheek left who is involved in stealing knight armors."
+   },
+   "Reyd": {
+    "type": "character",
+    "description": "A scarred man who is Hern's accomplice and a coward, as he fled the scene quickly."
+   },
+   "Arthur": {
+    "type": "character",
+    "description": "The winged form of Solfis, which defeated Hern and Reyd by attacking them."
+   },
+   "Soldier Hern": {
+    "type": "character",
+    "description": "A soldier mentioned as being punished or tortured, possibly by Cernit."
+   },
+   "Benetti": {
+    "type": "character",
+    "description": "An officer who relayed Viv's words to the soldiers regarding the punishment."
+   }
+  }
+ },
+ {
+  "chapter": 13,
+  "summary": "By evening, Viv had treated Jor's wounds and received several new magical abilities. The longer days made her feel restless, so she decided to read the bestiary before collapsing into bed. Despite the day\u2019s events, she felt stronger thanks to magic.",
+  "chapter_entities": {
+   "Cernit": {
+    "type": "character",
+    "description": "An officer who thanked Viv for her help and acknowledged his mistake regarding the punishment of a soldier."
+   },
+   "Soldier Hern": {
+    "type": "character",
+    "description": "A soldier mentioned as being punished or tortured, possibly by Cernit."
+   },
+   "Benetti": {
+    "type": "character",
+    "description": "An officer who relayed Viv's words to the soldiers regarding the punishment."
+   },
+   "Old Imperial": {
+    "type": "city",
+    "description": "The language spoken by Cernit, suggesting it might be related to an ancient or imperial city."
+   }
+  },
+  "all_entities": {
+   "Naskay": {
+    "type": "character",
+    "description": "A tall woman in the beige uniform of the French special forces who wakes up a reincarnated god named Viv."
+   },
+   "Viv": {
+    "type": "character",
+    "description": "Viv, a resilient corporal from the French special forces, has been freed from prison and now navigates a perilous landscape teeming with deadly creatures. A survivor by nature, she uncovers secrets of an empire once thriving but now in decline, all while learning to manipulate mana to escape her haunting past. With extreme compatibility and a divine spark of luck, Viv is currently making her way out of the Heartlands."
+   },
+   "Mouq": {
+    "type": "character",
+    "description": "A character mentioned by Viv, possibly her superior or colleague in the French special forces."
+   },
+   "Konna": {
+    "type": "city",
+    "description": "A city where a Gazelle helicopter was downed according to the information gathered by Viv."
+   },
+   "Necrach tentacular horror": {
+    "type": "monster",
+    "description": "An extremely dangerous undead creature that roams the dark city."
+   },
+   "Necrach City": {
+    "type": "city",
+    "description": "A city populated by dangerous creatures and remnants of a dead empire, where Viv finds herself."
+   },
+   "Black 11%": {
+    "type": "dungeon",
+    "description": "A dungeon or area with a specific mana distribution, though its exact nature is not detailed."
+   },
+   "Solfis": {
+    "type": "character",
+    "description": "Solfis is a war golem created by hedge witch Viv, serving as an interface between sentients and magical forces. Since his creation, Solfis has protected Viv and the city of Harran with unwavering dedication, aiding in her escape and pledging to safeguard them at all costs. A powerful companion and guide, he plays a crucial role in their journey, expressing his desire for Viv to become the rightful heir to the throne. With a core that can speak Baran and the ability to kill targets in painful ways, Solfis has saved Viv's life multiple times and now influences her decisions, solidifying his importance in their shared destiny."
+   },
+   "Maradoc": {
+    "type": "organization",
+    "description": "God of Travels and Mysteries, a deity associated with journeys and mysteries."
+   },
+   "Nous": {
+    "type": "character",
+    "description": "A strange god of magic who granted the outlander an interface to understand and interact with magical forces."
+   },
+   "Nice": {
+    "type": "city",
+    "description": "A city where the outlander hoped her family would bury her in case of death, though this detail is not confirmed."
+   },
+   "trolley": {
+    "type": "dungeon",
+    "description": "A cart used by engineers for moving heavy objects, which Viv repurposes to transport the golem core."
+   },
+   "Harran": {
+    "type": "city",
+    "description": "The city that Viv was imprisoned in, now under her protection according to the golem Solfis."
+   },
+   "Harrak": {
+    "type": "city",
+    "description": "The capital city of ancient Harrakan, destroyed by a black magic event that turned its population into monsters."
+   },
+   "Lanneis slave pens": {
+    "type": "dungeon",
+    "description": "A location where slaves are kept, which Viv and Solfis must reach within two days."
+   },
+   "Heartlands": {
+    "type": "dungeon",
+    "description": "Heartlands is a perilous region where Viviane has been residing, gathering resources amidst dangerous dungeons and undead creatures. From its southern reaches, it serves as both her shelter and a staging ground for an eventual escape from the hazardous fallout zone."
+   },
+   "Black Apprentice": {
+    "type": "character",
+    "description": "A path in the Hedge Witch tradition that relies more on book study compared to Viv's current path of meditation and spoken guidance."
+   },
+   "This unit": {
+    "type": "organization",
+    "description": "An AI or entity guiding Viv, possibly a part of a larger organization responsible for her training or mission."
+   },
+   "Lanneis": {
+    "type": "city",
+    "description": "A location outside the main village where salt was found in a cache."
+   },
+   "Viviane": {
+    "type": "character",
+    "description": "Viviane is a tall, beautiful black hedge witch from the Heartlands, capable of communicating in Old Imperial. With a calm detachment, she can kill revenants, and she is currently making her way out of the dangerous fallout zone."
+   },
+   "Cassia the Unbroken": {
+    "type": "character",
+    "description": "A veiled mummy whose presence Viviane feels, reminding her of the heights one individual can attain through their deeds."
+   },
+   "Neriad": {
+    "type": "character",
+    "description": "An entity mentioned in gratitude by Viviane, though no details are provided about who or what it is."
+   },
+   "Bali": {
+    "type": "character",
+    "description": "One of the horses used by Cernit's group for their journey back to the fort."
+   },
+   "Squee": {
+    "type": "character",
+    "description": "A tamed drake that emerged from a cover on the sled, speaking in a mechanical voice."
+   },
+   "Old Imperial": {
+    "type": "organization",
+    "description": "Old Imperial is a language and cultural heritage from an ancient empire, used for formal and classical education. It is also the native tongue of Cernit, hinting at a possible connection to an imperial city's history."
+   },
+   "Cernit": {
+    "type": "character",
+    "description": "Cernit, the humble commander of the fort, can only offer Viv her stipend for her services. An officer under him previously acknowledged a mistake in punishing a soldier unjustly and thanked Viv for her assistance. The fort's lieutenant, though injured in battle, still possesses life mana to heal others."
+   },
+   "Barran": {
+    "type": "organization",
+    "description": "A place where Viv will receive recognition as a mercenary after completing her service in the fort."
+   },
+   "Param": {
+    "type": "city",
+    "description": "The fragmented geopolitical environment where mercenaries are common, and Viv's letter of recommendation could open doors."
+   },
+   "Hern": {
+    "type": "character",
+    "description": "A meatbag with one cheek left who is involved in stealing knight armors."
+   },
+   "Reyd": {
+    "type": "character",
+    "description": "A scarred man who is Hern's accomplice and a coward, as he fled the scene quickly."
+   },
+   "Arthur": {
+    "type": "character",
+    "description": "The winged form of Solfis, which defeated Hern and Reyd by attacking them."
+   },
+   "Soldier Hern": {
+    "type": "character",
+    "description": "A soldier mentioned as being punished or tortured, possibly by Cernit."
+   },
+   "Benetti": {
+    "type": "character",
+    "description": "Benetti is a knight who, though grievously injured in his recent confrontation with a bear, has been tended to by the enigmatic Black Hedge Witch. In a previous role, he served as an officer, tasked with conveying Viv's critical instructions to the soldiers, ensuring their understanding of the severe consequences they faced if not obeyed. "
+   },
+   "Black Hedge Witch": {
+    "type": "character",
+    "description": "A powerful witch who has gained new abilities after a battle with a bear."
+   },
+   "Jor": {
+    "type": "character",
+    "description": "Another knight in the group, also injured but managed to remove his armor to allow for easier treatment of his wounds."
+   }
+  }
+ },
+ {
+  "chapter": 14,
+  "summary": "Viv focused on Cernit's wound. The black mana healed it, leaving pinkish skin. She turned to Jor and cured his thigh injury quickly. Next, she targeted a hound at the wall corner, overcharging her spell to consume its power, causing it to explode in ash. Exhausted, she nodded to Cernit about the ribcage for the bear. After healing him, she collapsed.",
+  "chapter_entities": {
+   "Black Hedge Witch": {
+    "type": "character",
+    "description": "A powerful witch who has gained new abilities after a battle with a bear."
+   },
+   "Cernit": {
+    "type": "character",
+    "description": "The lieutenant of the group, injured in the battle but still able to use life mana to heal others."
+   },
+   "Benetti": {
+    "type": "character",
+    "description": "A knight who was severely wounded during the battle with the bear and received healing from the Black Hedge Witch."
+   },
+   "Jor": {
+    "type": "character",
+    "description": "Another knight in the group, also injured but managed to remove his armor to allow for easier treatment of his wounds."
+   }
+  },
+  "all_entities": {
+   "Naskay": {
+    "type": "character",
+    "description": "A tall woman in the beige uniform of the French special forces who wakes up a reincarnated god named Viv."
+   },
+   "Viv": {
+    "type": "character",
+    "description": "Viv, a resilient corporal from the French special forces, has been freed from prison and now navigates a perilous landscape teeming with deadly creatures. A survivor by nature, she uncovers secrets of an empire once thriving but now in decline, all while learning to manipulate mana to escape her haunting past. With extreme compatibility and a divine spark of luck, Viv is currently making her way out of the Heartlands."
+   },
+   "Mouq": {
+    "type": "character",
+    "description": "Mouq is a character mentioned by Viv, likely her superior or colleague within the French special forces. A person Viv deeply misses, Mouq represents a connection to her life on Earth, possibly a dear friend or an acquaintance she values greatly."
+   },
+   "Konna": {
+    "type": "city",
+    "description": "A city where a Gazelle helicopter was downed according to the information gathered by Viv."
+   },
+   "Necrach tentacular horror": {
+    "type": "monster",
+    "description": "An extremely dangerous undead creature that roams the dark city."
+   },
+   "Necrach City": {
+    "type": "city",
+    "description": "A city populated by dangerous creatures and remnants of a dead empire, where Viv finds herself."
+   },
+   "Black 11%": {
+    "type": "dungeon",
+    "description": "A dungeon or area with a specific mana distribution, though its exact nature is not detailed."
+   },
+   "Solfis": {
+    "type": "character",
+    "description": "Solfis is a war golem created by hedge witch Viv, serving as an interface between sentients and magical forces. Since his creation, Solfis has protected Viv and the city of Harran with unwavering dedication, aiding in her escape and pledging to safeguard them at all costs. A powerful companion and guide, he plays a crucial role in their journey, expressing his desire for Viv to become the rightful heir to the throne. With a core that can speak Baran and the ability to kill targets in painful ways, Solfis has saved Viv's life multiple times and now influences her decisions, solidifying his importance in their shared destiny."
+   },
+   "Maradoc": {
+    "type": "organization",
+    "description": "God of Travels and Mysteries, a deity associated with journeys and mysteries."
+   },
+   "Nous": {
+    "type": "character",
+    "description": "A strange god of magic who granted the outlander an interface to understand and interact with magical forces."
+   },
+   "Nice": {
+    "type": "city",
+    "description": "A city where the outlander hoped her family would bury her in case of death, though this detail is not confirmed."
+   },
+   "trolley": {
+    "type": "dungeon",
+    "description": "A cart used by engineers for moving heavy objects, which Viv repurposes to transport the golem core."
+   },
+   "Harran": {
+    "type": "city",
+    "description": "The city that Viv was imprisoned in, now under her protection according to the golem Solfis."
+   },
+   "Harrak": {
+    "type": "city",
+    "description": "The capital city of ancient Harrakan, destroyed by a black magic event that turned its population into monsters."
+   },
+   "Lanneis slave pens": {
+    "type": "dungeon",
+    "description": "A location where slaves are kept, which Viv and Solfis must reach within two days."
+   },
+   "Heartlands": {
+    "type": "dungeon",
+    "description": "Heartlands is a perilous region where Viviane has been residing, gathering resources amidst dangerous dungeons and undead creatures. From its southern reaches, it serves as both her shelter and a staging ground for an eventual escape from the hazardous fallout zone."
+   },
+   "Black Apprentice": {
+    "type": "character",
+    "description": "A path in the Hedge Witch tradition that relies more on book study compared to Viv's current path of meditation and spoken guidance."
+   },
+   "This unit": {
+    "type": "organization",
+    "description": "An AI or entity guiding Viv, possibly a part of a larger organization responsible for her training or mission."
+   },
+   "Lanneis": {
+    "type": "city",
+    "description": "A location outside the main village where salt was found in a cache."
+   },
+   "Viviane": {
+    "type": "character",
+    "description": "Viviane is a tall, beautiful black hedge witch from the Heartlands, capable of communicating in Old Imperial. With a calm detachment, she can kill revenants, and she is currently making her way out of the dangerous fallout zone."
+   },
+   "Cassia the Unbroken": {
+    "type": "character",
+    "description": "A veiled mummy whose presence Viviane feels, reminding her of the heights one individual can attain through their deeds."
+   },
+   "Neriad": {
+    "type": "character",
+    "description": "An entity mentioned in gratitude by Viviane, though no details are provided about who or what it is."
+   },
+   "Bali": {
+    "type": "character",
+    "description": "One of the horses used by Cernit's group for their journey back to the fort."
+   },
+   "Squee": {
+    "type": "character",
+    "description": "A tamed drake that emerged from a cover on the sled, speaking in a mechanical voice."
+   },
+   "Old Imperial": {
+    "type": "organization",
+    "description": "Old Imperial is a language and cultural heritage from an ancient empire, used for formal and classical education. It is also the native tongue of Cernit, hinting at a possible connection to an imperial city's history."
+   },
+   "Cernit": {
+    "type": "character",
+    "description": "Cernit, the humble commander of the fort, can only offer Viv her stipend for her services. An officer under him previously acknowledged a mistake in punishing a soldier unjustly and thanked Viv for her assistance. The fort's lieutenant, though injured in battle, still possesses life mana to heal others."
+   },
+   "Barran": {
+    "type": "organization",
+    "description": "A place where Viv will receive recognition as a mercenary after completing her service in the fort."
+   },
+   "Param": {
+    "type": "city",
+    "description": "The fragmented geopolitical environment where mercenaries are common, and Viv's letter of recommendation could open doors."
+   },
+   "Hern": {
+    "type": "character",
+    "description": "A meatbag with one cheek left who is involved in stealing knight armors."
+   },
+   "Reyd": {
+    "type": "character",
+    "description": "A scarred man who is Hern's accomplice and a coward, as he fled the scene quickly."
+   },
+   "Arthur": {
+    "type": "character",
+    "description": "The winged form of Solfis, which defeated Hern and Reyd by attacking them."
+   },
+   "Soldier Hern": {
+    "type": "character",
+    "description": "A soldier mentioned as being punished or tortured, possibly by Cernit."
+   },
+   "Benetti": {
+    "type": "character",
+    "description": "Benetti is a knight who, though grievously injured in his recent confrontation with a bear, has been tended to by the enigmatic Black Hedge Witch. In a previous role, he served as an officer, tasked with conveying Viv's critical instructions to the soldiers, ensuring their understanding of the severe consequences they faced if not obeyed. "
+   },
+   "Black Hedge Witch": {
+    "type": "character",
+    "description": "A powerful witch who has gained new abilities after a battle with a bear."
+   },
+   "Jor": {
+    "type": "character",
+    "description": "Another knight in the group, also injured but managed to remove his armor to allow for easier treatment of his wounds."
+   },
+   "Nyil": {
+    "type": "character",
+    "description": "The interface that informed Viv about the necromancer's death and her current status."
+   },
+   "Fraise": {
+    "type": "character",
+    "description": "Viv's online friend known for boundless optimism."
+   },
+   "Gevaudan": {
+    "type": "character",
+    "description": "Viv's online friend noted for sharp wit."
+   }
+  }
+ },
+ {
+  "chapter": 15,
+  "summary": "Viv was exhausted after her journey south and found herself among allies in her own room. The necromancer Nyil was dead, and she felt a rare sense of safety. Loneliness crept in as she missed her friends back home, especially Fraise's optimism and Gevaudan's wit. Arthur, the dragonette, curled up between her legs, offering warmth. Viv fell asleep, content for the first time since arriving.",
+  "chapter_entities": {
+   "Nyil": {
+    "type": "character",
+    "description": "The interface that informed Viv about the necromancer's death and her current status."
+   },
+   "Fraise": {
+    "type": "character",
+    "description": "Viv's online friend known for boundless optimism."
+   },
+   "Gevaudan": {
+    "type": "character",
+    "description": "Viv's online friend noted for sharp wit."
+   },
+   "Mouq": {
+    "type": "character",
+    "description": "A person Viv misses, likely a friend or acquaintance from Earth."
+   }
+  },
+  "all_entities": {
+   "Naskay": {
+    "type": "character",
+    "description": "A tall woman in the beige uniform of the French special forces who wakes up a reincarnated god named Viv."
+   },
+   "Viv": {
+    "type": "character",
+    "description": "Viv, a resilient corporal from the French special forces, has been freed from prison and now navigates a perilous landscape teeming with deadly creatures. A survivor by nature, she uncovers secrets of an empire once thriving but now in decline, all while learning to manipulate mana to escape her haunting past. With extreme compatibility and a divine spark of luck, Viv is currently making her way out of the Heartlands."
+   },
+   "Mouq": {
+    "type": "character",
+    "description": "Mouq is a character mentioned by Viv, likely her superior or colleague within the French special forces. A person Viv deeply misses, Mouq represents a connection to her life on Earth, possibly a dear friend or an acquaintance she values greatly."
+   },
+   "Konna": {
+    "type": "city",
+    "description": "A city where a Gazelle helicopter was downed according to the information gathered by Viv."
+   },
+   "Necrach tentacular horror": {
+    "type": "monster",
+    "description": "An extremely dangerous undead creature that roams the dark city."
+   },
+   "Necrach City": {
+    "type": "city",
+    "description": "A city populated by dangerous creatures and remnants of a dead empire, where Viv finds herself."
+   },
+   "Black 11%": {
+    "type": "dungeon",
+    "description": "A dungeon or area with a specific mana distribution, though its exact nature is not detailed."
+   },
+   "Solfis": {
+    "type": "character",
+    "description": "Solfis is a war golem created by hedge witch Viv, serving as an interface between sentients and magical forces. Since his creation, Solfis has protected Viv and the city of Harran with unwavering dedication, aiding in her escape and pledging to safeguard them at all costs. A powerful companion and guide, he plays a crucial role in their journey, expressing his desire for Viv to become the rightful heir to the throne. With a core that can speak Baran and the ability to kill targets in painful ways, Solfis has saved Viv's life multiple times and now influences her decisions, solidifying his importance in their shared destiny."
+   },
+   "Maradoc": {
+    "type": "organization",
+    "description": "God of Travels and Mysteries, a deity associated with journeys and mysteries."
+   },
+   "Nous": {
+    "type": "character",
+    "description": "A strange god of magic who granted the outlander an interface to understand and interact with magical forces."
+   },
+   "Nice": {
+    "type": "city",
+    "description": "A city where the outlander hoped her family would bury her in case of death, though this detail is not confirmed."
+   },
+   "trolley": {
+    "type": "dungeon",
+    "description": "A cart used by engineers for moving heavy objects, which Viv repurposes to transport the golem core."
+   },
+   "Harran": {
+    "type": "city",
+    "description": "The city that Viv was imprisoned in, now under her protection according to the golem Solfis."
+   },
+   "Harrak": {
+    "type": "city",
+    "description": "The capital city of ancient Harrakan, destroyed by a black magic event that turned its population into monsters."
+   },
+   "Lanneis slave pens": {
+    "type": "dungeon",
+    "description": "A location where slaves are kept, which Viv and Solfis must reach within two days."
+   },
+   "Heartlands": {
+    "type": "dungeon",
+    "description": "Heartlands is a perilous region where Viviane has been residing, gathering resources amidst dangerous dungeons and undead creatures. From its southern reaches, it serves as both her shelter and a staging ground for an eventual escape from the hazardous fallout zone."
+   },
+   "Black Apprentice": {
+    "type": "character",
+    "description": "A path in the Hedge Witch tradition that relies more on book study compared to Viv's current path of meditation and spoken guidance."
+   },
+   "This unit": {
+    "type": "organization",
+    "description": "An AI or entity guiding Viv, possibly a part of a larger organization responsible for her training or mission."
+   },
+   "Lanneis": {
+    "type": "city",
+    "description": "A location outside the main village where salt was found in a cache."
+   },
+   "Viviane": {
+    "type": "character",
+    "description": "Viviane is a tall, beautiful black hedge witch from the Heartlands, capable of communicating in Old Imperial. With a calm detachment, she can kill revenants, and she is currently making her way out of the dangerous fallout zone."
+   },
+   "Cassia the Unbroken": {
+    "type": "character",
+    "description": "A veiled mummy whose presence Viviane feels, reminding her of the heights one individual can attain through their deeds."
+   },
+   "Neriad": {
+    "type": "character",
+    "description": "An entity mentioned in gratitude by Viviane, though no details are provided about who or what it is."
+   },
+   "Bali": {
+    "type": "character",
+    "description": "One of the horses used by Cernit's group for their journey back to the fort."
+   },
+   "Squee": {
+    "type": "character",
+    "description": "A tamed drake that emerged from a cover on the sled, speaking in a mechanical voice."
+   },
+   "Old Imperial": {
+    "type": "organization",
+    "description": "Old Imperial is a language and cultural heritage from an ancient empire, used for formal and classical education. It is also the native tongue of Cernit, hinting at a possible connection to an imperial city's history."
+   },
+   "Cernit": {
+    "type": "character",
+    "description": "Cernit, the humble commander of the fort, leads a group of knights in battles against undead. Though he can only offer Viv her stipend for her services, an officer under him previously acknowledged a mistake in punishing a soldier unjustly and thanked Viv for her assistance. The fort's injured lieutenant, despite his battle wounds, still possesses life mana to heal others."
+   },
+   "Barran": {
+    "type": "organization",
+    "description": "A place where Viv will receive recognition as a mercenary after completing her service in the fort."
+   },
+   "Param": {
+    "type": "city",
+    "description": "The fragmented geopolitical environment where mercenaries are common, and Viv's letter of recommendation could open doors."
+   },
+   "Hern": {
+    "type": "character",
+    "description": "A meatbag with one cheek left who is involved in stealing knight armors."
+   },
+   "Reyd": {
+    "type": "character",
+    "description": "A scarred man who is Hern's accomplice and a coward, as he fled the scene quickly."
+   },
+   "Arthur": {
+    "type": "character",
+    "description": "The winged form of Solfis, which defeated Hern and Reyd by attacking them."
+   },
+   "Soldier Hern": {
+    "type": "character",
+    "description": "A soldier mentioned as being punished or tortured, possibly by Cernit."
+   },
+   "Benetti": {
+    "type": "character",
+    "description": "Benetti is a knight who, though grievously injured in his recent confrontation with a bear, has been tended to by the enigmatic Black Hedge Witch. In a previous role, he served as an officer, tasked with conveying Viv's critical instructions to the soldiers, ensuring their understanding of the severe consequences they faced if not obeyed. "
+   },
+   "Black Hedge Witch": {
+    "type": "character",
+    "description": "A powerful witch who has gained new abilities after a battle with a bear."
+   },
+   "Jor": {
+    "type": "character",
+    "description": "Another knight in the group, also injured but managed to remove his armor to allow for easier treatment of his wounds."
+   },
+   "Nyil": {
+    "type": "character",
+    "description": "The interface that informed Viv about the necromancer's death and her current status."
+   },
+   "Fraise": {
+    "type": "character",
+    "description": "Viv's online friend known for boundless optimism."
+   },
+   "Gevaudan": {
+    "type": "character",
+    "description": "Viv's online friend noted for sharp wit."
+   },
+   "Puppeteer": {
+    "type": "character",
+    "description": "A dangerous kind of undead that connects its appendages to revenants and uses them as shock troops, improving the abilities of connected revenants."
+   },
+   "Necromancer": {
+    "type": "character",
+    "description": "The enemy controlling the undead during the battle, using crawlers and tentacle-wielding figures to clear a path for his puppets."
+   }
+  }
+ },
+ {
+  "chapter": 16,
+  "summary": "The battle reached a stalemate until the necromancer deployed puppeteers and crawlers. Cernit ordered an attack; Viv cast 'yoink' spells, turning crawlers into bones and puppeteers into shrieking piles of ash. Smoke obscured the valley as the offensive halted. Below, revenants retreated, signaling their defeat but hinting at a future threat.",
+  "chapter_entities": {
+   "Cernit": {
+    "type": "character",
+    "description": "A knight who leads a group during a battle against undead."
+   },
+   "Puppeteer": {
+    "type": "character",
+    "description": "A dangerous kind of undead that connects its appendages to revenants and uses them as shock troops, improving the abilities of connected revenants."
+   },
+   "Necromancer": {
+    "type": "character",
+    "description": "The enemy controlling the undead during the battle, using crawlers and tentacle-wielding figures to clear a path for his puppets."
+   }
+  },
+  "all_entities": {
+   "Naskay": {
+    "type": "character",
+    "description": "A tall woman in the beige uniform of the French special forces who wakes up a reincarnated god named Viv."
+   },
+   "Viv": {
+    "type": "character",
+    "description": "Viv, a resilient corporal from the French special forces, has been freed from prison and now navigates a perilous landscape teeming with deadly creatures. A survivor by nature, she uncovers secrets of an empire once thriving but now in decline, all while learning to manipulate mana to escape her haunting past. With extreme compatibility and a divine spark of luck, Viv is currently making her way out of the Heartlands."
+   },
+   "Mouq": {
+    "type": "character",
+    "description": "Mouq is a character mentioned by Viv, likely her superior or colleague within the French special forces. A person Viv deeply misses, Mouq represents a connection to her life on Earth, possibly a dear friend or an acquaintance she values greatly."
+   },
+   "Konna": {
+    "type": "city",
+    "description": "A city where a Gazelle helicopter was downed according to the information gathered by Viv."
+   },
+   "Necrach tentacular horror": {
+    "type": "monster",
+    "description": "An extremely dangerous undead creature that roams the dark city."
+   },
+   "Necrach City": {
+    "type": "city",
+    "description": "A city populated by dangerous creatures and remnants of a dead empire, where Viv finds herself."
+   },
+   "Black 11%": {
+    "type": "dungeon",
+    "description": "A dungeon or area with a specific mana distribution, though its exact nature is not detailed."
+   },
+   "Solfis": {
+    "type": "character",
+    "description": "Solfis is a war golem created by hedge witch Viv, serving as an interface between sentients and magical forces. Since his creation, Solfis has protected Viv and the city of Harran with unwavering dedication, aiding in her escape and pledging to safeguard them at all costs. A powerful companion and guide, he plays a crucial role in their journey, expressing his desire for Viv to become the rightful heir to the throne. With a core that can speak Baran and the ability to kill targets in painful ways, Solfis has saved Viv's life multiple times and now influences her decisions, solidifying his importance in their shared destiny."
+   },
+   "Maradoc": {
+    "type": "organization",
+    "description": "God of Travels and Mysteries, a deity associated with journeys and mysteries."
+   },
+   "Nous": {
+    "type": "character",
+    "description": "A strange god of magic who granted the outlander an interface to understand and interact with magical forces."
+   },
+   "Nice": {
+    "type": "city",
+    "description": "A city where the outlander hoped her family would bury her in case of death, though this detail is not confirmed."
+   },
+   "trolley": {
+    "type": "dungeon",
+    "description": "A cart used by engineers for moving heavy objects, which Viv repurposes to transport the golem core."
+   },
+   "Harran": {
+    "type": "city",
+    "description": "The city that Viv was imprisoned in, now under her protection according to the golem Solfis."
+   },
+   "Harrak": {
+    "type": "city",
+    "description": "The capital city of ancient Harrakan, destroyed by a black magic event that turned its population into monsters."
+   },
+   "Lanneis slave pens": {
+    "type": "dungeon",
+    "description": "A location where slaves are kept, which Viv and Solfis must reach within two days."
+   },
+   "Heartlands": {
+    "type": "dungeon",
+    "description": "Heartlands is a perilous region where Viviane has been residing, gathering resources amidst dangerous dungeons and undead creatures. From its southern reaches, it serves as both her shelter and a staging ground for an eventual escape from the hazardous fallout zone."
+   },
+   "Black Apprentice": {
+    "type": "character",
+    "description": "A path in the Hedge Witch tradition that relies more on book study compared to Viv's current path of meditation and spoken guidance."
+   },
+   "This unit": {
+    "type": "organization",
+    "description": "An AI or entity guiding Viv, possibly a part of a larger organization responsible for her training or mission."
+   },
+   "Lanneis": {
+    "type": "city",
+    "description": "A location outside the main village where salt was found in a cache."
+   },
+   "Viviane": {
+    "type": "character",
+    "description": "Viviane is a tall, beautiful black hedge witch from the Heartlands, capable of communicating in Old Imperial. With a calm detachment, she can kill revenants, and she is currently making her way out of the dangerous fallout zone."
+   },
+   "Cassia the Unbroken": {
+    "type": "character",
+    "description": "A veiled mummy whose presence Viviane feels, reminding her of the heights one individual can attain through their deeds."
+   },
+   "Neriad": {
+    "type": "character",
+    "description": "An entity mentioned in gratitude by Viviane, though no details are provided about who or what it is."
+   },
+   "Bali": {
+    "type": "character",
+    "description": "One of the horses used by Cernit's group for their journey back to the fort."
+   },
+   "Squee": {
+    "type": "character",
+    "description": "A tamed drake that emerged from a cover on the sled, speaking in a mechanical voice."
+   },
+   "Old Imperial": {
+    "type": "organization",
+    "description": "Old Imperial is a language and cultural heritage from an ancient empire, used for formal and classical education. It is also the native tongue of Cernit, hinting at a possible connection to an imperial city's history."
+   },
+   "Cernit": {
+    "type": "character",
+    "description": "Cernit, the humble commander of the fort, leads a group of knights in battles against undead. Though he can only offer Viv her stipend for her services, an officer under him previously acknowledged a mistake in punishing a soldier unjustly and thanked Viv for her assistance. The fort's injured lieutenant, despite his battle wounds, still possesses life mana to heal others."
+   },
+   "Barran": {
+    "type": "organization",
+    "description": "A place where Viv will receive recognition as a mercenary after completing her service in the fort."
+   },
+   "Param": {
+    "type": "city",
+    "description": "The fragmented geopolitical environment where mercenaries are common, and Viv's letter of recommendation could open doors."
+   },
+   "Hern": {
+    "type": "character",
+    "description": "A meatbag with one cheek left who is involved in stealing knight armors."
+   },
+   "Reyd": {
+    "type": "character",
+    "description": "A scarred man who is Hern's accomplice and a coward, as he fled the scene quickly."
+   },
+   "Arthur": {
+    "type": "character",
+    "description": "The winged form of Solfis, which defeated Hern and Reyd by attacking them."
+   },
+   "Soldier Hern": {
+    "type": "character",
+    "description": "A soldier mentioned as being punished or tortured, possibly by Cernit."
+   },
+   "Benetti": {
+    "type": "character",
+    "description": "Benetti is a knight who, though grievously injured in his recent confrontation with a bear, has been tended to by the enigmatic Black Hedge Witch. In a previous role, he served as an officer, tasked with conveying Viv's critical instructions to the soldiers, ensuring their understanding of the severe consequences they faced if not obeyed. "
+   },
+   "Black Hedge Witch": {
+    "type": "character",
+    "description": "A powerful witch who has gained new abilities after a battle with a bear."
+   },
+   "Jor": {
+    "type": "character",
+    "description": "Another knight in the group, also injured but managed to remove his armor to allow for easier treatment of his wounds."
+   },
+   "Nyil": {
+    "type": "character",
+    "description": "The interface that informed Viv about the necromancer's death and her current status."
+   },
+   "Fraise": {
+    "type": "character",
+    "description": "Viv's online friend known for boundless optimism."
+   },
+   "Gevaudan": {
+    "type": "character",
+    "description": "Viv's online friend noted for sharp wit."
+   },
+   "Puppeteer": {
+    "type": "character",
+    "description": "A dangerous kind of undead that connects its appendages to revenants and uses them as shock troops, improving the abilities of connected revenants."
+   },
+   "Necromancer": {
+    "type": "character",
+    "description": "The enemy controlling the undead during the battle, using crawlers and tentacle-wielding figures to clear a path for his puppets."
+   }
+  }
+ }
+]
