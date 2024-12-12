@@ -183,6 +183,8 @@
                 
                 // Populate chapter selector
                 const chapterSelector = document.getElementById('chapterSelector');
+                // first clear it
+                chapterSelector.innerHTML = '';
                 bookData.forEach((chapter, index) => {
                     const option = document.createElement('option');
                     option.value = index;
