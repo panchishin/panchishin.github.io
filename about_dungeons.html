@@ -169,7 +169,7 @@
         // Fetch the JSON data when the page loads
         async function loadBookData() {
             try {
-                const response = await fetch(currentStory);
+                const response = await fetch("/stories/"+currentStory);
                 bookData = await response.json();
                 // some exports have "all_entities" instead of "entities".  This is a quick fix to handle that.
                 if (bookData[0].all_entities) {
