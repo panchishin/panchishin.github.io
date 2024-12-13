@@ -9,6 +9,8 @@
 
 # Mini Projects
 
+[character by chapter](/character_by_chapter.html)
+
 [rogue](/rogue/maze.html)
 
 [snake](/snake.html)
