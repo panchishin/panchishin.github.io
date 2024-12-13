@@ -1,35 +1,27 @@
-# Genetic Selection
-
-<img src="./canvas_bootcamp/genetic_selection_16x9.png" alt="Genetic Selection" width="300"/>
-
-[Genetic Selection on Youtube](https://youtu.be/qIdqVHM8YsE)
-
-[Interactive Preview on Github](https://panchishin.github.io/canvas_bootcamp/08.html)
-
-
 # Mini Projects
 
-[character by chapter](/character_by_chapter.html)
+[Character by chapter](/character_by_chapter.html)
 
-[rogue](/rogue/maze.html)
+[Rogue](/rogue/maze.html)
 
-[snake](/snake.html)
+[Snake](/snake.html)
 
-[hexis](/hexis/game.html)
+[Hexis](/hexis/game.html)
 
-[flying ace](/flyingace.html)
+[Flying ace](/flyingace.html)
 
-[jump](/jump/index.html)
+[Jump](/jump/index.html)
 
-[tensorflow.js demo](/test_tf_js.html)
+[Wave](/wave.html) [With digging](/infinite_terrain.html)
 
-[wave](/wave.html) [with digging](/infinite_terrain.html)
+[Flakes](/flakes.html)
 
-[flakes](/flakes.html)
+[Web worker](/worker/page.html)
 
-[web worker](/worker/page.html)
+[Genetic Selection](https://panchishin.github.io/canvas_bootcamp/08.html) [Youtube](https://youtu.be/qIdqVHM8YsE) 
 
-## Canvas bootcamp
+
+# Canvas bootcamp
 
 [Day 01 Colours and squares](/canvas_bootcamp/01.html)
 
