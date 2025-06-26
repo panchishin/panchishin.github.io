@@ -2,9 +2,11 @@
 
 [Character by chapter](/character_by_chapter.html)
 
+[Evolv simulation boids](/evolv/index.html)
+
 [Rogue](/rogue/maze.html)
 
-[Snake](/snake.html)
+[Snake](/snake/index.html)
 
 [Hexis](/hexis/game.html)
 
