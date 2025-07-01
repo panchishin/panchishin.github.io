@@ -84,7 +84,7 @@ export function UI() {
 
         // Render food
         if (this._game.food) {
-            this._ctx.fillStyle = 'green';
+            this._ctx.fillStyle = this._game.food.type;
             this._ctx.fillRect(this._game.food.x * this._pixelSize, this._game.food.y * this._pixelSize, this._pixelSize, this._pixelSize);
         }
 

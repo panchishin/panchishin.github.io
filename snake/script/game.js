@@ -11,6 +11,7 @@ export function SnakeGame(ui) {
     this.deaths = 0;
     this.achievements = 0;
     this.greenapples = 0;
+    this.redapples = 0;
     this.hunger = 0;
     this._gameinterval = null;
     this.speedmax = 20;
@@ -24,12 +25,17 @@ export function SnakeGame(ui) {
     this.direction = { x: 0, y: 0 };
     this.size = 1;
     this.movessincelastfood = 0;
-    this.food = { x: 10, y: 10 };
+    this.food = { x: 10, y: 10, type: 'green' };
 
     this.generateFood = function() {
         let x = Math.floor(Math.random() * 21)+2;
         let y = Math.floor(Math.random() * 21)+2;
-        this.food = { x: x, y: y };
+        let foodType = 'green';
+        const totalApplesEaten = this.greenapples + this.redapples;
+        if (totalApplesEaten % 10 === 0 && totalApplesEaten > 0) {
+            foodType = 'red';
+        }
+        this.food = { x: x, y: y, type: foodType };
     };
 
     this.moveSnake = function() {
@@ -43,17 +49,25 @@ export function SnakeGame(ui) {
         if (this.food && this.food.x === newX && this.food.y === newY) {
             this.size++;
             this.movessincelastfood = 0;
-            this.generateFood();
-            this.updateFPS();
-            this.greenapples++;
-            if (this.greenapples == 1) {
-                this._ui.addMessage('You ate a green apple');
-            }
-            if (this.greenapples == 10) {
-                this._ui.addMessage('You\'ve eaten a few apples, congratulations.  You are a true master of the apple eating arts (no achievment)');
+
+            if (this.food.type === 'red') {
+                this.redapples++;
+                this._ui.addMessage('You ate a red apple!  Wow, the colours!');
+                this._ui.updateStat('redapples', this.redapples);
+            } else {
+                this.greenapples++;
+                if (this.greenapples == 1) {
+                    this._ui.addMessage('You ate a green apple');
+                }
+                if (this.greenapples == 10) {
+                    this._ui.addMessage('You\'ve eaten a few apples, congratulations.  You are a true master of the apple eating arts (no achievment)');
+                }
+
+                this._ui.updateStat('greenapples', this.greenapples);
             }
 
-            this._ui.updateStat('greenapples', this.greenapples);
+            this.generateFood();
+            this.updateFPS();
 
             return true;
         } else {
