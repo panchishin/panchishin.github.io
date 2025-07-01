@@ -98,7 +98,11 @@ export function UI() {
             this._ctx.font = '48px Arial';
             this.fillText('Dead Snake', 100, 100);
             this._ctx.font = '24px Arial';
-            this.fillText("press 'r' to respawn", 130, 150);
+            if (this._game.autoRespawn > 0) {
+                this.fillText("Respawning in 5 seconds...", 100, 150);
+            } else {
+                this.fillText("press 'r' to respawn", 130, 150);
+            }
         }
     };
 

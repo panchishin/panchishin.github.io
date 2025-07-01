@@ -12,6 +12,10 @@ export function SnakeGame(ui) {
     this.achievements = 0;
     this.greenapples = 0;
     this.redapples = 0;
+    this.wallsavoided = 0;
+    this.avoidWalls = 0;
+    this.autoRespawn = 0;
+    this.autoMove = false;
     this.hunger = 0;
     this._gameinterval = null;
     this.speedmax = 20;
@@ -126,6 +130,20 @@ export function SnakeGame(ui) {
     };
 
     this.updateGameState = function() {
+        let nextX = this.snake[0].x + this.direction.x;
+        let nextY = this.snake[0].y + this.direction.y;
+
+        if (this.avoidWalls > 0 && this.checkWallCollision(nextX, nextY)) {
+            this.wallsavoided++;
+            this._ui.updateStat('wallsavoided', this.wallsavoided);
+            // Turn right logic
+            const { x, y } = this.direction;
+            if (x === 1) this.direction = { x: 0, y: 1 }; // Right -> Down
+            else if (x === -1) this.direction = { x: 0, y: -1 }; // Left -> Up
+            else if (y === 1) this.direction = { x: -1, y: 0 }; // Down -> Left
+            else if (y === -1) this.direction = { x: 1, y: 0 }; // Up -> Right
+        }
+
         const { newX, newY } = this.moveSnake();
 
         if (!this.checkFoodCollision(newX, newY)) {
@@ -137,6 +155,11 @@ export function SnakeGame(ui) {
         if (collision) {
             this.incrementDeaths();
             this.gameover = true;
+            if (this.autoRespawn > 0) {
+                setTimeout(() => {
+                    this.initializeGameState();
+                }, 5000);
+            }
             return;
         } else {
             this.updateStepsAndSize();
@@ -171,6 +194,9 @@ export function SnakeGame(ui) {
         ];
         this.gameover = false;
         this.direction = { x: 0, y: 0 };
+        if (this.autoMove) {
+            this.direction = { x: 0, y: -1 };
+        }
         this.size = 3;
         this.movessincelastfood = 0;
         this.generateFood();

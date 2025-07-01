@@ -10,6 +10,18 @@ function steadyUpgrade(game) {
     game.updateFPS();
 }
 
+function wallUpgrade(game) {
+    game.avoidWalls++;
+}
+
+function respawnUpgrade(game) {
+    game.autoRespawn++;
+}
+
+function moveUpgrade(game) {
+    game.autoMove = true;
+}
+
 var fullUpgradeList = {
     'speed1' : {
         name: 'Bigger and Faster',
@@ -58,6 +70,31 @@ var fullUpgradeList = {
             hunger: 10,
         },
         applyEffect: steadyUpgrade
+    },
+    'wall1' : {
+        name: 'Avoid walls level 1',
+        description: 'Automatically turn right instead of hitting wall',
+        cost: {
+            redapples: 1,
+        },
+        applyEffect: wallUpgrade
+    },
+    'respawn1' : {
+        name: 'Auto Respawn',
+        description: 'Automatically respawn in 5 seconds',
+        cost: {
+            redapples: 1,
+        },
+        applyEffect: respawnUpgrade
+    },
+    'move1' : {
+        name: 'Auto Move',
+        description: 'Automatically start moving up when respawning',
+        cost: {
+            greenapples: 10,
+            redapples: 1,
+        },
+        applyEffect: moveUpgrade
     }    
 }
 
