@@ -1,0 +1,606 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Markov Chain Text Demo</title>
+  <style>
+    :root {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      --bg: #ffffff;
+      --fg: #111827;
+      --muted: #4b5563;
+      --surface: #ffffff;
+      --border: #d1d5db;
+      --button-bg: #f3f4f6;
+      --button-fg: #111827;
+    }
+    body { margin: 24px; max-width: 900px; background: var(--bg); color: var(--fg); }
+    body[data-theme="dark"] {
+      --bg: #111827;
+      --fg: #f9fafb;
+      --muted: #9ca3af;
+      --surface: #1f2937;
+      --border: #374151;
+      --button-bg: #374151;
+      --button-fg: #f9fafb;
+    }
+    body[data-theme="plant"] {
+      --bg: #f1f8f1;
+      --fg: #1f3a1f;
+      --muted: #496749;
+      --surface: #ffffff;
+      --border: #8fb08f;
+      --button-bg: #d9ecd9;
+      --button-fg: #1f3a1f;
+    }
+    body[data-theme="retro"] {
+      --bg: #f6ecd2;
+      --fg: #2e1f14;
+      --muted: #6e4d32;
+      --surface: #fff6e8;
+      --border: #a97847;
+      --button-bg: #f2d8a7;
+      --button-fg: #2e1f14;
+    }
+    h1 { margin-bottom: 8px; }
+    .row { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; margin: 10px 0; }
+    .sources { display: flex; flex-wrap: wrap; gap: 12px; margin: 8px 0 14px; }
+    textarea, input, select, button {
+      box-sizing: border-box;
+      background: var(--surface);
+      color: var(--fg);
+      border: 1px solid var(--border);
+    }
+    textarea { width: 100%; min-height: 220px; padding: 10px; font: 14px/1.5 ui-monospace, SFMono-Regular, Menlo, monospace; }
+    button { padding: 8px 14px; cursor: pointer; background: var(--button-bg); color: var(--button-fg); }
+    .status {
+      margin-top: 10px;
+      color: var(--fg);
+      white-space: pre-wrap;
+      max-width: 100%;
+      overflow-wrap: anywhere;
+      word-break: break-word;
+    }
+    .muted { color: var(--muted); font-size: 13px; }
+    .theme-corner {
+      position: fixed;
+      right: 16px;
+      bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 10px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+    }
+  </style>
+</head>
+<body>
+  <h1>Markov Chain Text Generator</h1>
+  <p class="muted">All text is lowercased, only [a-z '.,?!] are kept, and word/BPE modes split punctuation into separate tokens.</p>
+
+  <div>
+    <strong>Source material:</strong>
+    <div id="sources" class="sources"></div>
+  </div>
+
+  <div class="row">
+    <label for="tokenMode">Tokenization:</label>
+    <select id="tokenMode">
+      <option value="word" selected>Word</option>
+      <option value="character">Character</option>
+      <option value="bpe">Byte Pair Encoding</option>
+    </select>
+
+    <label for="lookupLength">Lookup length:</label>
+    <input id="lookupLength" type="number" min="1" max="10" value="6" />
+  </div>
+
+  <div class="row">
+    <button id="trainBtn">Train</button>
+  </div>
+
+  <div id="postTrainArea" hidden>
+    <div class="row">
+    <button id="continueBtn">Generate (+100 tokens)</button>
+    <button id="clearBtn">Clear</button>
+    <label for="temperature">Temperature:</label>
+    <select id="temperature">
+      <option value="0.0">Deterministic (0.0)</option>
+      <option value="0.3">Predictable (0.3)</option>
+      <option value="0.6" selected>Reserved (0.6)</option>
+      <option value="1.0">Typical (1.0)</option>
+      <option value="1.3">Whimsy (1.3)</option>
+      <option value="1.6">Manic (1.6)</option>
+      <option value="2.0">Random (2.0)</option>
+    </select>
+    <button id="previewBtn" hidden>Preview Tokens</button>
+    </div>
+
+    <label for="writingField"><strong>Writing field / output</strong></label>
+    <textarea id="writingField" placeholder="Start typing here, then click Generate..."></textarea>
+    <div class="theme-corner">
+      <label for="theme">Theme:</label>
+      <select id="theme">
+        <option value="white">white</option>
+        <option value="dark">dark</option>
+        <option value="plant">plant</option>
+        <option value="retro" selected>retro</option>
+      </select>
+    </div>
+  </div>
+  <div id="status" class="status">Model not trained yet.</div>
+
+  <script>
+    const SOURCE_FILES = ["alice.txt", "answers.txt", "inventions.txt", "moby.txt", "pride.txt"];
+    const KEY_SEP = "\u0001";
+    const BPE_VOCAB_TARGET = 500;
+    const SOURCE_START_MARKER = "== START ==";
+    const SOURCE_END_MARKER = "== END ==";
+
+    const elements = {
+      tokenMode: document.getElementById("tokenMode"),
+      lookupLength: document.getElementById("lookupLength"),
+      temperature: document.getElementById("temperature"),
+      theme: document.getElementById("theme"),
+      postTrainArea: document.getElementById("postTrainArea"),
+      sources: document.getElementById("sources"),
+      trainBtn: document.getElementById("trainBtn"),
+      continueBtn: document.getElementById("continueBtn"),
+      clearBtn: document.getElementById("clearBtn"),
+      previewBtn: document.getElementById("previewBtn"),
+      writingField: document.getElementById("writingField"),
+      status: document.getElementById("status")
+    };
+
+    const state = {
+      model: new Map(),
+      keys: [],
+      bpeMerges: [],
+      bpePieceTokenCache: new Map(),
+      bpeVocabSize: 0,
+      previewTokens: [],
+      trained: false,
+      tokenMode: "word",
+      lookupLength: 6
+    };
+
+    function applyTheme(theme) {
+      const validTheme = ["white", "dark", "plant", "retro"].includes(theme) ? theme : "white";
+      document.body.setAttribute("data-theme", validTheme);
+    }
+
+    function renderSourceCheckboxes() {
+      for (const file of SOURCE_FILES) {
+        const label = document.createElement("label");
+        const box = document.createElement("input");
+        box.type = "checkbox";
+        box.value = file;
+        box.checked = true;
+        label.appendChild(box);
+        label.append(" " + file);
+        elements.sources.appendChild(label);
+      }
+    }
+
+    function normalizeSingleQuotes(text) {
+      return text.replace(/[‘’`´]/g, "'");
+    }
+
+    function normalizeCharacterText(text) {
+      return normalizeSingleQuotes(text)
+        .toLowerCase()
+        .replace(/[^a-z '\.,?!]/g, " ")
+        .replace(/ +/g, " ")
+        .trim();
+    }
+
+    function normalizeWordText(text) {
+      return normalizeSingleQuotes(text)
+        .toLowerCase()
+        .replace(/[^a-z '\.,?!]/g, " ")
+        .replace(/([^a-z])\1+/g, "$1")
+        .replace(/([^a-z\s])/g, " $1 ")
+        .replace(/ +/g, " ")
+        .trim();
+    }
+
+    function normalizeForMode(text, mode) {
+      return mode === "character" ? normalizeCharacterText(text) : normalizeWordText(text);
+    }
+
+    function splitPieces(normalized) {
+      return normalized.split(/\s+/).filter(Boolean);
+    }
+
+    function splitBPEPiecesWithSpaces(normalized) {
+      return normalized.match(/[^ ]+| +/g) || [];
+    }
+
+    function extractMarkedSourceText(text, fileName) {
+      const startIndex = text.indexOf(SOURCE_START_MARKER);
+      if (startIndex === -1) {
+        throw new Error(`${fileName} is missing ${SOURCE_START_MARKER}`);
+      }
+      const contentStartIndex = startIndex + SOURCE_START_MARKER.length;
+      const endIndex = text.indexOf(SOURCE_END_MARKER, contentStartIndex);
+      if (endIndex === -1) {
+        throw new Error(`${fileName} is missing ${SOURCE_END_MARKER}`);
+      }
+      return text.slice(contentStartIndex, endIndex);
+    }
+
+    function applyMergeToSequence(sequence, left, right, merged) {
+      const next = [];
+      for (let i = 0; i < sequence.length; i++) {
+        if (i < sequence.length - 1 && sequence[i] === left && sequence[i + 1] === right) {
+          next.push(merged);
+          i++;
+        } else {
+          next.push(sequence[i]);
+        }
+      }
+      return next;
+    }
+
+    function trainBPEMergesFromPieces(pieces, targetVocabSize) {
+      const pieceFrequencies = new Map();
+      for (const piece of pieces) {
+        pieceFrequencies.set(piece, (pieceFrequencies.get(piece) || 0) + 1);
+      }
+
+      const sequences = [];
+      const sequenceWeights = [];
+      for (const [piece, count] of pieceFrequencies.entries()) {
+        sequences.push(Array.from(piece));
+        sequenceWeights.push(count);
+      }
+      const vocab = new Set();
+      for (const seq of sequences) {
+        for (const token of seq) vocab.add(token);
+      }
+      const merges = [];
+
+      while (vocab.size < targetVocabSize) {
+        const pairCounts = new Map();
+        for (let s = 0; s < sequences.length; s++) {
+          const seq = sequences[s];
+          const weight = sequenceWeights[s];
+          for (let i = 0; i < seq.length - 1; i++) {
+            const pairKey = `${seq[i]}${KEY_SEP}${seq[i + 1]}`;
+            pairCounts.set(pairKey, (pairCounts.get(pairKey) || 0) + weight);
+          }
+        }
+        let bestPairKey = null;
+        let bestCount = 1;
+        for (const [pairKey, count] of pairCounts.entries()) {
+          if (count > bestCount) {
+            bestCount = count;
+            bestPairKey = pairKey;
+          }
+        }
+        if (!bestPairKey) break;
+
+        const [left, right] = bestPairKey.split(KEY_SEP);
+        const merged = left + right;
+        merges.push([left, right, merged]);
+        vocab.add(merged);
+
+        for (let i = 0; i < sequences.length; i++) {
+          sequences[i] = applyMergeToSequence(sequences[i], left, right, merged);
+        }
+      }
+
+      return { merges, vocabSize: vocab.size };
+    }
+
+    function tokenizeBPENormalized(normalized, merges, pieceTokenCache = null) {
+      const pieces = splitBPEPiecesWithSpaces(normalized);
+      const tokens = [];
+      for (const piece of pieces) {
+        if (piece.startsWith(" ")) {
+          tokens.push(piece);
+          continue;
+        }
+        if (pieceTokenCache && pieceTokenCache.has(piece)) {
+          tokens.push(...pieceTokenCache.get(piece));
+          continue;
+        }
+        let sequence = Array.from(piece);
+        for (const [left, right, merged] of merges) {
+          sequence = applyMergeToSequence(sequence, left, right, merged);
+        }
+        if (pieceTokenCache) pieceTokenCache.set(piece, sequence.slice());
+        tokens.push(...sequence);
+      }
+      return tokens;
+    }
+
+    function tokenizeNormalized(normalized, mode, bpeMerges = [], bpePieceTokenCache = null) {
+      if (mode === "character") return Array.from(normalized);
+      if (mode === "bpe") return tokenizeBPENormalized(normalized, bpeMerges, bpePieceTokenCache);
+      return splitPieces(normalized);
+    }
+
+    function tokenize(text, mode, bpeMerges = [], bpePieceTokenCache = null) {
+      return tokenizeNormalized(normalizeForMode(text, mode), mode, bpeMerges, bpePieceTokenCache);
+    }
+
+    function buildKey(tokens, startIndex, lookupLength) {
+      if (lookupLength === 1) return tokens[startIndex];
+      return tokens.slice(startIndex, startIndex + lookupLength).join(KEY_SEP);
+    }
+
+    function advanceKey(key, nextToken, lookupLength) {
+      if (lookupLength === 1) return nextToken;
+      const sepIndex = key.indexOf(KEY_SEP);
+      if (sepIndex === -1) return nextToken;
+      return `${key.slice(sepIndex + KEY_SEP.length)}${KEY_SEP}${nextToken}`;
+    }
+
+    function addTransitions(model, tokens, lookupLength) {
+      if (tokens.length <= lookupLength) return;
+      let key = buildKey(tokens, 0, lookupLength);
+      for (let i = 0; i + lookupLength < tokens.length; i++) {
+        const nextToken = tokens[i + lookupLength];
+        let outcomes = model.get(key);
+        if (!outcomes) {
+          outcomes = new Map();
+          model.set(key, outcomes);
+        }
+        outcomes.set(nextToken, (outcomes.get(nextToken) || 0) + 1);
+        if (i + lookupLength + 1 < tokens.length) {
+          key = advanceKey(key, nextToken, lookupLength);
+        }
+      }
+    }
+
+    function weightedPick(outcomes, temperature) {
+      if (temperature <= 0) {
+        let bestCount = -Infinity;
+        let bestTokens = [];
+        for (const [token, count] of outcomes.entries()) {
+          if (count > bestCount) {
+            bestCount = count;
+            bestTokens = [token];
+          } else if (count === bestCount) {
+            bestTokens.push(token);
+          }
+        }
+        if (!bestTokens.length) return null;
+        return bestTokens[Math.floor(Math.random() * bestTokens.length)];
+      }
+
+      const exponent = 1 / temperature;
+      const weighted = [];
+      let total = 0;
+      for (const [token, count] of outcomes.entries()) {
+        const adjusted = Math.pow(count, exponent);
+        weighted.push([token, adjusted]);
+        total += adjusted;
+      }
+      if (total <= 0) return null;
+      let r = Math.random() * total;
+      for (const [token, adjusted] of weighted) {
+        r -= adjusted;
+        if (r < 0) return token;
+      }
+      return null;
+    }
+
+    function selectedSourceFiles() {
+      return Array.from(elements.sources.querySelectorAll("input[type='checkbox']:checked")).map((el) => el.value);
+    }
+
+    function updatePreviewButtonVisibility() {
+      elements.previewBtn.hidden = !state.trained;
+    }
+
+    function setTrainButtonVisible(visible) {
+      elements.trainBtn.hidden = !visible;
+    }
+
+    function setPostTrainAreaVisible(visible) {
+      elements.postTrainArea.hidden = !visible;
+    }
+
+    function markTrainingStale() {
+      state.trained = false;
+      setTrainButtonVisible(true);
+      updatePreviewButtonVisibility();
+    }
+
+    function previewModelTokens() {
+      if (!state.trained) return;
+      const preview = state.previewTokens.slice(0, 50);
+      if (!preview.length) {
+        elements.status.textContent = "No preview tokens available for this model.";
+        return;
+      }
+      elements.status.textContent = `First ${preview.length} tokens:\n${JSON.stringify(preview)}`;
+    }
+
+    async function trainModel() {
+      const tokenMode = elements.tokenMode.value;
+      const lookupLength = Number(elements.lookupLength.value);
+      const files = selectedSourceFiles();
+      const trainingStartMs = (typeof performance !== "undefined" && typeof performance.now === "function")
+        ? performance.now()
+        : Date.now();
+
+      if (!files.length) {
+        elements.status.textContent = "Pick at least one source file.";
+        return;
+      }
+      if (!Number.isInteger(lookupLength) || lookupLength < 1 || lookupLength > 10) {
+        elements.status.textContent = "Lookup length must be an integer from 1 to 10.";
+        return;
+      }
+
+      setPostTrainAreaVisible(false);
+      elements.trainBtn.disabled = true;
+      elements.status.textContent = tokenMode === "bpe"
+        ? "Training.  BPE can take 20 seconds..."
+        : "Training.  This can take 5 seconds...";
+
+      const model = new Map();
+      const normalizedByFile = [];
+      const importedCharCounts = [];
+      const previewTokens = [];
+      let totalTokens = 0;
+      let usedFiles = 0;
+
+      try {
+        for (const file of files) {
+          const response = await fetch(file);
+          if (!response.ok) throw new Error(`Could not load ${file}`);
+          const text = await response.text();
+          const markedText = extractMarkedSourceText(text, file);
+          importedCharCounts.push({ file, count: markedText.length });
+          const normalized = normalizeForMode(markedText, tokenMode);
+          normalizedByFile.push(normalized);
+          usedFiles++;
+        }
+      } catch (error) {
+        elements.status.textContent = `Training failed: ${error.message}\nTip: run this from a local web server, not file://`;
+        elements.trainBtn.disabled = false;
+        setTrainButtonVisible(true);
+        setPostTrainAreaVisible(true);
+        return;
+      }
+
+      let bpeMerges = [];
+      let bpeVocabSize = 0;
+      const bpePieceTokenCache = tokenMode === "bpe" ? new Map() : null;
+      if (tokenMode === "bpe") {
+        const allPieces = normalizedByFile.flatMap((normalized) => splitBPEPiecesWithSpaces(normalized))
+          .filter((piece) => !piece.startsWith(" "));
+        const trained = trainBPEMergesFromPieces(allPieces, BPE_VOCAB_TARGET);
+        bpeMerges = trained.merges;
+        bpeVocabSize = trained.vocabSize;
+      }
+
+      for (const normalized of normalizedByFile) {
+        const tokens = tokenizeNormalized(normalized, tokenMode, bpeMerges, bpePieceTokenCache);
+        if (previewTokens.length < 50) {
+          const needed = 50 - previewTokens.length;
+          previewTokens.push(...tokens.slice(0, needed));
+        }
+        if (tokens.length <= lookupLength) continue;
+        addTransitions(model, tokens, lookupLength);
+        totalTokens += tokens.length;
+      }
+
+      state.model = model;
+      state.keys = Array.from(model.keys());
+      state.bpeMerges = bpeMerges;
+      state.bpePieceTokenCache = bpePieceTokenCache || new Map();
+      state.bpeVocabSize = bpeVocabSize;
+      state.previewTokens = previewTokens;
+      state.trained = state.keys.length > 0;
+      state.tokenMode = tokenMode;
+      state.lookupLength = lookupLength;
+      updatePreviewButtonVisibility();
+      const trainingEndMs = (typeof performance !== "undefined" && typeof performance.now === "function")
+        ? performance.now()
+        : Date.now();
+      const trainingDurationSec = ((trainingEndMs - trainingStartMs) / 1000).toFixed(2);
+
+      if (!state.trained) {
+        elements.status.textContent = `No transitions were learned. Try smaller lookup length or more files.\nTraining time: ${trainingDurationSec}s`;
+      } else {
+        const bpeInfo = tokenMode === "bpe"
+          ? `\nBPE merges: ${state.bpeMerges.length}\nBPE vocab size: ${state.bpeVocabSize}`
+          : "";
+        elements.status.textContent =
+          `Training complete.\nFiles used: ${usedFiles}/${files.length}\nTokens read: ${totalTokens}\nStates learned: ${state.keys.length}${bpeInfo}\nTraining time: ${trainingDurationSec}s`;
+      }
+      elements.trainBtn.disabled = false;
+      setTrainButtonVisible(!state.trained);
+      setPostTrainAreaVisible(true);
+    }
+
+    async function generateNext100() {
+      if (!state.trained) {
+        await trainModel();
+        if (!state.trained) return;
+      }
+      const temperature = Number(elements.temperature.value);
+      if (Number.isNaN(temperature) || temperature < 0 || temperature > 2) {
+        elements.status.textContent = "Temperature must be a number from 0.0 to 2.0.";
+        return;
+      }
+
+      let baseText = normalizeForMode(elements.writingField.value, state.tokenMode);
+      let tokens = tokenizeNormalized(baseText, state.tokenMode, state.bpeMerges, state.bpePieceTokenCache);
+      let seededFromRandomKey = false;
+
+      if (!tokens.length) {
+        if (!state.keys.length) {
+          elements.status.textContent = "Model has no keys to seed from.";
+          return;
+        }
+        const randomKey = state.keys[Math.floor(Math.random() * state.keys.length)];
+        const seedTokens = randomKey.split(KEY_SEP);
+        tokens = seedTokens.slice();
+        baseText = state.tokenMode === "character" || state.tokenMode === "bpe"
+          ? seedTokens.join("")
+          : seedTokens.join(" ");
+        seededFromRandomKey = true;
+      }
+
+      elements.writingField.value = baseText;
+      const generated = [];
+      let key = null;
+      if (tokens.length >= state.lookupLength) {
+        key = buildKey(tokens, tokens.length - state.lookupLength, state.lookupLength);
+      }
+
+      for (let i = 0; i < 100; i++) {
+        if (tokens.length < state.lookupLength || key == null) break;
+        const outcomes = state.model.get(key);
+        if (!outcomes) break;
+        const nextToken = weightedPick(outcomes, temperature);
+        if (nextToken == null) break;
+        tokens.push(nextToken);
+        generated.push(nextToken);
+        key = advanceKey(key, nextToken, state.lookupLength);
+      }
+
+      if (!generated.length) {
+        elements.status.textContent = seededFromRandomKey
+          ? "Started from a random key, but no continuation was found."
+          : "No continuation found for the current context. Try changing the prompt text.";
+        return;
+      }
+
+      if (state.tokenMode === "character" || state.tokenMode === "bpe") {
+        elements.writingField.value = baseText + generated.join("");
+      } else {
+        const prefix = baseText.trimEnd();
+        const addition = generated.join(" ");
+        elements.writingField.value = prefix ? `${prefix} ${addition}` : addition;
+      }
+
+      elements.status.textContent = seededFromRandomKey
+        ? `Seeded from a random key and generated ${generated.length} token(s).`
+        : `Generated ${generated.length} token(s).`;
+    }
+
+    elements.trainBtn.addEventListener("click", trainModel);
+    elements.continueBtn.addEventListener("click", generateNext100);
+    elements.tokenMode.addEventListener("change", markTrainingStale);
+    elements.lookupLength.addEventListener("change", markTrainingStale);
+    elements.theme.addEventListener("change", () => applyTheme(elements.theme.value));
+    elements.clearBtn.addEventListener("click", () => {
+      elements.writingField.value = "";
+      elements.status.textContent = "Output cleared.";
+    });
+    elements.previewBtn.addEventListener("click", previewModelTokens);
+    applyTheme(elements.theme.value);
+    updatePreviewButtonVisibility();
+    renderSourceCheckboxes();
+  </script>
+</body>
+</html>
