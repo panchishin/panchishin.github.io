@@ -77,7 +77,7 @@
   </style>
 </head>
 <body>
-  <h1>Markov Chain Text Generator</h1>
+  <h1>Markov Chain Text Generator v2</h1>
   <p class="muted">All text is lowercased, only [a-z '.,?!] are kept, and word/BPE modes split punctuation into separate tokens.</p>
 
   <div>
@@ -94,7 +94,7 @@
     </select>
 
     <label for="lookupLength">Lookup length:</label>
-    <input id="lookupLength" type="number" min="1" max="10" value="6" />
+    <input id="lookupLength" type="number" min="1" max="10" value="3" />
   </div>
 
   <div class="row">
@@ -178,6 +178,7 @@
         box.type = "checkbox";
         box.value = file;
         box.checked = true;
+        box.addEventListener("change", markTrainingStale);
         label.appendChild(box);
         label.append(" " + file);
         elements.sources.appendChild(label);
@@ -510,11 +511,26 @@
       if (!state.trained) {
         elements.status.textContent = `No transitions were learned. Try smaller lookup length or more files.\nTraining time: ${trainingDurationSec}s`;
       } else {
-        const bpeInfo = tokenMode === "bpe"
-          ? `\nBPE merges: ${state.bpeMerges.length}\nBPE vocab size: ${state.bpeVocabSize}`
-          : "";
+        const totalBranchesFromKeys = state.keys.reduce((sum, key) => sum + state.model.get(key).size, 0);
+        const averageBranches = (totalBranchesFromKeys / state.keys.length).toFixed(2);
+        let branchingDescription = "";
+        switch (true) {
+          case averageBranches < 1.001: branchingDescription = "Abysimal.  Pretty much will quote the text.  Lower lookup length or add files."; break;
+          case averageBranches < 1.02: branchingDescription = "Very low.  Nearly always picks the same next token.  Lower lookup length or add files."; break;
+          case averageBranches < 1.10: branchingDescription = "Low.  Some output variation but not much.  May make some sense."; break;
+          case averageBranches < 1.5:   branchingDescription = "Moderate.  Quite a bit of output variation."; break;
+          case averageBranches < 2:   branchingDescription = "High.  Output will be quite variable but probably nonsensicle.  Raise the lookup length."; break;
+          default:
+            branchingDescription = "Very high.  Output will probably seem random. Raise the lookup length.";
+        }
         elements.status.textContent =
-          `Training complete.\nFiles used: ${usedFiles}/${files.length}\nTokens read: ${totalTokens}\nStates learned: ${state.keys.length}${bpeInfo}\nTraining time: ${trainingDurationSec}s`;
+          `Training complete.\n` +
+          `Files used: ${usedFiles}/${files.length}\n` + 
+          `Tokens read: ${totalTokens}\n` + 
+          `States learned: ${state.keys.length}\n` +
+          `Average branches per state: ${averageBranches}\n` +
+          `Average branching description: ${branchingDescription}\n` +
+          `Training time: ${trainingDurationSec}s`;
       }
       elements.trainBtn.disabled = false;
       setTrainButtonVisible(!state.trained);
@@ -588,7 +604,10 @@
         : `Generated ${generated.length} token(s).`;
     }
 
-    elements.trainBtn.addEventListener("click", trainModel);
+    elements.trainBtn.addEventListener("click", () => {
+      elements.writingField.value = "";
+      trainModel();
+    });
     elements.continueBtn.addEventListener("click", generateNext100);
     elements.tokenMode.addEventListener("change", markTrainingStale);
     elements.lookupLength.addEventListener("change", markTrainingStale);
