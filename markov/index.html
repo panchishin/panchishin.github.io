@@ -15,7 +15,7 @@
       --button-bg: #f3f4f6;
       --button-fg: #111827;
     }
-    body { margin: 24px; max-width: 900px; background: var(--bg); color: var(--fg); }
+    body { margin: 24px; max-width: 100%; background: var(--bg); color: var(--fg); }
     body[data-theme="dark"] {
       --bg: #111827;
       --fg: #f9fafb;
@@ -52,7 +52,7 @@
       color: var(--fg);
       border: 1px solid var(--border);
     }
-    textarea { width: 100%; min-height: 220px; padding: 10px; font: 14px/1.5 ui-monospace, SFMono-Regular, Menlo, monospace; }
+    textarea { width: 100%; min-height: 0; padding: 10px; font: 14px/1.5 ui-monospace, SFMono-Regular, Menlo, monospace; }
     button { padding: 8px 14px; cursor: pointer; background: var(--button-bg); color: var(--button-fg); }
     .status {
       margin-top: 10px;
@@ -61,6 +61,13 @@
       max-width: 100%;
       overflow-wrap: anywhere;
       word-break: break-word;
+    }
+    .token-preview-list { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+    .token-chip {
+      display: inline-block;
+      border: 1px solid var(--border);
+      padding: 2px 6px;
+      background: var(--surface);
     }
     .muted { color: var(--muted); font-size: 13px; }
     .theme-corner {
@@ -73,12 +80,132 @@
       padding: 8px 10px;
       background: var(--surface);
       border: 1px solid var(--border);
+      z-index: 100;
+    }
+    .experiments-btn {
+      position: fixed;
+      top: 16px;
+      right: 16px;
+      z-index: 100;
+      padding: 10px 18px;
+      font-weight: bold;
+      background: var(--button-bg);
+      color: var(--button-fg);
+      border: 1px solid var(--border);
+      cursor: pointer;
+    }
+    .experiments-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: var(--bg);
+      color: var(--fg);
+      z-index: 50;
+      overflow-y: auto;
+      padding: 60px 24px 80px;
+    }
+    .experiments-overlay.visible { display: block; }
+    .experiment-card {
+      max-width: 720px;
+      margin: 0 auto 32px;
+      padding: 20px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+    }
+    .experiment-card h2 { margin: 0 0 12px; }
+    .experiment-card p { line-height: 1.6; margin: 0 0 16px; }
+    .experiment-card .try-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .experiment-card .try-btn {
+      padding: 10px 24px;
+      font-weight: bold;
+      cursor: pointer;
+      background: var(--button-bg);
+      color: var(--button-fg);
+      border: 1px solid var(--border);
+    }
+    .experiment-card .completed-badge {
+      display: none;
+      color: green;
+      font-weight: bold;
+    }
+    .experiment-card .completed-badge.visible { display: inline; }
+    .experiment-hint {
+      display: none;
+      position: fixed;
+      top: 56px;
+      right: 16px;
+      z-index: 100;
+      width: 400px;
+      padding: 10px 14px;
+      background: var(--surface);
+      color: var(--fg);
+      border: 1px solid var(--border);
+      font-size: 13px;
+      line-height: 1.5;
+      overflow: hidden;
+      max-height: 400px;
+      transition: max-height 1.2s ease;
+    }
+    .experiment-hint.visible { display: block; }
+    .experiment-hint.collapsed {
+      max-height: 2em;
+      transition: max-height 1.2s ease;
+      /* cursor: pointer; */
     }
   </style>
 </head>
 <body>
+  <button id="experimentsBtn" class="experiments-btn">Experiments</button>
+  <div id="experimentHint" class="experiment-hint"></div>
+
+  <div id="experimentsOverlay" class="experiments-overlay">
+    <h1 style="max-width:720px;margin:0 auto 24px;">Fun Things to Try</h1>
+
+    <div class="experiment-card">
+      <h2>Memorization Demo</h2>
+      <p>Use Word Tokenization with length 6. Click calculate longest deterministic chain. Click the first entry in the list. Keep clicking Generate until the top continuations has something other than 100%. This whole passage is word-for-word a copy of the source material. In other words, no creativity. When we look at groups of 6 words to predict the next word, there becomes very very few unique outcomes.</p>
+      <div class="try-row">
+        <button class="try-btn" data-mode="word" data-length="6">Try</button>
+        <span class="completed-badge">&#10003; Complete!</span>
+      </div>
+    </div>
+
+    <div class="experiment-card">
+      <h2>Spelling with a Super Small Model</h2>
+      <p>Use Character Tokenization with length 4. This model can only see the last 4 characters when guessing the next 1 character. That means lots of time it can't even see whole words. Even so, it does a pretty good job of spelling long words correctly. For very long words, it makes up plausible looking new words sometimes. You can see more or less made up words by setting the temperature higher up to Random or lower down to Deterministic.</p>
+      <div class="try-row">
+        <button class="try-btn" data-mode="character" data-length="4">Try</button>
+        <span class="completed-badge">&#10003; Complete!</span>
+      </div>
+    </div>
+
+    <div class="experiment-card">
+      <h2>Robust Generation with BPE</h2>
+      <p>BPE (Byte Pair Encoding) uses a dynamic method to extract out frequently used sequences, such as "ing" and "sh", and using them as a single concept. This is more flexible than Word tokenization, because it can encode and create new words like "rerunningingly" that were not seen in the source material. But unlike Character tokenization, it encodes more information per token. Use BPE with token length 8 and train it. We can see from the message that the branching per state is low, which means the output will tend to not have much variety. But if we use "Calculate longest deterministic chain", we can see that the chains are not ridiculously long. Certainly not like Word tokenization. Now when we click "Use Random State" and then spam click "Generate (+20)", let's look at the Top 20 continuations. We can see we rarely get to a situation with 100% for just 1 continuation. This means it doesn't get stuck in a rut of copying the source material.</p>
+      <div class="try-row">
+        <button class="try-btn" data-mode="bpe" data-length="8">Try</button>
+        <span class="completed-badge">&#10003; Complete!</span>
+      </div>
+    </div>
+
+    <div class="experiment-card">
+      <h2>Play with Temperature</h2>
+      <p>Try any of the above with a temperature other than the default "Reserved". What the temperature does is change how the next token is selected. The "Typical (1.0)" means to select the next token using exactly the same frequency that is observed in the source material. For example, if text is "yesterday h" and we are looking for the next character, we will see in the source material that maybe "a" appears 2 times and "i" appears once. When selecting the next character, "a" will be randomly selected 2/3 times, and "i" 1/3 times. If we change the temperature all the way down to "Deterministic (0.0)" then we will always pick the most frequent next letter, in this case "a". If we move the temperature up, then the selection becomes more even, close to even odds for all next tokens. What this feels like when you read the output text is interesting. A fun starting point is Character tokenization with length 5. Try both extremes. At what point does punctuation start to come up regularly or too much? At what point are new words invented?</p>
+      <div class="try-row">
+        <button class="try-btn" data-mode="character" data-length="5">Try</button>
+        <span class="completed-badge">&#10003; Complete!</span>
+      </div>
+    </div>
+  </div>
+
   <h1>Markov Chain Text Generator v2</h1>
-  <p class="muted">All text is lowercased, only [a-z '.,?!] are kept, and word/BPE modes split punctuation into separate tokens.</p>
 
   <div>
     <strong>Source material:</strong>
@@ -103,8 +230,8 @@
 
   <div id="postTrainArea" hidden>
     <div class="row">
-    <button id="continueBtn">Generate (+100 tokens)</button>
-    <button id="clearBtn">Clear</button>
+    <button id="seedStateBtn">Use Random State</button>
+    <button id="continueBtn">Generate (+20)</button>
     <label for="temperature">Temperature:</label>
     <select id="temperature">
       <option value="0.0">Deterministic (0.0)</option>
@@ -115,25 +242,27 @@
       <option value="1.6">Manic (1.6)</option>
       <option value="2.0">Random (2.0)</option>
     </select>
-    <button id="previewBtn" hidden>Preview Tokens</button>
+    <button id="deterministicChainBtn">Longest deterministic chain</button>
+    <button id="deterministicAttractorBtn">Greatest attractor</button>
+    <button id="previewBtn" hidden>Preview BPE tokens</button>
     </div>
 
     <label for="writingField"><strong>Writing field / output</strong></label>
-    <textarea id="writingField" placeholder="Start typing here, then click Generate..."></textarea>
-    <div class="theme-corner">
-      <label for="theme">Theme:</label>
-      <select id="theme">
-        <option value="white">white</option>
-        <option value="dark">dark</option>
-        <option value="plant">plant</option>
-        <option value="retro" selected>retro</option>
-      </select>
-    </div>
+    <textarea id="writingField" rows="3" placeholder="Start typing here, then click Generate..."></textarea>
+  </div>
+  <div class="theme-corner">
+    <label for="theme">Theme:</label>
+    <select id="theme">
+      <option value="white">white</option>
+      <option value="dark">dark</option>
+      <option value="plant">plant</option>
+      <option value="retro" selected>retro</option>
+    </select>
   </div>
   <div id="status" class="status">Model not trained yet.</div>
 
   <script>
-    const SOURCE_FILES = ["alice.txt", "answers.txt", "inventions.txt", "moby.txt", "pride.txt"];
+    const SOURCE_FILES = ["alice.txt", "answers.txt", "frankenstein.txt", "inventions.txt", "little_women.txt", "moby.txt", "pride.txt", "shakespeare.txt"];
     const KEY_SEP = "\u0001";
     const BPE_VOCAB_TARGET = 500;
     const SOURCE_START_MARKER = "== START ==";
@@ -148,7 +277,10 @@
       sources: document.getElementById("sources"),
       trainBtn: document.getElementById("trainBtn"),
       continueBtn: document.getElementById("continueBtn"),
-      clearBtn: document.getElementById("clearBtn"),
+      seedStateBtn: document.getElementById("seedStateBtn"),
+      deterministicChainBtn: document.getElementById("deterministicChainBtn"),
+      deterministicAttractorBtn: document.getElementById("deterministicAttractorBtn"),
+
       previewBtn: document.getElementById("previewBtn"),
       writingField: document.getElementById("writingField"),
       status: document.getElementById("status")
@@ -161,10 +293,13 @@
       bpePieceTokenCache: new Map(),
       bpeVocabSize: 0,
       previewTokens: [],
+      deterministicChainCache: null,
+      deterministicAttractorCache: null,
       trained: false,
       tokenMode: "word",
       lookupLength: 6
     };
+    let compareDebounceTimer = null;
 
     function applyTheme(theme) {
       const validTheme = ["white", "dark", "plant", "retro"].includes(theme) ? theme : "white";
@@ -207,8 +342,19 @@
         .trim();
     }
 
+    function normalizeBPEText(text) {
+      return normalizeSingleQuotes(text)
+        .toLowerCase()
+        .replace(/[^a-z '\.,?!]/g, " ")
+        .replace(/([^a-z])\1+/g, "$1")
+        .replace(/([^a-z\s])/g, " $1 ")
+        .replace(/ +/g, " ");
+    }
+
     function normalizeForMode(text, mode) {
-      return mode === "character" ? normalizeCharacterText(text) : normalizeWordText(text);
+      if (mode === "character") return normalizeCharacterText(text);
+      if (mode === "bpe") return normalizeBPEText(text);
+      return normalizeWordText(text);
     }
 
     function splitPieces(normalized) {
@@ -245,7 +391,11 @@
       return next;
     }
 
-    function trainBPEMergesFromPieces(pieces, targetVocabSize) {
+    function yieldToMain() {
+      return new Promise(resolve => setTimeout(resolve, 0));
+    }
+
+    async function trainBPEMergesFromPieces(pieces, targetVocabSize, onProgress) {
       const pieceFrequencies = new Map();
       for (const piece of pieces) {
         pieceFrequencies.set(piece, (pieceFrequencies.get(piece) || 0) + 1);
@@ -262,6 +412,9 @@
         for (const token of seq) vocab.add(token);
       }
       const merges = [];
+      const initialVocabSize = vocab.size;
+      const totalMergesNeeded = targetVocabSize - initialVocabSize;
+      let mergesDone = 0;
 
       while (vocab.size < targetVocabSize) {
         const pairCounts = new Map();
@@ -290,6 +443,15 @@
 
         for (let i = 0; i < sequences.length; i++) {
           sequences[i] = applyMergeToSequence(sequences[i], left, right, merged);
+        }
+
+        mergesDone++;
+        if (mergesDone % 10 === 0) {
+          if (onProgress) {
+            const pct = totalMergesNeeded > 0 ? Math.round((mergesDone / totalMergesNeeded) * 100) : 100;
+            onProgress(pct);
+          }
+          await yieldToMain();
         }
       }
 
@@ -373,33 +535,246 @@
         return bestTokens[Math.floor(Math.random() * bestTokens.length)];
       }
 
-      const exponent = 1 / temperature;
+      const logits = [];
+      let maxLogit = -Infinity;
+      for (const [token, count] of outcomes.entries()) {
+        if (count <= 0) continue;
+        const logit = Math.log(count) / temperature;
+        logits.push([token, logit]);
+        if (logit > maxLogit) maxLogit = logit;
+      }
+      if (!logits.length) return null;
+
       const weighted = [];
       let total = 0;
-      for (const [token, count] of outcomes.entries()) {
-        const adjusted = Math.pow(count, exponent);
+      for (const [token, logit] of logits) {
+        const adjusted = Math.exp(logit - maxLogit);
         weighted.push([token, adjusted]);
         total += adjusted;
       }
-      if (total <= 0) return null;
+      if (!(total > 0) || !Number.isFinite(total)) return null;
       let r = Math.random() * total;
       for (const [token, adjusted] of weighted) {
         r -= adjusted;
         if (r < 0) return token;
       }
+      return weighted[weighted.length - 1][0];
+    }
+
+    function tokensToText(tokens, mode) {
+      if (mode === "character" || mode === "bpe") return tokens.join("");
+      return tokens.join(" ");
+    }
+
+    function randomStateTokens() {
+      if (!state.keys.length) return null;
+      const randomKey = state.keys[Math.floor(Math.random() * state.keys.length)];
+      return randomKey.split(KEY_SEP);
+    }
+
+    function pickRandomOutcomeToken(outcomes) {
+      const options = Array.from(outcomes.keys());
+      if (!options.length) return null;
+      return options[Math.floor(Math.random() * options.length)];
+    }
+
+    function getUsableGenerationKeyFromText(text) {
+      const normalized = normalizeForMode(text, state.tokenMode);
+      const tokens = tokenizeNormalized(normalized, state.tokenMode, state.bpeMerges, state.bpePieceTokenCache);
+      if (tokens.length < state.lookupLength) {
+        return { normalized, tokens, key: null };
+      }
+      const key = buildKey(tokens, tokens.length - state.lookupLength, state.lookupLength);
+      const outcomes = state.model.get(key);
+      if (!outcomes || !outcomes.size) {
+        return { normalized, tokens, key: null };
+      }
+      return { normalized, tokens, key };
+    }
+
+    function buildUsableRandomSeedText() {
+      if (!state.keys.length) return null;
+      const maxStateAttempts = Math.max(50, Math.min(500, state.keys.length));
+      const maxExpansionSteps = Math.max(2, state.lookupLength * 2);
+
+      for (let attempt = 0; attempt < maxStateAttempts; attempt++) {
+        const seedTokens = randomStateTokens();
+        if (!seedTokens) break;
+        const candidateTokens = seedTokens.slice();
+
+        for (let expansion = 0; expansion <= maxExpansionSteps; expansion++) {
+          const candidateText = tokensToText(candidateTokens, state.tokenMode);
+          const parsed = getUsableGenerationKeyFromText(candidateText);
+          if (parsed.key) {
+            return { text: parsed.normalized, expansion };
+          }
+
+          if (candidateTokens.length < state.lookupLength) break;
+          const rawKey = buildKey(candidateTokens, candidateTokens.length - state.lookupLength, state.lookupLength);
+          const outcomes = state.model.get(rawKey);
+          if (!outcomes || !outcomes.size) break;
+          const nextToken = pickRandomOutcomeToken(outcomes);
+          if (nextToken == null) break;
+          candidateTokens.push(nextToken);
+        }
+      }
+
       return null;
+    }
+
+    function generateContinuationTokens(seedTokens, maxTokens, temperature) {
+      const tokens = seedTokens.slice();
+      if (tokens.length < state.lookupLength) return [];
+      let key = buildKey(tokens, tokens.length - state.lookupLength, state.lookupLength);
+      const generated = [];
+
+      for (let i = 0; i < maxTokens; i++) {
+        const outcomes = state.model.get(key);
+        if (!outcomes) break;
+        const nextToken = weightedPick(outcomes, temperature);
+        if (nextToken == null) break;
+        tokens.push(nextToken);
+        generated.push(nextToken);
+        key = advanceKey(key, nextToken, state.lookupLength);
+      }
+
+      return generated;
+    }
+
+    function hasExactlyOneNextTokenPath(seedTokens, steps) {
+      const tokens = seedTokens.slice();
+      if (tokens.length < state.lookupLength) return false;
+      let key = buildKey(tokens, tokens.length - state.lookupLength, state.lookupLength);
+
+      for (let i = 0; i < steps; i++) {
+        const outcomes = state.model.get(key);
+        if (!outcomes || outcomes.size !== 1) return false;
+        const nextToken = outcomes.keys().next().value;
+        if (nextToken == null) return false;
+        tokens.push(nextToken);
+        key = advanceKey(key, nextToken, state.lookupLength);
+      }
+
+      return true;
+    }
+
+    function formatKeyForDisplay(key) {
+      const text = tokensToText(key.split(KEY_SEP), state.tokenMode);
+      if (state.tokenMode === "word") return text;
+      return text.replace(/ /g, "␠");
+    }
+
+    function countDeterministicChainLength(startKey, deterministicModel) {
+      let key = startKey;
+      let count = 0;
+      const seen = new Set();
+
+      while (deterministicModel.has(key) && !seen.has(key)) {
+        seen.add(key);
+        const nextToken = deterministicModel.get(key);
+        if (nextToken == null) break;
+        count++;
+        key = advanceKey(key, nextToken, state.lookupLength);
+      }
+
+      return count;
+    }
+
+    async function buildDeterministicChainCache() {
+      if (state.deterministicChainCache) {
+        return state.deterministicChainCache;
+      }
+
+      elements.status.textContent = "Building deterministic model...";
+      await yieldToMain();
+
+      const deterministicModel = new Map();
+      for (const [key, outcomes] of state.model.entries()) {
+        if (outcomes.size !== 1) continue;
+        const nextToken = outcomes.keys().next().value;
+        if (nextToken == null) continue;
+        deterministicModel.set(key, nextToken);
+      }
+
+      if (!deterministicModel.size) {
+        state.deterministicChainCache = { type: "message", message: "No deterministic key/value pairs found in the model." };
+        return state.deterministicChainCache;
+      }
+
+      const candidates = new Set(deterministicModel.keys());
+      const reachable = new Set();
+      for (const [key, nextToken] of deterministicModel.entries()) {
+        const nextKey = advanceKey(key, nextToken, state.lookupLength);
+        if (candidates.has(nextKey)) {
+          reachable.add(nextKey);
+        }
+      }
+
+      let startingCandidates = Array.from(candidates).filter((key) => !reachable.has(key));
+      const usedCycleFallback = startingCandidates.length === 0;
+      if (usedCycleFallback) {
+        startingCandidates = Array.from(candidates);
+      }
+
+      elements.status.textContent = `Measuring chain lengths for ${startingCandidates.length} candidates...`;
+      await yieldToMain();
+
+      const rankedChains = [];
+      for (let i = 0; i < startingCandidates.length; i++) {
+        const key = startingCandidates[i];
+        rankedChains.push({ key, length: countDeterministicChainLength(key, deterministicModel) });
+        if ((i + 1) % 500 === 0) {
+          elements.status.textContent = `Measuring chain lengths... ${i + 1}/${startingCandidates.length}`;
+          await yieldToMain();
+        }
+      }
+      rankedChains.sort((a, b) => (b.length - a.length) || a.key.localeCompare(b.key));
+
+      if (!rankedChains.length) {
+        state.deterministicChainCache = { type: "message", message: "Could not calculate a deterministic chain." };
+        return state.deterministicChainCache;
+      }
+
+      state.deterministicChainCache = { type: "ranked", rankedChains, usedCycleFallback };
+      return state.deterministicChainCache;
     }
 
     function selectedSourceFiles() {
       return Array.from(elements.sources.querySelectorAll("input[type='checkbox']:checked")).map((el) => el.value);
     }
 
+    function updateWritingActionsVisibility() {
+      const hasText = elements.writingField.value.trim().length > 0;
+      elements.continueBtn.hidden = !hasText;
+    }
+
+    function clearScheduledCompare() {
+      if (compareDebounceTimer != null) {
+        clearTimeout(compareDebounceTimer);
+        compareDebounceTimer = null;
+      }
+    }
+
+    function scheduleCompareContinuations() {
+      clearScheduledCompare();
+      compareDebounceTimer = setTimeout(async () => {
+        compareDebounceTimer = null;
+        if (elements.postTrainArea.hidden) return;
+        if (!elements.writingField.value.trim()) return;
+        await compareContinuations();
+      }, 1000);
+    }
+
     function updatePreviewButtonVisibility() {
-      elements.previewBtn.hidden = !state.trained;
+      elements.previewBtn.hidden = !state.trained || state.tokenMode !== "bpe";
     }
 
     function setTrainButtonVisible(visible) {
       elements.trainBtn.hidden = !visible;
+      if (visible) {
+        setPostTrainAreaVisible(false);
+        elements.status.textContent = "Select Train to get started";
+      }
     }
 
     function setPostTrainAreaVisible(visible) {
@@ -407,19 +782,49 @@
     }
 
     function markTrainingStale() {
+      clearScheduledCompare();
+      state.deterministicChainCache = null;
+      state.deterministicAttractorCache = null;
       state.trained = false;
       setTrainButtonVisible(true);
       updatePreviewButtonVisibility();
     }
 
+    function getAllModelTokens() {
+      const unique = new Set();
+      for (const key of state.keys) {
+        for (const token of key.split(KEY_SEP)) unique.add(token);
+        const outcomes = state.model.get(key);
+        if (!outcomes) continue;
+        for (const token of outcomes.keys()) unique.add(token);
+      }
+      return Array.from(unique).sort((a, b) => a.localeCompare(b));
+    }
+
     function previewModelTokens() {
       if (!state.trained) return;
-      const preview = state.previewTokens.slice(0, 50);
-      if (!preview.length) {
+      if (state.tokenMode !== "bpe") {
+        elements.status.textContent = "Preview BPE tokens is only available in BPE mode.";
+        return;
+      }
+      const allTokens = getAllModelTokens();
+      if (!allTokens.length) {
         elements.status.textContent = "No preview tokens available for this model.";
         return;
       }
-      elements.status.textContent = `First ${preview.length} tokens:\n${JSON.stringify(preview)}`;
+      elements.status.innerHTML = "";
+      const heading = document.createElement("div");
+      heading.textContent = `All unique BPE tokens in model (${allTokens.length}):`;
+      const list = document.createElement("div");
+      list.className = "token-preview-list";
+      for (const token of allTokens) {
+        const chip = document.createElement("span");
+        chip.className = "token-chip";
+        chip.textContent = token.replace(/ /g, "␠");
+        list.appendChild(chip);
+      }
+      elements.status.appendChild(heading);
+      elements.status.appendChild(list);
     }
 
     async function trainModel() {
@@ -467,7 +872,7 @@
         elements.status.textContent = `Training failed: ${error.message}\nTip: run this from a local web server, not file://`;
         elements.trainBtn.disabled = false;
         setTrainButtonVisible(true);
-        setPostTrainAreaVisible(true);
+        setPostTrainAreaVisible(false);
         return;
       }
 
@@ -477,12 +882,17 @@
       if (tokenMode === "bpe") {
         const allPieces = normalizedByFile.flatMap((normalized) => splitBPEPiecesWithSpaces(normalized))
           .filter((piece) => !piece.startsWith(" "));
-        const trained = trainBPEMergesFromPieces(allPieces, BPE_VOCAB_TARGET);
+        const trained = await trainBPEMergesFromPieces(allPieces, BPE_VOCAB_TARGET, (pct) => {
+          elements.status.textContent = `Training BPE vocabulary... ${pct}%`;
+        });
         bpeMerges = trained.merges;
         bpeVocabSize = trained.vocabSize;
       }
 
-      for (const normalized of normalizedByFile) {
+      for (let f = 0; f < normalizedByFile.length; f++) {
+        const normalized = normalizedByFile[f];
+        elements.status.textContent = `Building model... file ${f + 1}/${normalizedByFile.length}`;
+        await yieldToMain();
         const tokens = tokenizeNormalized(normalized, tokenMode, bpeMerges, bpePieceTokenCache);
         if (previewTokens.length < 50) {
           const needed = 50 - previewTokens.length;
@@ -515,29 +925,29 @@
         const averageBranches = (totalBranchesFromKeys / state.keys.length).toFixed(2);
         let branchingDescription = "";
         switch (true) {
-          case averageBranches < 1.001: branchingDescription = "Abysimal.  Pretty much will quote the text.  Lower lookup length or add files."; break;
-          case averageBranches < 1.02: branchingDescription = "Very low.  Nearly always picks the same next token.  Lower lookup length or add files."; break;
-          case averageBranches < 1.10: branchingDescription = "Low.  Some output variation but not much.  May make some sense."; break;
-          case averageBranches < 1.5:   branchingDescription = "Moderate.  Quite a bit of output variation."; break;
-          case averageBranches < 2:   branchingDescription = "High.  Output will be quite variable but probably nonsensicle.  Raise the lookup length."; break;
+          case averageBranches < 1.001: branchingDescription = "Abysmal.\nPretty much will quote the text.  Lower lookup length or add files."; break;
+          case averageBranches < 1.02: branchingDescription = "Very low.\nNearly always picks the same next token.  Lower lookup length or add files."; break;
+          case averageBranches < 1.10: branchingDescription = "Low.\nSome output variation but not much.  May make some sense."; break;
+          case averageBranches < 1.5:   branchingDescription = "Moderate.\nQuite a bit of output variation."; break;
+          case averageBranches < 2:   branchingDescription = "High.\nOutput will be quite variable but probably nonsensical.  Raise the lookup length."; break;
           default:
-            branchingDescription = "Very high.  Output will probably seem random. Raise the lookup length.";
+            branchingDescription = "Very high.\nOutput will probably seem random. Raise the lookup length.";
         }
         elements.status.textContent =
           `Training complete.\n` +
-          `Files used: ${usedFiles}/${files.length}\n` + 
-          `Tokens read: ${totalTokens}\n` + 
-          `States learned: ${state.keys.length}\n` +
+          // `Files used: ${usedFiles}/${files.length}\n` + 
+          // `Tokens read: ${totalTokens}\n` + 
+          // `States learned: ${state.keys.length}\n` +
           `Average branches per state: ${averageBranches}\n` +
-          `Average branching description: ${branchingDescription}\n` +
-          `Training time: ${trainingDurationSec}s`;
+          `Description of branching: It is ${branchingDescription}`;
       }
       elements.trainBtn.disabled = false;
       setTrainButtonVisible(!state.trained);
       setPostTrainAreaVisible(true);
+      updateWritingActionsVisibility();
     }
 
-    async function generateNext100() {
+    async function generateNext20() {
       if (!state.trained) {
         await trainModel();
         if (!state.trained) return;
@@ -550,76 +960,355 @@
 
       let baseText = normalizeForMode(elements.writingField.value, state.tokenMode);
       let tokens = tokenizeNormalized(baseText, state.tokenMode, state.bpeMerges, state.bpePieceTokenCache);
-      let seededFromRandomKey = false;
-
       if (!tokens.length) {
-        if (!state.keys.length) {
-          elements.status.textContent = "Model has no keys to seed from.";
-          return;
-        }
-        const randomKey = state.keys[Math.floor(Math.random() * state.keys.length)];
-        const seedTokens = randomKey.split(KEY_SEP);
-        tokens = seedTokens.slice();
-        baseText = state.tokenMode === "character" || state.tokenMode === "bpe"
-          ? seedTokens.join("")
-          : seedTokens.join(" ");
-        seededFromRandomKey = true;
+        elements.status.textContent = "No prompt text found. Use 'Use Random State' or write something first.";
+        return;
       }
 
       elements.writingField.value = baseText;
-      const generated = [];
-      let key = null;
-      if (tokens.length >= state.lookupLength) {
-        key = buildKey(tokens, tokens.length - state.lookupLength, state.lookupLength);
-      }
-
-      for (let i = 0; i < 100; i++) {
-        if (tokens.length < state.lookupLength || key == null) break;
-        const outcomes = state.model.get(key);
-        if (!outcomes) break;
-        const nextToken = weightedPick(outcomes, temperature);
-        if (nextToken == null) break;
-        tokens.push(nextToken);
-        generated.push(nextToken);
-        key = advanceKey(key, nextToken, state.lookupLength);
-      }
+      const generated = generateContinuationTokens(tokens, 20, temperature);
 
       if (!generated.length) {
-        elements.status.textContent = seededFromRandomKey
-          ? "Started from a random key, but no continuation was found."
-          : "No continuation found for the current context. Try changing the prompt text.";
+        elements.status.textContent = "No continuation found for the current context. Try changing the prompt text.";
         return;
       }
 
       if (state.tokenMode === "character" || state.tokenMode === "bpe") {
-        elements.writingField.value = baseText + generated.join("");
+        elements.writingField.value = baseText + tokensToText(generated, state.tokenMode);
       } else {
         const prefix = baseText.trimEnd();
-        const addition = generated.join(" ");
+        const addition = tokensToText(generated, state.tokenMode);
         elements.writingField.value = prefix ? `${prefix} ${addition}` : addition;
       }
+      updateWritingActionsVisibility();
+      await compareContinuations();
+    }
 
-      elements.status.textContent = seededFromRandomKey
-        ? `Seeded from a random key and generated ${generated.length} token(s).`
-        : `Generated ${generated.length} token(s).`;
+    async function populateWithRandomState() {
+      if (!state.trained) {
+        await trainModel();
+        if (!state.trained) return;
+      }
+      const usableSeed = buildUsableRandomSeedText();
+      if (!usableSeed) {
+        elements.status.textContent = "Could not find a continuable random state for the current tokenizer.";
+        return;
+      }
+      elements.writingField.value = usableSeed.text;
+      updateWritingActionsVisibility();
+      const finalCheck = getUsableGenerationKeyFromText(elements.writingField.value);
+      if (!finalCheck.key) {
+        elements.status.textContent = "Random state selected, but it cannot be continued. Try Use Random State again.";
+        return;
+      }
+      await compareContinuations();
+    }
+
+    async function compareContinuations() {
+      if (!state.trained) {
+        await trainModel();
+        if (!state.trained) return;
+      }
+      const temperature = Number(elements.temperature.value);
+      if (Number.isNaN(temperature) || temperature < 0 || temperature > 2) {
+        elements.status.textContent = "Temperature must be a number from 0.0 to 2.0.";
+        return;
+      }
+
+      const baseText = normalizeForMode(elements.writingField.value, state.tokenMode);
+      const baseTokens = tokenizeNormalized(baseText, state.tokenMode, state.bpeMerges, state.bpePieceTokenCache);
+      if (!baseTokens.length) {
+        elements.status.textContent = "Enter some prompt text first to compare continuations.";
+        return;
+      }
+      if (baseTokens.length < state.lookupLength) {
+        elements.status.textContent = `Prompt is too short. Need at least ${state.lookupLength} token(s).`;
+        return;
+      }
+
+      const SAMPLE_COUNT = 100;
+      const continuationCounts = new Map();
+      for (let sample = 0; sample < SAMPLE_COUNT; sample++) {
+        const generated = generateContinuationTokens(baseTokens, 20, temperature);
+        if (!generated.length) continue;
+        const continuation = tokensToText(generated, state.tokenMode);
+        continuationCounts.set(continuation, (continuationCounts.get(continuation) || 0) + 1);
+      }
+
+      if (!continuationCounts.size) {
+        elements.status.textContent = "No continuations found for the current prompt.";
+        return;
+      }
+
+      const rankedContinuations = Array.from(continuationCounts.entries())
+        .sort((a, b) => (b[1] - a[1]) || a[0].localeCompare(b[0]))
+        .slice(0, 20);
+      const sampledCount = Array.from(continuationCounts.values()).reduce((sum, count) => sum + count, 0);
+
+      elements.status.innerHTML = "";
+      const heading = document.createElement("div");
+      heading.textContent = `Top ${rankedContinuations.length} continuation(s) from ${SAMPLE_COUNT} samples (temperature ${temperature.toFixed(1)}):`;
+      const list = document.createElement("ul");
+      for (const [continuation, count] of rankedContinuations) {
+        const percent = Math.round((count / SAMPLE_COUNT) * 100);
+        const item = document.createElement("li");
+        item.textContent = `${percent}% — ${continuation}`;
+        item.style.cursor = "pointer";
+        item.addEventListener("click", async () => {
+          const currentBase = normalizeForMode(elements.writingField.value, state.tokenMode);
+          if (state.tokenMode === "character" || state.tokenMode === "bpe") {
+            elements.writingField.value = currentBase + continuation;
+          } else {
+            const prefix = currentBase.trimEnd();
+            elements.writingField.value = prefix ? `${prefix} ${continuation}` : continuation;
+          }
+          updateWritingActionsVisibility();
+          await compareContinuations();
+        });
+        list.appendChild(item);
+      }
+      elements.status.appendChild(heading);
+      elements.status.appendChild(list);
+
+      const allSamplesMatchOneContinuation = sampledCount === SAMPLE_COUNT && continuationCounts.size === 1;
+      if (allSamplesMatchOneContinuation && hasExactlyOneNextTokenPath(baseTokens, 20)) {
+        const notice = document.createElement("div");
+        notice.textContent = "I double checked the next 20 tokens, and indeed this is the only possible next output.";
+        elements.status.appendChild(notice);
+      }
+    }
+
+    async function calculateLongestDeterministicChain() {
+      elements.status.textContent = "Calculating.  This can take up to 5 seconds.";
+      if (!state.trained) {
+        await trainModel();
+        if (!state.trained) return;
+      }
+
+      renderDeterministicChainReport(await buildDeterministicChainCache());
+    }
+
+    function renderDeterministicChainReport(cache) {
+      if (cache.type === "message") {
+        elements.status.textContent = cache.message;
+        return;
+      }
+
+      const { rankedChains, usedCycleFallback } = cache;
+      const topChains = rankedChains.slice(0, 20);
+      elements.status.innerHTML = "";
+      const heading = document.createElement("div");
+      heading.textContent = `Top ${topChains.length} deterministic chain(s):`;
+      const list = document.createElement("ul");
+      for (const chain of topChains) {
+        const startText = tokensToText(chain.key.split(KEY_SEP), state.tokenMode);
+        const item = document.createElement("li");
+        item.textContent = `${chain.length} next token prediction(s) — ${formatKeyForDisplay(chain.key)}`;
+        item.style.cursor = "pointer";
+        item.addEventListener("click", async () => {
+          elements.writingField.value = startText;
+          updateWritingActionsVisibility();
+          elements.writingField.focus();
+          await compareContinuations();
+        });
+        list.appendChild(item);
+      }
+      elements.status.appendChild(heading);
+      elements.status.appendChild(list);
+      if (usedCycleFallback) {
+        const note = document.createElement("div");
+        note.textContent = "Note: no non-reachable deterministic start nodes were found, so all deterministic nodes were considered.";
+        elements.status.appendChild(note);
+      }
+    }
+
+    async function calculateGreatestDeterministicAttractor() {
+      elements.status.textContent = "Calculating attractors.  This can take up to 5 seconds.";
+      if (!state.trained) {
+        await trainModel();
+        if (!state.trained) return;
+      }
+
+      if (state.deterministicAttractorCache) {
+        renderDeterministicAttractorReport(state.deterministicAttractorCache);
+        return;
+      }
+
+      elements.status.textContent = "Counting incoming predictions...";
+      await yieldToMain();
+
+      const incomingPredictionCounts = new Map();
+      let processed = 0;
+      for (const [key, outcomes] of state.model.entries()) {
+        for (const nextToken of outcomes.keys()) {
+          const nextKey = advanceKey(key, nextToken, state.lookupLength);
+          incomingPredictionCounts.set(nextKey, (incomingPredictionCounts.get(nextKey) || 0) + 1);
+        }
+        processed++;
+        if (processed % 1000 === 0) {
+          elements.status.textContent = `Counting incoming predictions... ${processed}/${state.keys.length}`;
+          await yieldToMain();
+        }
+      }
+
+      elements.status.textContent = "Ranking attractors...";
+      await yieldToMain();
+
+      const rankedAttractors = state.keys
+        .map((key) => ({
+          key,
+          attractorCount: incomingPredictionCounts.get(key) || 0
+        }))
+        .sort((a, b) =>
+          (b.attractorCount - a.attractorCount) ||
+          a.key.localeCompare(b.key)
+        );
+
+      state.deterministicAttractorCache = { type: "ranked", rankedAttractors, totalStates: state.keys.length };
+      renderDeterministicAttractorReport(state.deterministicAttractorCache);
+    }
+
+    function renderDeterministicAttractorReport(cache) {
+      const { rankedAttractors, totalStates } = cache;
+      if (!rankedAttractors.length) {
+        elements.status.textContent = "Could not calculate state attractors.";
+        return;
+      }
+
+      const topAttractors = rankedAttractors.slice(0, 20);
+      elements.status.innerHTML = "";
+      const heading = document.createElement("div");
+      heading.textContent = `Top ${topAttractors.length} state attractor(s) by incoming next token prediction(s) (from ${totalStates} states):`;
+      const list = document.createElement("ul");
+      for (const attractor of topAttractors) {
+        const startText = tokensToText(attractor.key.split(KEY_SEP), state.tokenMode);
+        const item = document.createElement("li");
+        item.textContent = `${attractor.attractorCount} incoming next token prediction(s) — ${formatKeyForDisplay(attractor.key)}`;
+        item.style.cursor = "pointer";
+        item.addEventListener("click", async () => {
+          elements.writingField.value = startText;
+          updateWritingActionsVisibility();
+          elements.writingField.focus();
+          await compareContinuations();
+        });
+        list.appendChild(item);
+      }
+      elements.status.appendChild(heading);
+      elements.status.appendChild(list);
     }
 
     elements.trainBtn.addEventListener("click", () => {
+      state.deterministicChainCache = null;
+      state.deterministicAttractorCache = null;
       elements.writingField.value = "";
+      updateWritingActionsVisibility();
       trainModel();
     });
-    elements.continueBtn.addEventListener("click", generateNext100);
+    elements.continueBtn.addEventListener("click", generateNext20);
+    elements.seedStateBtn.addEventListener("click", populateWithRandomState);
+    elements.deterministicChainBtn.addEventListener("click", calculateLongestDeterministicChain);
+    elements.deterministicAttractorBtn.addEventListener("click", calculateGreatestDeterministicAttractor);
     elements.tokenMode.addEventListener("change", markTrainingStale);
     elements.lookupLength.addEventListener("change", markTrainingStale);
     elements.theme.addEventListener("change", () => applyTheme(elements.theme.value));
-    elements.clearBtn.addEventListener("click", () => {
-      elements.writingField.value = "";
-      elements.status.textContent = "Output cleared.";
+    elements.writingField.addEventListener("input", () => {
+      updateWritingActionsVisibility();
+      scheduleCompareContinuations();
     });
     elements.previewBtn.addEventListener("click", previewModelTokens);
     applyTheme(elements.theme.value);
+    updateWritingActionsVisibility();
     updatePreviewButtonVisibility();
     renderSourceCheckboxes();
+
+    const experimentsBtn = document.getElementById("experimentsBtn");
+    const experimentsOverlay = document.getElementById("experimentsOverlay");
+    const experimentHint = document.getElementById("experimentHint");
+    let hintCollapseTimer = null;
+
+    function getMainElements() {
+      return document.querySelectorAll("body > h1, body > p, body > div:not(#experimentsOverlay):not(.theme-corner):not(#experimentHint)");
+    }
+
+    function showExperiments() {
+      experimentsOverlay.classList.add("visible");
+      experimentsBtn.textContent = "Close Experiments";
+      experimentHint.classList.remove("visible");
+      for (const el of getMainElements()) el.style.display = "none";
+    }
+
+    function hideExperiments() {
+      experimentsOverlay.classList.remove("visible");
+      experimentsBtn.textContent = "Experiments";
+      for (const el of getMainElements()) el.style.display = "";
+    }
+
+    let activeExperimentCard = null;
+
+    function showHint(text, card) {
+      if (hintCollapseTimer) clearTimeout(hintCollapseTimer);
+      activeExperimentCard = card;
+      experimentHint.innerHTML = "";
+      const textNode = document.createElement("div");
+      textNode.textContent = text;
+      const markBtn = document.createElement("button");
+      markBtn.textContent = "Mark Completed";
+      markBtn.style.cssText = "margin-top:8px;padding:6px 14px;font-weight:bold;cursor:pointer;background:var(--button-bg);color:var(--button-fg);border:1px solid var(--border);";
+      markBtn.addEventListener("click", () => {
+        if (activeExperimentCard) {
+          const badge = activeExperimentCard.querySelector(".completed-badge");
+          if (badge) badge.classList.add("visible");
+        }
+        if (hintCollapseTimer) clearTimeout(hintCollapseTimer);
+        experimentHint.classList.remove("visible");
+      });
+      experimentHint.appendChild(textNode);
+      experimentHint.appendChild(markBtn);
+      experimentHint.classList.add("visible");
+      experimentHint.classList.remove("collapsed");
+      hintCollapseTimer = setTimeout(() => {
+        experimentHint.classList.add("collapsed");
+      }, 3000);
+    }
+
+    experimentHint.addEventListener("mouseenter", () => {
+      if (hintCollapseTimer) clearTimeout(hintCollapseTimer);
+      experimentHint.classList.remove("collapsed");
+    });
+
+    experimentHint.addEventListener("mouseleave", () => {
+      if (hintCollapseTimer) clearTimeout(hintCollapseTimer);
+      hintCollapseTimer = setTimeout(() => {
+        experimentHint.classList.add("collapsed");
+      }, 400);
+    });
+
+    experimentsBtn.addEventListener("click", () => {
+      if (experimentsOverlay.classList.contains("visible")) {
+        hideExperiments();
+      } else {
+        showExperiments();
+      }
+    });
+
+    for (const tryBtn of document.querySelectorAll(".try-btn")) {
+      tryBtn.addEventListener("click", () => {
+        const card = tryBtn.closest(".experiment-card");
+        const description = card.querySelector("p").textContent;
+        const mode = tryBtn.dataset.mode;
+        const length = tryBtn.dataset.length;
+        elements.tokenMode.value = mode;
+        elements.lookupLength.value = length;
+        elements.temperature.value = "0.6";
+        hideExperiments();
+        showHint(description, card);
+        state.deterministicChainCache = null;
+        state.deterministicAttractorCache = null;
+        elements.writingField.value = "";
+        updateWritingActionsVisibility();
+        trainModel();
+      });
+    }
   </script>
 </body>
 </html>
