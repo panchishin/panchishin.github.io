@@ -1,5 +1,7 @@
 # Mini Projects
 
+[Sudoku](/sudoku/index.html)
+
 [Character by chapter](/character_by_chapter.html)
 
 [Evolv simulation boids](/evolv/index.html)
