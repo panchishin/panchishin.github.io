@@ -556,7 +556,7 @@
       function isLadderGameSolved(game, solvedSet) {
         if (solvedSet.has(game.name)) return true;
         const store = loadStore();
-        const saved = store[game.name];
+        const saved = store.find ? store.find((g) => g.name === game.name) : null;
         if (saved && saved.values && new Sudoku(saved.values).isSolved()) {
           solvedSet.add(game.name);
           writeSolvedLadder(solvedSet);
@@ -656,14 +656,13 @@
       function loadLadderGame(game) {
         if (!game) return;
         const current = collectState();
+        let store = loadStore();
         if (current.name) {
-          const store = loadStore();
-          store[current.name] = current;
+          store = [current, ...store.filter((g) => g.name !== current.name)];
           writeStore(store);
         }
 
-        const store = loadStore();
-        const saved = store[game.name];
+        const saved = store.find((g) => g.name === game.name);
         if (saved) {
           applyState(saved);
         } else {
@@ -699,9 +698,13 @@
 
       function loadStore() {
         try {
-          return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
+          const raw = JSON.parse(localStorage.getItem(STORAGE_KEY));
+          if (!raw) return [];
+          if (Array.isArray(raw)) return raw;
+          if (typeof raw === "object") return Object.values(raw);
+          return [];
         } catch {
-          return {};
+          return [];
         }
       }
 
@@ -711,9 +714,8 @@
 
       function refreshSavedList() {
         const store = loadStore();
-        const names = Object.keys(store).sort();
         savedEl.innerHTML = "";
-        if (names.length === 0) {
+        if (store.length === 0) {
           const li = document.createElement("li");
           li.className = "empty";
           li.textContent = "No saved games";
@@ -721,13 +723,13 @@
           selectedName = null;
           return;
         }
-        if (!names.includes(selectedName)) selectedName = null;
-        for (const name of names) {
+        if (!store.some((g) => g.name === selectedName)) selectedName = null;
+        for (const game of store) {
           const li = document.createElement("li");
-          li.textContent = name;
-          li.classList.toggle("selected", name === selectedName);
+          li.textContent = game.name;
+          li.classList.toggle("selected", game.name === selectedName);
           li.addEventListener("click", () => {
-            selectedName = name;
+            selectedName = game.name;
             selectedLadderName = null;
             refreshSavedList();
             refreshLadderList();
@@ -738,8 +740,8 @@
 
       function saveGame() {
         const state = collectState();
-        const store = loadStore();
-        store[state.name] = state;
+        let store = loadStore();
+        store = [state, ...store.filter((g) => g.name !== state.name)];
         writeStore(store);
         selectedName = state.name;
         refreshSavedList();
@@ -749,11 +751,11 @@
       function loadGame() {
         const name = selectedName;
         if (!name) return;
-        const store = loadStore();
-        const state = store[name];
+        let store = loadStore();
+        const state = store.find((g) => g.name === name);
         if (!state) return;
-        const current = collectState();
-        store[current.name] = current;
+
+        store = [state, ...store.filter((g) => g.name !== name)];
         writeStore(store);
         applyState(state);
         selectedName = name;
@@ -765,13 +767,12 @@
 
       function startGame() {
         const store = loadStore();
-        const names = Object.keys(store).sort();
-        if (names.length === 0) {
+        if (store.length === 0) {
           newGame();
           return;
         }
-        selectedName = names[0];
-        applyState(store[selectedName]);
+        selectedName = store[0].name;
+        applyState(store[0]);
         refreshSavedList();
         refreshLadderList();
         clearStatus();
@@ -780,8 +781,8 @@
       function deleteGame() {
         const name = selectedName;
         if (!name) return;
-        const store = loadStore();
-        delete store[name];
+        let store = loadStore();
+        store = store.filter((g) => g.name !== name);
         writeStore(store);
         selectedName = null;
         refreshSavedList();
