@@ -711,7 +711,7 @@
           key.textContent = n;
           key.addEventListener("mouseenter", () => highlightValue(String(n)));
           key.addEventListener("mouseleave", clearMatches);
-          key.addEventListener("click", () => applyPaletteNumber(n));
+          // key.addEventListener("click", () => applyPaletteNumber(n));
           paletteEl.appendChild(key);
         }
       }
