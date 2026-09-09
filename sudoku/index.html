@@ -125,15 +125,22 @@
         user-select: none;
       }
       #palette .key:hover { background: var(--match); }
-      #sidebar {
-        order: -1;
+      #sidebar, #ladder-sidebar {
         display: flex;
         flex-direction: column;
         gap: 12px;
-        min-width: 200px;
+        min-width: 220px;
+        max-width: 260px;
       }
-      #sidebar h2 { margin: 0; font-size: 18px; font-weight: 700; }
-      #saved {
+      #sidebar { order: -1; }
+      #ladder-sidebar { order: 1; }
+      #sidebar h2, #ladder-sidebar h2 { margin: 0; font-size: 18px; font-weight: 700; }
+      #ladder-stats {
+        margin: -4px 0 0 0;
+        font-size: 13px;
+        color: #64748b;
+      }
+      #saved, #ladder {
         list-style: none;
         margin: 0;
         padding: 0;
@@ -141,22 +148,75 @@
         border-radius: 8px;
         background: #fff;
         overflow: hidden;
-        min-width: 200px;
+        min-width: 220px;
       }
-      #saved li {
+      #saved li, #ladder li {
         padding: 10px 14px;
         cursor: pointer;
-        text-transform: capitalize;
         border-bottom: 1px solid #e2e8f0;
       }
-      #saved li:last-child { border-bottom: none; }
-      #saved li:hover { background: #f1f5f9; }
-      #saved li.selected { background: var(--highlight); font-weight: 600; }
-      #saved li.empty { cursor: default; color: #94a3b8; font-style: italic; }
-      #saved li.empty:hover { background: #fff; }
-      @media (max-width: 720px) {
+      #saved li { text-transform: capitalize; }
+      #saved li:last-child, #ladder li:last-child { border-bottom: none; }
+      #saved li:hover, #ladder li:hover { background: #f1f5f9; }
+      #saved li.selected, #ladder li.selected { background: var(--highlight); }
+      #saved li.selected { font-weight: 600; }
+      #ladder li.selected .ladder-title { font-weight: 700; color: var(--user); }
+      #saved li.empty, #ladder li.empty { cursor: default; color: #94a3b8; font-style: italic; }
+      #saved li.empty:hover, #ladder li.empty:hover { background: #fff; }
+
+      #ladder li {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+      .ladder-top {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .ladder-rank {
+        font-size: 12px;
+        font-weight: 700;
+        color: #64748b;
+      }
+      .ladder-title {
+        font-size: 14px;
+        font-weight: 600;
+        text-transform: capitalize;
+        color: var(--thick);
+        flex: 1;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .ladder-meta {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 12px;
+        color: #64748b;
+      }
+      .badge {
+        display: inline-block;
+        padding: 1px 6px;
+        border-radius: 4px;
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.3px;
+        text-transform: uppercase;
+      }
+      .badge-easy { background: #dcfce7; color: #15803d; }
+      .badge-medium { background: #fef9c3; color: #854d0e; }
+      .badge-hard { background: #ffedd5; color: #c2410c; }
+      .badge-very-hard { background: #fee2e2; color: #b91c1c; }
+      .badge-impossible { background: #ede9fe; color: #6b21a8; }
+
+      @media (max-width: 980px) {
         #layout { flex-direction: column; align-items: center; }
-        #sidebar { order: 0; align-items: center; }
+        #game { order: 0; }
+        #sidebar { order: 1; align-items: center; width: min(402px, 100%); max-width: 402px; }
+        #ladder-sidebar { order: 2; align-items: center; width: min(402px, 100%); max-width: 402px; }
+        #saved, #ladder { width: 100%; }
       }
       @media (max-width: 480px) {
         body { padding: 16px 12px; }
@@ -177,6 +237,14 @@
   <body>
     <h1>Sudoku</h1>
     <div id="layout">
+      <aside id="sidebar">
+        <h2>Saved Games</h2>
+        <ul id="saved"></ul>
+        <div class="controls">
+          <button id="load">Load</button>
+          <button id="delete">Delete</button>
+        </div>
+      </aside>
       <div id="game">
         <p id="name"></p>
         <div id="board"></div>
@@ -195,27 +263,34 @@
         </div>
         <div id="status"></div>
       </div>
-      <aside id="sidebar">
-        <h2>Saved Games</h2>
-        <ul id="saved"></ul>
+      <aside id="ladder-sidebar">
+        <h2>Ladder</h2>
+        <p id="ladder-stats"></p>
+        <ul id="ladder"></ul>
         <div class="controls">
-          <button id="load">Load</button>
-          <button id="delete">Delete</button>
+          <button id="playLadder">Play</button>
+          <button id="resetLadder" title="Reset ladder progress">Reset</button>
         </div>
       </aside>
     </div>
 
+    <script src="ladder_info.js"></script>
     <script src="index.js"></script>
     <script>
       const boardEl = document.getElementById("board");
       const statusEl = document.getElementById("status");
       const nameEl = document.getElementById("name");
       const savedEl = document.getElementById("saved");
+      const ladderEl = document.getElementById("ladder");
+      const ladderStatsEl = document.getElementById("ladder-stats");
+      const playLadderBtn = document.getElementById("playLadder");
+      const resetLadderBtn = document.getElementById("resetLadder");
       const inputs = [];
       const cells = [];
       const notes = [];
       let solution = null;
       let selectedName = null;
+      let selectedLadderName = null;
       let pencilMode = false;
       let selectedCell = null;
 
@@ -271,6 +346,7 @@
         markConflicts();
         if (v && isBoardFull() && isBoardCorrect()) {
           setStatus("Solved! Nicely done.", "win");
+          markCurrentGameSolved();
         }
       }
 
@@ -411,6 +487,10 @@
           values: given.map((row) => row.slice()),
           solution: sol.grid.map((row) => row.slice()),
         });
+        selectedName = null;
+        selectedLadderName = null;
+        refreshSavedList();
+        refreshLadderList();
         clearStatus();
       }
 
@@ -458,6 +538,164 @@
       }
 
       const STORAGE_KEY = "sudoku-saved-games";
+      const SOLVED_LADDER_KEY = "sudoku-solved-ladder";
+
+      function loadSolvedLadder() {
+        try {
+          const raw = localStorage.getItem(SOLVED_LADDER_KEY);
+          return new Set(raw ? JSON.parse(raw) : []);
+        } catch {
+          return new Set();
+        }
+      }
+
+      function writeSolvedLadder(solvedSet) {
+        localStorage.setItem(SOLVED_LADDER_KEY, JSON.stringify([...solvedSet]));
+      }
+
+      function isLadderGameSolved(game, solvedSet) {
+        if (solvedSet.has(game.name)) return true;
+        const store = loadStore();
+        const saved = store[game.name];
+        if (saved && saved.values && new Sudoku(saved.values).isSolved()) {
+          solvedSet.add(game.name);
+          writeSolvedLadder(solvedSet);
+          return true;
+        }
+        return false;
+      }
+
+      function getUnsolvedLadderGames(limit = 5) {
+        const allGames = typeof readLadderInfo === "function" ? readLadderInfo() : [];
+        const solved = loadSolvedLadder();
+        const unsolved = [];
+        for (let i = 0; i < allGames.length; i++) {
+          const game = allGames[i];
+          if (!isLadderGameSolved(game, solved)) {
+            unsolved.push({ ...game, ladderIndex: i + 1 });
+            if (unsolved.length === limit) break;
+          }
+        }
+        return { unsolved, total: allGames.length, solvedCount: solved.size };
+      }
+
+      function getBadgeClass(level) {
+        const key = (level || "").toLowerCase().replace(/\s+/g, "-");
+        return `badge-${key}`;
+      }
+
+      function refreshLadderList() {
+        const { unsolved, total, solvedCount } = getUnsolvedLadderGames(5);
+        if (ladderStatsEl) {
+          ladderStatsEl.textContent = `${solvedCount} of ${total} solved`;
+        }
+        ladderEl.innerHTML = "";
+
+        if (unsolved.length === 0) {
+          const li = document.createElement("li");
+          li.className = "empty";
+          li.textContent = total > 0 ? "All ladder games completed! 🎉" : "No ladder games found";
+          ladderEl.appendChild(li);
+          selectedLadderName = null;
+          return;
+        }
+
+        const currentPuzzleName = nameEl.textContent;
+        const unsolvedNames = unsolved.map((g) => g.name);
+        if (!unsolvedNames.includes(selectedLadderName)) {
+          selectedLadderName = unsolvedNames.includes(currentPuzzleName) ? currentPuzzleName : unsolvedNames[0];
+        }
+
+        for (const game of unsolved) {
+          const li = document.createElement("li");
+          const isSelected = game.name === selectedLadderName || game.name === currentPuzzleName;
+          if (isSelected) li.classList.add("selected");
+
+          const top = document.createElement("div");
+          top.className = "ladder-top";
+
+          const rank = document.createElement("span");
+          rank.className = "ladder-rank";
+          rank.textContent = `#${game.ladderIndex}`;
+
+          const title = document.createElement("span");
+          title.className = "ladder-title";
+          title.textContent = game.name;
+
+          top.appendChild(rank);
+          top.appendChild(title);
+
+          const meta = document.createElement("div");
+          meta.className = "ladder-meta";
+
+          const badge = document.createElement("span");
+          badge.className = `badge ${getBadgeClass(game.level)}`;
+          badge.textContent = game.level;
+
+          const diff = document.createElement("span");
+          diff.className = "ladder-diff";
+          diff.textContent = `Diff: ${game.difficulty}`;
+
+          meta.appendChild(badge);
+          meta.appendChild(diff);
+
+          li.appendChild(top);
+          li.appendChild(meta);
+
+          li.addEventListener("click", () => {
+            selectedLadderName = game.name;
+            selectedName = null;
+            refreshSavedList();
+            loadLadderGame(game);
+          });
+
+          ladderEl.appendChild(li);
+        }
+      }
+
+      function loadLadderGame(game) {
+        if (!game) return;
+        const current = collectState();
+        if (current.name) {
+          const store = loadStore();
+          store[current.name] = current;
+          writeStore(store);
+        }
+
+        const store = loadStore();
+        const saved = store[game.name];
+        if (saved) {
+          applyState(saved);
+        } else {
+          applyState({
+            name: game.name,
+            given: game.given,
+            values: game.given.map((row) => row.slice()),
+            solution: game.solution,
+          });
+        }
+        selectedLadderName = game.name;
+        selectedName = null;
+        refreshSavedList();
+        refreshLadderList();
+        clearStatus();
+      }
+
+      function markCurrentGameSolved() {
+        const name = nameEl.textContent;
+        if (!name) return;
+        const allGames = typeof readLadderInfo === "function" ? readLadderInfo() : [];
+        const isLadder = allGames.some((g) => g.name === name);
+        if (isLadder) {
+          const solved = loadSolvedLadder();
+          if (!solved.has(name)) {
+            solved.add(name);
+            writeSolvedLadder(solved);
+            refreshLadderList();
+            setStatus("Solved! Nicely done. Ladder updated!", "win");
+          }
+        }
+      }
 
       function loadStore() {
         try {
@@ -490,7 +728,9 @@
           li.classList.toggle("selected", name === selectedName);
           li.addEventListener("click", () => {
             selectedName = name;
+            selectedLadderName = null;
             refreshSavedList();
+            refreshLadderList();
           });
           savedEl.appendChild(li);
         }
@@ -517,7 +757,9 @@
         writeStore(store);
         applyState(state);
         selectedName = name;
+        selectedLadderName = null;
         refreshSavedList();
+        refreshLadderList();
         clearStatus();
       }
 
@@ -531,6 +773,7 @@
         selectedName = names[0];
         applyState(store[selectedName]);
         refreshSavedList();
+        refreshLadderList();
         clearStatus();
       }
 
@@ -551,10 +794,12 @@
           setStatus("Keep going, the board isn't full yet.", "err");
           return;
         }
-        setStatus(
-          isBoardCorrect() ? "Solved! Nicely done." : "Not quite, keep trying.",
-          isBoardCorrect() ? "win" : "err"
-        );
+        if (isBoardCorrect()) {
+          setStatus("Solved! Nicely done.", "win");
+          markCurrentGameSolved();
+        } else {
+          setStatus("Not quite, keep trying.", "err");
+        }
       }
 
       function solve() {
@@ -632,6 +877,7 @@
         markConflicts();
         if (isBoardFull() && isBoardCorrect()) {
           setStatus("Solved! Nicely done.", "win");
+          markCurrentGameSolved();
         }
       }
       document.getElementById("propagate").addEventListener("click", propagateConstraints);
@@ -655,6 +901,21 @@
       document.getElementById("load").addEventListener("click", loadGame);
       document.getElementById("delete").addEventListener("click", deleteGame);
 
+      playLadderBtn.addEventListener("click", () => {
+        const { unsolved } = getUnsolvedLadderGames(5);
+        if (unsolved.length === 0) return;
+        const target = unsolved.find((g) => g.name === selectedLadderName) || unsolved[0];
+        loadLadderGame(target);
+      });
+
+      resetLadderBtn.addEventListener("click", () => {
+        if (confirm("Reset ladder progress? This will mark all ladder games as unsolved.")) {
+          localStorage.removeItem(SOLVED_LADDER_KEY);
+          refreshLadderList();
+          setStatus("Ladder progress has been reset.", "win");
+        }
+      });
+
       function buildPalette() {
         const paletteEl = document.getElementById("palette");
         for (let n = 1; n <= 9; n++) {
@@ -671,6 +932,7 @@
       buildBoard();
       buildPalette();
       refreshSavedList();
+      refreshLadderList();
       startGame();
     </script>
   </body>

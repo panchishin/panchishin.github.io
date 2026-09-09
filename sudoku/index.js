@@ -420,6 +420,45 @@ function writeLadderInfo(games, filePath) {
   fs.writeFileSync(filePath, output);
 }
 
+function readLadderInfo(filePath) {
+  if (typeof window === "undefined" && typeof require !== "undefined") {
+    const fs = require("fs");
+    const path = require("path");
+    const baseDir = typeof __dirname !== "undefined" ? __dirname : process.cwd();
+    const targetPath = filePath
+      ? path.resolve(filePath)
+      : path.join(baseDir, "ladder_info.js");
+    if (!fs.existsSync(targetPath)) {
+      return [];
+    }
+    try {
+      delete require.cache[require.resolve(targetPath)];
+      const imported = require(targetPath);
+      if (Array.isArray(imported)) return imported;
+      if (imported && Array.isArray(imported.ladderInfo)) return imported.ladderInfo;
+    } catch {
+      const content = fs.readFileSync(targetPath, "utf8");
+      try {
+        return JSON.parse(content);
+      } catch {
+        const start = content.indexOf("[");
+        const end = content.lastIndexOf("]");
+        if (start !== -1 && end !== -1) {
+          return JSON.parse(content.slice(start, end + 1));
+        }
+      }
+    }
+    return [];
+  }
+  if (typeof ladderInfo !== "undefined") {
+    return ladderInfo;
+  }
+  if (typeof window !== "undefined" && window.ladderInfo) {
+    return window.ladderInfo;
+  }
+  return [];
+}
+
 if (typeof module !== "undefined" && module.exports) {
   module.exports = {
     Sudoku,
@@ -438,6 +477,7 @@ if (typeof module !== "undefined" && module.exports) {
     runPropagation,
     generateLadderGames,
     writeLadderInfo,
+    readLadderInfo,
   };
 }
 
