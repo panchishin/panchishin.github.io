@@ -324,7 +324,20 @@ function runPropagation(givenGrid) {
   let remaining = 0;
   for (let r = 0; r < SIZE; r++)
     for (let c = 0; c < SIZE; c++) if (grid[r][c] === EMPTY) remaining++;
-  return { grid, notes, passes, remaining };
+
+  let level = "Impossible";
+  if (remaining === 0 && passes < 10) {
+    level = "Easy";
+  } else if (remaining === 0 && passes >= 10) {
+    level = "Medium";
+  } else if (remaining < 10) {
+    level = "Hard";
+  } else if (remaining < 30) {
+    level = "Very Hard";
+  } else {
+    level = "Impossible";
+  }
+  return { grid, notes, passes, remaining, level };
 }
 
 if (typeof module !== "undefined" && module.exports) {

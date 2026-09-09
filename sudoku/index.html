@@ -455,17 +455,7 @@
         const given = puzzle.grid.map((row) => row.slice());
         let name = nameFromPuzzle(puzzle);
         const propResult = runPropagation(given);
-        if (propResult.remaining === 0 && propResult.passes < 10) {
-          name = "Easy " + name;
-        } else if (propResult.remaining === 0 && propResult.passes >= 10) {
-          name = "Medium " + name;
-        } else if (propResult.remaining < 10) {
-          name = "Hard " + name;
-        } else if (propResult.remaining < 30) {
-          name = "Very Hard " + name;
-        } else {
-          name = "Impossible " + name;
-        }
+        name = propResult.level + " " + name;
         applyState({
           name,
           given,
