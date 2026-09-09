@@ -121,6 +121,56 @@ function shuffled(values) {
 
 const DIGITS = Array.from({ length: SIZE }, (_, i) => i + 1);
 
+const ADJECTIVES = [
+  "fast", "slow", "big", "small", "crazy", "sly", "beautiful", "ugly",
+  "venomous", "peaceful", "quaint", "horrific", "brave", "clever", "gentle",
+  "fierce", "lazy", "noble", "sneaky", "grumpy", "cheerful", "mighty",
+  "tiny", "giant", "silent", "loud", "shiny", "rusty", "ancient", "modern",
+  "curious", "dizzy", "elegant", "frosty", "golden", "hidden", "jolly",
+  "lucky", "mellow", "nimble", "proud", "radiant", "savage", "timid",
+  "wild", "witty", "zany", "bold", "dapper", "eager",
+];
+
+const ANIMALS = [
+  "cat", "dog", "pig", "rabbit", "horse", "cow", "spider", "snake",
+  "dragon", "donkey", "hawk", "sparrow", "guppy", "dolphin", "otter",
+  "badger", "fox", "wolf", "bear", "moose", "beaver", "raven", "owl",
+  "falcon", "lynx", "panther", "leopard", "cheetah", "tiger", "lion",
+  "gecko", "iguana", "turtle", "frog", "newt", "crab", "lobster", "shark",
+  "whale", "seal", "walrus", "penguin", "flamingo", "heron", "stork",
+  "mantis", "beetle", "moth", "hornet", "koala",
+];
+
+function mulberry32(seed) {
+  let a = seed >>> 0;
+  return function () {
+    a |= 0;
+    a = (a + 0x6d2b79f5) | 0;
+    let t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+function seedFromPuzzle(puzzle) {
+  let hash = 2166136261;
+  for (let r = 0; r < SIZE; r++) {
+    for (let c = 0; c < SIZE; c++) {
+      const value = puzzle.get(r, c);
+      hash ^= (value === EMPTY ? 0 : value) + 1;
+      hash = Math.imul(hash, 16777619);
+    }
+  }
+  return hash >>> 0;
+}
+
+function nameFromPuzzle(puzzle) {
+  const rand = mulberry32(seedFromPuzzle(puzzle));
+  const adjective = ADJECTIVES[Math.floor(rand() * ADJECTIVES.length)];
+  const animal = ANIMALS[Math.floor(rand() * ANIMALS.length)];
+  return adjective + " " + animal;
+}
+
 // Phase 1: fill an empty grid with a complete valid solution using
 // randomized backtracking. Trying digits in random order yields a
 // different solution on each call.
@@ -337,7 +387,37 @@ function runPropagation(givenGrid) {
   } else {
     level = "Impossible";
   }
-  return { grid, notes, passes, remaining, level };
+  let difficulty = remaining == 0 ? passes : remaining + 20;
+  return { grid, notes, passes, remaining, level, difficulty };
+}
+
+function generateLadderGames(count = 100) {
+  const games = [];
+  for (let i = 0; i < count; i++) {
+    const { puzzle, solution } = generatePuzzle();
+    const given = puzzle.grid.map((row) => row.slice());
+    const propagation = runPropagation(given);
+    games.push({
+      name: `${propagation.level} ${nameFromPuzzle(puzzle)}`,
+      given,
+      solution: solution.grid.map((row) => row.slice()),
+      level: propagation.level,
+      passes: propagation.passes,
+      remaining: propagation.remaining,
+      difficulty: propagation.difficulty,
+    });
+  }
+
+  games.sort((a, b) => a.difficulty - b.difficulty);
+  return games;
+}
+
+function writeLadderInfo(games, filePath) {
+  const fs = require("fs");
+  const output = `const ladderInfo = ${JSON.stringify(games, null, 2)};\n\n` +
+    `if (typeof module !== "undefined" && module.exports) {\n` +
+    `  module.exports = ladderInfo;\n}\n`;
+  fs.writeFileSync(filePath, output);
 }
 
 if (typeof module !== "undefined" && module.exports) {
@@ -349,11 +429,20 @@ if (typeof module !== "undefined" && module.exports) {
     countSolutions,
     generateSolved,
     generatePuzzle,
+    nameFromPuzzle,
     unitCoords,
     legalCandidates,
     hasPerfectMatching,
     unitAllows,
     propagationPass,
     runPropagation,
+    generateLadderGames,
+    writeLadderInfo,
   };
+}
+
+if (typeof require !== "undefined" && require.main === module) {
+  const path = require("path");
+  const games = generateLadderGames();
+  writeLadderInfo(games, path.join(__dirname, "ladder_info.js"));
 }
