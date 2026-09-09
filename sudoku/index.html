@@ -582,6 +582,19 @@
         clearStatus();
       }
 
+      function startGame() {
+        const store = loadStore();
+        const names = Object.keys(store).sort();
+        if (names.length === 0) {
+          newGame();
+          return;
+        }
+        selectedName = names[0];
+        applyState(store[selectedName]);
+        refreshSavedList();
+        clearStatus();
+      }
+
       function deleteGame() {
         const name = selectedName;
         if (!name) return;
@@ -719,7 +732,7 @@
       buildBoard();
       buildPalette();
       refreshSavedList();
-      newGame();
+      startGame();
     </script>
   </body>
 </html>
