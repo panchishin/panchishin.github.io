@@ -31,8 +31,10 @@
       h1 { margin: 0; font-weight: 700; letter-spacing: 0.5px; }
       #board {
         display: grid;
-        grid-template-columns: repeat(9, 44px);
-        grid-template-rows: repeat(9, 44px);
+        grid-template-columns: repeat(9, minmax(0, 1fr));
+        grid-template-rows: repeat(9, minmax(0, 1fr));
+        width: min(402px, 100%);
+        aspect-ratio: 1;
         border: 3px solid var(--thick);
         background: var(--thick);
       }
@@ -100,7 +102,13 @@
         justify-content: center;
         width: 100%;
       }
-      #game { display: flex; flex-direction: column; align-items: center; gap: 20px; }
+      #game {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+        width: min(402px, 100%);
+      }
       #palette { display: flex; gap: 8px; }
       #palette .key {
         width: 40px;
@@ -149,6 +157,13 @@
       @media (max-width: 720px) {
         #layout { flex-direction: column; align-items: center; }
         #sidebar { order: 0; align-items: center; }
+      }
+      @media (max-width: 480px) {
+        body { padding: 16px 12px; }
+        .controls { flex-wrap: wrap; justify-content: center; gap: 8px; }
+        button { font-size: 14px; padding: 8px 10px; }
+        #palette { width: 100%; gap: 4px; }
+        #palette .key { width: auto; flex: 1; height: 36px; font-size: 16px; }
       }
       button.primary { background: var(--user); color: #fff; border-color: var(--user); }
       button.primary:hover { background: #1d4ed8; }
@@ -202,6 +217,7 @@
       let solution = null;
       let selectedName = null;
       let pencilMode = false;
+      let selectedCell = null;
 
       const ADJECTIVES = [
         "fast", "slow", "big", "small", "crazy", "sly", "beautiful", "ugly",
@@ -274,6 +290,9 @@
             input.inputMode = "numeric";
             input.addEventListener("input", () => onInput(r, c));
             input.addEventListener("keydown", (e) => onKeyDown(e, r, c));
+            input.addEventListener("focus", () => {
+              selectedCell = input.readOnly ? null : [r, c];
+            });
             input.addEventListener("mouseenter", () => highlightValue(input.value));
             input.addEventListener("mouseleave", clearMatches);
 
@@ -304,6 +323,23 @@
         if (v && isBoardFull() && isBoardCorrect()) {
           setStatus("Solved! Nicely done.", "win");
         }
+      }
+
+      function applyPaletteNumber(n) {
+        if (!selectedCell) return;
+        const [r, c] = selectedCell;
+        const input = inputs[r][c];
+        if (input.readOnly) return;
+        if (pencilMode) {
+          if (input.value !== "") return;
+          const set = notes[r][c];
+          if (set.has(n)) set.delete(n);
+          else set.add(n);
+          renderNotes(r, c);
+          return;
+        }
+        input.value = input.value === String(n) ? "" : String(n);
+        onInput(r, c);
       }
 
       // Pencil marks: toggled when pencil mode is on or Shift is held on an empty cell.
@@ -675,6 +711,7 @@
           key.textContent = n;
           key.addEventListener("mouseenter", () => highlightValue(String(n)));
           key.addEventListener("mouseleave", clearMatches);
+          key.addEventListener("click", () => applyPaletteNumber(n));
           paletteEl.appendChild(key);
         }
       }
