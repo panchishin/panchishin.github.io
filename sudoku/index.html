@@ -125,6 +125,7 @@
         user-select: none;
       }
       #palette .key:hover { background: var(--match); }
+      #palette .key.active { background: var(--user); color: #fff; border-color: var(--user); }
       #sidebar, #ladder-sidebar {
         display: flex;
         flex-direction: column;
@@ -293,6 +294,8 @@
       let selectedLadderName = null;
       let pencilMode = false;
       let selectedCell = null;
+      let lastSelected = null;
+      let lastPaletteNumber = null;
 
       function buildBoard() {
         boardEl.innerHTML = "";
@@ -314,9 +317,42 @@
             input.inputMode = "numeric";
             input.addEventListener("input", () => onInput(r, c));
             input.addEventListener("keydown", (e) => onKeyDown(e, r, c));
-            input.addEventListener("focus", () => {
+            let fillCooldown = false;
+            const tryPaletteFill = (e) => {
+              if (fillCooldown) {
+                if (e) e.preventDefault();
+                input.blur();
+                return true;
+              }
+              if (lastSelected === "palette" && !pencilMode && !input.readOnly && input.value === "") {
+                if (e) e.preventDefault();
+                input.value = String(lastPaletteNumber);
+                onInput(r, c);
+                input.blur();
+                selectedCell = null;
+                clearPaletteSelection();
+                fillCooldown = true;
+                setTimeout(() => { fillCooldown = false; }, 250);
+                return true;
+              }
+              return false;
+            };
+
+            input.addEventListener("pointerdown", tryPaletteFill);
+            input.addEventListener("mousedown", tryPaletteFill);
+
+            const handleCellSelect = (e) => {
+              if (fillCooldown) {
+                if (e) e.preventDefault();
+                input.blur();
+                return;
+              }
+              if (tryPaletteFill(e)) return;
               selectedCell = input.readOnly ? null : [r, c];
-            });
+              clearPaletteSelection();
+            };
+            input.addEventListener("focus", handleCellSelect);
+            input.addEventListener("click", handleCellSelect);
             input.addEventListener("mouseenter", () => highlightValue(input.value));
             input.addEventListener("mouseleave", clearMatches);
 
@@ -513,6 +549,7 @@
             renderNotes(r, c);
           }
         }
+        clearPaletteSelection();
       }
 
       function collectState() {
@@ -917,15 +954,40 @@
         }
       });
 
+      function clearPaletteSelection() {
+        lastSelected = null;
+        lastPaletteNumber = null;
+        const paletteEl = document.getElementById("palette");
+        if (paletteEl) {
+          paletteEl.querySelectorAll(".key").forEach((k) => k.classList.remove("active"));
+        }
+      }
+
       function buildPalette() {
         const paletteEl = document.getElementById("palette");
+        paletteEl.innerHTML = "";
         for (let n = 1; n <= 9; n++) {
           const key = document.createElement("div");
           key.className = "key";
           key.textContent = n;
           key.addEventListener("mouseenter", () => highlightValue(String(n)));
-          key.addEventListener("mouseleave", clearMatches);
-          // key.addEventListener("click", () => applyPaletteNumber(n));
+          key.addEventListener("mouseleave", () => {
+            if (lastSelected !== "palette" || lastPaletteNumber !== n) {
+              clearMatches();
+            }
+          });
+          key.addEventListener("click", () => {
+            if (lastSelected === "palette" && lastPaletteNumber === n) {
+              clearPaletteSelection();
+              clearMatches();
+              return;
+            }
+            lastSelected = "palette";
+            lastPaletteNumber = n;
+            paletteEl.querySelectorAll(".key").forEach((k) => k.classList.remove("active"));
+            key.classList.add("active");
+            highlightValue(String(n));
+          });
           paletteEl.appendChild(key);
         }
       }
