@@ -942,9 +942,12 @@
 
       function loadLadderGame(game) {
         if (!game) return;
-        const current = collectState();
+        let current = null;
+        try {
+          current = collectState();
+        } catch {}
         let store = loadStore();
-        if (current.name) {
+        if (current && current.name) {
           store = [current, ...store.filter((g) => g.name !== current.name)];
           writeStore(store);
         }
@@ -1054,7 +1057,13 @@
       function startGame() {
         const store = loadStore();
         if (store.length === 0) {
-          newGame();
+          const { unsolved } = getUnsolvedLadderGames(1);
+          const nextGame = unsolved.length > 0 ? unsolved[0] : null;
+          if (nextGame) {
+            loadLadderGame(nextGame);
+          } else {
+            newGame();
+          }
           return;
         }
         selectedName = store[0].name;
