@@ -29,12 +29,17 @@
         color: #0f172a;
       }
       h1 { margin: 0; font-weight: 700; letter-spacing: 0.5px; }
+      #board-container {
+        position: relative;
+        width: min(402px, 100%);
+        aspect-ratio: 1;
+      }
       #board {
         display: grid;
         grid-template-columns: repeat(9, minmax(0, 1fr));
         grid-template-rows: repeat(9, minmax(0, 1fr));
-        width: min(402px, 100%);
-        aspect-ratio: 1;
+        width: 100%;
+        height: 100%;
         border: 3px solid var(--thick);
         background: var(--thick);
       }
@@ -229,14 +234,122 @@
       button.primary { background: var(--user); color: #fff; border-color: var(--user); }
       button.primary:hover { background: #1d4ed8; }
       button.active { background: var(--user); color: #fff; border-color: var(--user); }
-      #name { margin: 0; font-size: 18px; font-weight: 600; color: #475569; letter-spacing: 0.3px; text-transform: capitalize; }
+      button.active:hover { background: #1d4ed8; }
+      #name {
+        margin: 0;
+        font-size: 18px;
+        font-weight: 600;
+        color: #475569;
+        letter-spacing: 0.3px;
+        text-transform: capitalize;
+        min-height: 28px;
+        line-height: 28px;
+        text-align: center;
+      }
+      #completion-overlay {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        background: rgba(255, 255, 255, 0.96);
+        backdrop-filter: blur(5px);
+        -webkit-backdrop-filter: blur(5px);
+        border: 3px solid var(--thick);
+        box-sizing: border-box;
+        padding: 20px;
+        z-index: 20;
+        text-align: center;
+        animation: overlayFadeIn 0.25s ease-out;
+      }
+      #completion-overlay.hidden {
+        display: none;
+      }
+      @keyframes overlayFadeIn {
+        from {
+          opacity: 0;
+          transform: scale(0.95);
+        }
+        to {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+      .overlay-icon {
+        font-size: 34px;
+        line-height: 1;
+      }
+      .overlay-title {
+        font-size: 22px;
+        font-weight: 700;
+        color: #15803d;
+        margin: 0;
+      }
+      .overlay-subtitle {
+        font-size: 13px;
+        color: #64748b;
+        margin: -4px 0 0 0;
+      }
+      .overlay-ladder-card {
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        padding: 10px 14px;
+        width: 100%;
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+      .overlay-ladder-label {
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        color: #64748b;
+        text-transform: uppercase;
+      }
+      .overlay-ladder-title {
+        font-size: 15px;
+        font-weight: 600;
+        color: var(--thick);
+        text-transform: capitalize;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .overlay-btn-group {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        width: 100%;
+        align-items: center;
+      }
+      .overlay-play-btn {
+        width: 100%;
+        font-size: 15px;
+        font-weight: 600;
+        padding: 10px 16px;
+      }
+      .overlay-dismiss-btn {
+        background: transparent;
+        border: none;
+        color: #64748b;
+        font-size: 12px;
+        cursor: pointer;
+        padding: 4px 8px;
+        text-decoration: underline;
+      }
+      .overlay-dismiss-btn:hover {
+        color: var(--thick);
+      }
       #status { min-height: 24px; font-size: 16px; font-weight: 600; }
       #status.win { color: #16a34a; }
       #status.err { color: var(--bad); }
     </style>
   </head>
   <body>
-    <h1>Sudoku</h1>
     <div id="layout">
       <aside id="sidebar">
         <h2>Saved Games</h2>
@@ -248,19 +361,20 @@
       </aside>
       <div id="game">
         <p id="name"></p>
-        <div id="board"></div>
-        <div id="palette"></div>
-        <div class="controls">
-          <button id="new" class="primary">New Game</button>
-          <button id="reset" title="Reset this puzzle to its starting position">Reset</button>
-          <button id="check">Check</button>
-          <button id="solve">Solve</button>
-          <button id="save">Save</button>
+        <div id="board-container">
+          <div id="board"></div>
+          <div id="completion-overlay" class="hidden"></div>
         </div>
+        <div id="palette"></div>
         <div class="controls">
           <button id="pencil" title="Toggle pencil marks (or hold Shift while typing)">Pencil</button>
           <button id="clearPencil" title="Remove all pencil marks">Clear Pencil</button>
           <button id="propagate" title="Remove pencil marks that conflict with filled cells (one pass)">Auto Pencil</button>
+        </div>
+        <div class="controls">
+          <button id="new" class="primary">New Game</button>
+          <button id="reset" title="Reset this puzzle to its starting position">Reset</button>
+          <button id="save">Save</button>
         </div>
         <div id="status"></div>
       </div>
@@ -279,6 +393,7 @@
     <script src="index.js"></script>
     <script>
       const boardEl = document.getElementById("board");
+      const completionOverlayEl = document.getElementById("completion-overlay");
       const statusEl = document.getElementById("status");
       const nameEl = document.getElementById("name");
       const savedEl = document.getElementById("saved");
@@ -296,6 +411,7 @@
       let selectedCell = null;
       let lastSelected = null;
       let lastPaletteNumber = null;
+      let currentPuzzleName = "";
 
       function buildBoard() {
         boardEl.innerHTML = "";
@@ -372,6 +488,139 @@
         }
       }
 
+      function showCompletionOverlay() {
+        if (!completionOverlayEl) return;
+        const { unsolved } = getUnsolvedLadderGames(1);
+        const nextGame = unsolved.length > 0 ? unsolved[0] : null;
+
+        completionOverlayEl.innerHTML = "";
+
+        const icon = document.createElement("div");
+        icon.className = "overlay-icon";
+        icon.textContent = "🎉";
+        completionOverlayEl.appendChild(icon);
+
+        const title = document.createElement("h3");
+        title.className = "overlay-title";
+        title.textContent = "Congratulations!";
+        completionOverlayEl.appendChild(title);
+
+        const sub = document.createElement("p");
+        sub.className = "overlay-subtitle";
+        sub.textContent = "Puzzle completed successfully!";
+        completionOverlayEl.appendChild(sub);
+
+        const card = document.createElement("div");
+        card.className = "overlay-ladder-card";
+
+        if (nextGame) {
+          const label = document.createElement("div");
+          label.className = "overlay-ladder-label";
+          label.textContent = "Next on the Ladder";
+
+          const top = document.createElement("div");
+          top.className = "ladder-top";
+          top.style.justifyContent = "center";
+
+          const rank = document.createElement("span");
+          rank.className = "ladder-rank";
+          rank.textContent = `#${nextGame.ladderIndex}`;
+
+          const gameTitle = document.createElement("span");
+          gameTitle.className = "overlay-ladder-title";
+          gameTitle.textContent = nextGame.name;
+
+          top.appendChild(rank);
+          top.appendChild(gameTitle);
+
+          const meta = document.createElement("div");
+          meta.className = "ladder-meta";
+          meta.style.justifyContent = "center";
+          meta.style.gap = "10px";
+
+          const badge = document.createElement("span");
+          badge.className = `badge ${getBadgeClass(nextGame.level)}`;
+          badge.textContent = nextGame.level;
+
+          const diff = document.createElement("span");
+          diff.className = "ladder-diff";
+          diff.textContent = `Diff: ${nextGame.difficulty}`;
+
+          meta.appendChild(badge);
+          meta.appendChild(diff);
+
+          card.appendChild(label);
+          card.appendChild(top);
+          card.appendChild(meta);
+        } else {
+          const label = document.createElement("div");
+          label.className = "overlay-ladder-label";
+          label.textContent = "Ladder Completed!";
+
+          const msg = document.createElement("div");
+          msg.style.fontSize = "13px";
+          msg.style.color = "#475569";
+          msg.textContent = "You've solved all 100 ladder puzzles! 🏆";
+
+          card.appendChild(label);
+          card.appendChild(msg);
+        }
+
+        completionOverlayEl.appendChild(card);
+
+        const btnGroup = document.createElement("div");
+        btnGroup.className = "overlay-btn-group";
+
+        if (nextGame) {
+          const playBtn = document.createElement("button");
+          playBtn.className = "primary overlay-play-btn";
+          playBtn.textContent = "Play Next Game";
+          playBtn.addEventListener("click", () => {
+            hideCompletionOverlay();
+            loadLadderGame(nextGame);
+          });
+          btnGroup.appendChild(playBtn);
+        } else {
+          const newGameBtn = document.createElement("button");
+          newGameBtn.className = "primary overlay-play-btn";
+          newGameBtn.textContent = "New Random Game";
+          newGameBtn.addEventListener("click", () => {
+            hideCompletionOverlay();
+            newGame();
+          });
+          btnGroup.appendChild(newGameBtn);
+        }
+
+        const dismissBtn = document.createElement("button");
+        dismissBtn.className = "overlay-dismiss-btn";
+        dismissBtn.textContent = "View Completed Board";
+        dismissBtn.addEventListener("click", hideCompletionOverlay);
+        btnGroup.appendChild(dismissBtn);
+
+        completionOverlayEl.appendChild(btnGroup);
+        completionOverlayEl.classList.remove("hidden");
+      }
+
+      function hideCompletionOverlay() {
+        if (completionOverlayEl) {
+          completionOverlayEl.classList.add("hidden");
+        }
+      }
+
+      function handleGameCompleted() {
+        markCurrentGameSolved();
+        const { unsolved } = getUnsolvedLadderGames(1);
+        const nextGame = unsolved.length > 0 ? unsolved[0] : null;
+
+        if (nextGame) {
+          setStatus(`Solved! Next on ladder: #${nextGame.ladderIndex} ${nextGame.name}`, "win");
+        } else {
+          setStatus("Solved! All ladder puzzles completed! 🎉", "win");
+        }
+
+        showCompletionOverlay();
+      }
+
       function onInput(r, c) {
         const input = inputs[r][c];
         const v = input.value.replace(/[^1-9]/g, "");
@@ -381,8 +630,9 @@
         clearStatus();
         markConflicts();
         if (v && isBoardFull() && isBoardCorrect()) {
-          setStatus("Solved! Nicely done.", "win");
-          markCurrentGameSolved();
+          handleGameCompleted();
+        } else {
+          hideCompletionOverlay();
         }
       }
 
@@ -532,8 +782,10 @@
 
       // Rebuild the board from a plain-object state (used by New Game and Load).
       function applyState(state) {
+        currentPuzzleName = state.name;
         solution = new Sudoku(state.solution);
         nameEl.textContent = state.name;
+        hideCompletionOverlay();
         for (let r = 0; r < SIZE; r++) {
           for (let c = 0; c < SIZE; c++) {
             const input = inputs[r][c];
@@ -566,7 +818,7 @@
           }
         }
         return {
-          name: nameEl.textContent,
+          name: currentPuzzleName || nameEl.textContent,
           given,
           values,
           notes: notes.map((row) => row.map((set) => [...set])),
@@ -637,15 +889,15 @@
           return;
         }
 
-        const currentPuzzleName = nameEl.textContent;
+        const currentPuzzle = currentPuzzleName || nameEl.textContent;
         const unsolvedNames = unsolved.map((g) => g.name);
         if (!unsolvedNames.includes(selectedLadderName)) {
-          selectedLadderName = unsolvedNames.includes(currentPuzzleName) ? currentPuzzleName : unsolvedNames[0];
+          selectedLadderName = unsolvedNames.includes(currentPuzzle) ? currentPuzzle : unsolvedNames[0];
         }
 
         for (const game of unsolved) {
           const li = document.createElement("li");
-          const isSelected = game.name === selectedLadderName || game.name === currentPuzzleName;
+          const isSelected = game.name === selectedLadderName || game.name === currentPuzzle;
           if (isSelected) li.classList.add("selected");
 
           const top = document.createElement("div");
@@ -721,7 +973,7 @@
       }
 
       function markCurrentGameSolved() {
-        const name = nameEl.textContent;
+        const name = currentPuzzleName || nameEl.textContent;
         if (!name) return;
         const allGames = typeof readLadderInfo === "function" ? readLadderInfo() : [];
         const isLadder = allGames.some((g) => g.name === name);
@@ -731,7 +983,6 @@
             solved.add(name);
             writeSolvedLadder(solved);
             refreshLadderList();
-            setStatus("Solved! Nicely done. Ladder updated!", "win");
           }
         }
       }
@@ -842,14 +1093,14 @@
           return;
         }
         if (isBoardCorrect()) {
-          setStatus("Solved! Nicely done.", "win");
-          markCurrentGameSolved();
+          handleGameCompleted();
         } else {
           setStatus("Not quite, keep trying.", "err");
         }
       }
 
       function solve() {
+        hideCompletionOverlay();
         for (let r = 0; r < SIZE; r++) {
           for (let c = 0; c < SIZE; c++) {
             inputs[r][c].value = solution.get(r, c);
@@ -942,8 +1193,6 @@
 
       document.getElementById("new").addEventListener("click", newGame);
       document.getElementById("reset").addEventListener("click", resetGame);
-      document.getElementById("check").addEventListener("click", check);
-      document.getElementById("solve").addEventListener("click", solve);
       document.getElementById("save").addEventListener("click", saveGame);
       document.getElementById("load").addEventListener("click", loadGame);
       document.getElementById("delete").addEventListener("click", deleteGame);
