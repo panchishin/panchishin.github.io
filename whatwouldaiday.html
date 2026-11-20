@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>What Would AI Say? — a guess-the-AI-answers game</title>
+<style>
+  :root{
+    --gold:#ffd166;
+    --gold-deep:#f0b429;
+    --green:#4ade80;
+    --red:#ff5c72;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    padding:20px 14px 44px;
+    min-height:100vh;
+    font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    color:#eef1ff;
+    background:#080a18;
+    background-image:
+      radial-gradient(900px 520px at 50% -8%, #33397e 0%, rgba(51,57,126,0) 62%),
+      radial-gradient(700px 500px at 110% 110%, #2b1a4a 0%, rgba(43,26,74,0) 60%),
+      linear-gradient(180deg,#101331 0%, #070912 100%);
+    background-attachment:fixed;
+    display:flex;
+    justify-content:center;
+    -webkit-font-smoothing:antialiased;
+  }
+  body::before{
+    content:"";
+    position:fixed; inset:0;
+    background-image:
+      linear-gradient(rgba(255,255,255,.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,.03) 1px, transparent 1px);
+    background-size:44px 44px;
+    -webkit-mask-image:radial-gradient(circle at 50% 0%, #000 0%, transparent 70%);
+    mask-image:radial-gradient(circle at 50% 0%, #000 0%, transparent 70%);
+    pointer-events:none;
+  }
+  .app{
+    width:100%; max-width:740px; position:relative; z-index:1;
+    display:flex; flex-direction:column;
+  }
+
+  /* ---------- HUD ---------- */
+  .hud{
+    display:flex; align-items:center; justify-content:space-between;
+    gap:12px; flex-wrap:wrap; margin-bottom:16px;
+  }
+  .brand{display:flex; align-items:center; gap:10px;}
+  .logo{font-size:26px; filter:drop-shadow(0 0 10px rgba(255,209,102,.6));}
+  .title{
+    font-weight:900; letter-spacing:.06em; font-size:15px;
+    background:linear-gradient(90deg,#ffffff,#ffd166);
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  .tagline{font-size:11px; color:#8f97c9; letter-spacing:.05em; margin-top:2px;}
+  .stats{display:flex; gap:8px;}
+  .stat{
+    background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.1);
+    border-radius:10px; padding:6px 11px; text-align:center; min-width:66px;
+  }
+  .stat .k{
+    display:block; font-size:9px; letter-spacing:.16em;
+    color:#8f97c9; text-transform:uppercase; font-weight:700;
+  }
+  .stat .v{display:block; font-size:15px; font-weight:800; margin-top:2px; letter-spacing:.04em;}
+  .stat .v.gold{color:var(--gold);}
+  .strike{opacity:.2; font-size:15px; transition:opacity .2s, color .2s;}
+  .strike.on{opacity:1; color:var(--red); text-shadow:0 0 10px rgba(255,92,114,.85);}
+
+  /* ---------- Question banner ---------- */
+  .q-banner{
+    border-radius:18px; padding:16px 18px; text-align:center;
+    background:linear-gradient(180deg, rgba(255,209,102,.14), rgba(255,209,102,.03));
+    border:1px solid rgba(255,209,102,.32);
+    box-shadow:0 12px 40px -18px rgba(255,209,102,.55), inset 0 1px 0 rgba(255,255,255,.08);
+    margin-bottom:14px;
+  }
+  .q-label{font-size:10px; letter-spacing:.28em; color:var(--gold); font-weight:800; opacity:.92;}
+  .q-text{
+    margin:8px 0 0; font-size:clamp(17px,3.6vw,23px);
+    line-height:1.25; font-weight:800; letter-spacing:-.01em;
+  }
+
+  /* ---------- Board ---------- */
+  .board{display:grid; gap:8px;}
+  .row{
+    display:grid; grid-template-columns:38px 1fr 58px; align-items:center; gap:10px;
+    padding:11px 14px; border-radius:13px; min-height:58px;
+    background:rgba(255,255,255,.045);
+    border:1px solid rgba(255,255,255,.09);
+    transition:background .25s, border-color .25s;
+  }
+  .rank{
+    width:30px; height:30px; border-radius:50%;
+    display:grid; place-items:center;
+    font-weight:900; font-size:13px;
+    background:rgba(255,255,255,.08); color:#aab2e0;
+  }
+  .cell{display:flex; flex-direction:column; min-width:0;}
+  .answer-text{font-weight:800; font-size:clamp(15px,3vw,19px); letter-spacing:.01em;}
+  .masked{color:#5b6291; letter-spacing:.35em; font-weight:900;}
+  .hint{
+    font-size:11.5px; color:var(--gold); letter-spacing:.18em;
+    font-weight:800; margin-top:4px; word-break:break-word;
+  }
+  .points{
+    text-align:right; font-weight:900; color:#5b6291;
+    font-size:16px; transition:color .25s;
+  }
+
+  .row.revealed{
+    background:linear-gradient(90deg, rgba(74,222,128,.16), rgba(74,222,128,.04));
+    border-color:rgba(74,222,128,.42);
+  }
+  .row.revealed .rank{background:rgba(74,222,128,.25); color:#bff7d3;}
+  .row.revealed .points{color:var(--green);}
+  .row.revealed .answer-text{color:#f4fff8;}
+
+  .row.top.revealed{
+    background:linear-gradient(90deg, rgba(255,209,102,.22), rgba(255,209,102,.05));
+    border-color:rgba(255,209,102,.6);
+    box-shadow:0 0 0 1px rgba(255,209,102,.18), 0 10px 30px -14px rgba(255,209,102,.85);
+  }
+  .row.top.revealed .rank{background:rgba(255,209,102,.3); color:#ffe9b0;}
+  .row.top.revealed .points{color:var(--gold);}
+
+  .row.pop{animation:pop .45s cubic-bezier(.2,1.4,.5,1);}
+  @keyframes pop{
+    0%{transform:scale(.955); opacity:.35;}
+    60%{transform:scale(1.02);}
+    100%{transform:scale(1); opacity:1;}
+  }
+
+  /* ---------- Loading ---------- */
+  .loading{
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    gap:14px; padding:56px 0; color:#8f97c9; font-size:13px; letter-spacing:.08em;
+  }
+  .dots{display:flex; gap:8px;}
+  .dots span{
+    width:10px; height:10px; border-radius:50%; background:var(--gold);
+    animation:bounce 1s infinite ease-in-out;
+  }
+  .dots span:nth-child(2){animation-delay:.15s; background:#8b93ff;}
+  .dots span:nth-child(3){animation-delay:.3s;  background:var(--green);}
+  @keyframes bounce{
+    0%,80%,100%{transform:translateY(0); opacity:.4;}
+    40%{transform:translateY(-9px); opacity:1;}
+  }
+
+  /* ---------- Input ---------- */
+  .guessbar{display:flex; gap:8px; margin-top:16px;}
+  .guessbar input{
+    flex:1; min-width:0; font-family:inherit;
+    background:rgba(255,255,255,.06);
+    border:1px solid rgba(255,255,255,.14);
+    border-radius:12px; padding:14px 16px;
+    font-size:16px; color:#fff; outline:none;
+    transition:border-color .2s, box-shadow .2s;
+  }
+  .guessbar input::placeholder{color:#6d76a3;}
+  .guessbar input:focus{
+    border-color:rgba(255,209,102,.8);
+    box-shadow:0 0 0 3px rgba(255,209,102,.14);
+  }
+  .guessbar input:disabled{opacity:.45;}
+
+  .btn{
+    font-family:inherit; font-weight:800; font-size:15px;
+    border:0; border-radius:12px; padding:14px 22px; cursor:pointer;
+    background:linear-gradient(180deg,#ffe08a,#f0b429);
+    color:#2a1c00;
+    box-shadow:0 8px 22px -10px rgba(255,209,102,.9);
+    transition:transform .12s, filter .2s, opacity .2s;
+    white-space:nowrap;
+  }
+  .btn:hover:not(:disabled){filter:brightness(1.07);}
+  .btn:active:not(:disabled){transform:translateY(1px) scale(.99);}
+  .btn:disabled{opacity:.4; cursor:not-allowed; filter:grayscale(.5);}
+
+  .btn.ghost{
+    background:rgba(255,255,255,.05); color:#cfd5ff;
+    border:1px solid rgba(255,255,255,.16);
+    box-shadow:none; font-size:13px; padding:11px 16px;
+  }
+
+  .tools{display:flex; align-items:center; gap:12px; flex-wrap:wrap; margin-top:12px;}
+  .hint-note{font-size:11.5px; color:#7b83b3; line-height:1.4;}
+
+  .foot{margin-top:26px; text-align:center; font-size:11px; color:#5e668f; line-height:1.6;}
+
+  /* ---------- Toast ---------- */
+  .toast{
+    position:fixed; left:50%; bottom:26px;
+    transform:translate(-50%,20px);
+    background:rgba(15,19,42,.96);
+    border:1px solid rgba(255,255,255,.14);
+    border-radius:12px; padding:12px 18px;
+    font-weight:700; font-size:14px;
+    opacity:0; pointer-events:none;
+    transition:opacity .25s, transform .25s;
+    max-width:min(92vw,520px); text-align:center;
+    z-index:60;
+    box-shadow:0 20px 50px -20px #000;
+  }
+  .toast.show{opacity:1; transform:translate(-50%,0);}
+  .toast.good{border-color:rgba(74,222,128,.6); color:#b9f7cf;}
+  .toast.bad{border-color:rgba(255,92,114,.6); color:#ffc3cb;}
+  .toast.warn{border-color:rgba(255,209,102,.6); color:#ffe4a6;}
+
+  /* ---------- Result overlay ---------- */
+  .overlay{
+    position:fixed; inset:0; z-index:70;
+    background:rgba(4,6,16,.78);
+    -webkit-backdrop-filter:blur(6px); backdrop-filter:blur(6px);
+    display:grid; place-items:center; padding:20px;
+    animation:fade .25s ease;
+  }
+  @keyframes fade{from{opacity:0} to{opacity:1}}
+
+  .card{
+    width:min(440px,100%);
+    background:linear-gradient(180deg,#191d44,#0e1128);
+    border:1px solid rgba(255,255,255,.14);
+    border-radius:20px; padding:26px 22px;
+    text-align:center;
+    box-shadow:0 40px 80px -30px #000;
+    animation:rise .35s cubic-bezier(.2,1.3,.5,1);
+  }
+  @keyframes rise{
+    from{transform:translateY(18px) scale(.96); opacity:0;}
+    to{transform:none; opacity:1;}
+  }
+  .card-label{font-size:11px; letter-spacing:.28em; color:var(--gold); font-weight:800;}
+  .big-score{
+    font-size:56px; font-weight:900; line-height:1; margin:12px 0 2px;
+    background:linear-gradient(180deg,#ffffff,#ffd166);
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  .score-sub{font-size:11px; color:#8f97c9; letter-spacing:.16em; text-transform:uppercase;}
+  .summary{
+    list-style:none; padding:0; margin:18px 0;
+    display:grid; gap:6px; text-align:left;
+  }
+  .summary li{
+    display:flex; justify-content:space-between; gap:10px;
+    font-size:13.5px; padding:7px 10px; border-radius:8px;
+    background:rgba(255,255,255,.04); color:#9aa2d0;
+  }
+  .summary li.hit{color:#b9f7cf; background:rgba(74,222,128,.1);}
+  .summary li.miss{color:#6d76a3; text-decoration:line-through;}
+  .summary .s-pts{font-weight:800; white-space:nowrap;}
+  .total{font-size:13px; color:#aab2e0; margin-bottom:18px;}
+  .total strong{color:var(--gold); font-size:17px;}
+
+  /* ---------- Ad overlay ---------- */
+  .ad-overlay{
+    position:fixed; inset:0; z-index:80; padding:20px;
+    background:rgba(0,0,0,.86);
+    display:grid; place-items:center;
+    animation:fade .2s ease;
+  }
+  .ad-box{
+    width:min(360px,100%);
+    background:#12152e;
+    border:1px solid rgba(255,255,255,.16);
+    border-radius:16px; padding:26px; text-align:center;
+  }
+  .ad-tag{font-size:9px; letter-spacing:.24em; color:#6d76a3; font-weight:800;}
+  .ad-art{font-size:52px; margin:14px 0;}
+  .ad-title{font-weight:800; font-size:16px;}
+  .ad-sub{font-size:12.5px; color:#8f97c9; margin-top:6px; min-height:18px;}
+  .ad-timer{margin-top:16px; font-size:26px; font-weight:900; color:var(--gold);}
+  .ad-box.done .ad-timer{color:var(--green);}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <header class="hud">
+    <div class="brand">
+      <span class="logo">🤖</span>
+      <div>
+        <div class="title">WHAT WOULD AI SAY?</div>
+        <div class="tagline">Top 5 answers on the board</div>
+      </div>
+    </div>
+    <div class="stats">
+      <div class="stat"><span class="k">Round</span><span class="v" id="roundLabel">1/6</span></div>
+      <div class="stat"><span class="k">Score</span><span class="v gold" id="scoreLabel">0</span></div>
+      <div class="stat"><span class="k">Strikes</span><span class="v" id="strikesLabel"></span></div>
+    </div>
+  </header>
+
+  <main>
+    <div class="q-banner">
+      <div class="q-label">SURVEY SAYS…</div>
+      <h1 class="q-text" id="questionText">Warming up the AI…</h1>
+    </div>
+
+    <div class="board" id="board"></div>
+
+    <form class="guessbar" id="guessForm" autocomplete="off">
+      <input id="guessInput" type="text" maxlength="60"
+             placeholder="Type the answer you think the AI gave…" />
+      <button class="btn" type="submit" id="submitBtn">Guess</button>
+    </form>
+
+    <div class="tools">
+      <button class="btn ghost" id="hintBtn" type="button">📺 Watch ad → unlock a hint</button>
+      <span class="hint-note">3 strikes ends the round · guessing #1 earns +25 · each strike −5</span>
+    </div>
+  </main>
+
+  <footer class="foot">
+    Demo build — every “AI” call is stubbed with a canned response.<br />
+    No network requests, no real ads, no million dollars (yet).
+  </footer>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function () {
+  "use strict";
+
+  /* =========================================================
+     CONFIG
+     ========================================================= */
+  const MAX_STRIKES = 3;
+  const BONUS_POINTS = 25;
+  const STRIKE_PENALTY = 5;
+
+  /* =========================================================
+     CANNED "AI" CONTENT  (what the stubbed backend returns)
+     ========================================================= */
+  const ROUNDS = [
+    {
+      question: "Name something people forget to pack for a trip.",
+      answers: [
+        { text: "Phone charger", points: 35, match: ["charger","phone charger","charging cable","charge","power bank","battery pack","cable"] },
+        { text: "Toothbrush",    points: 25, match: ["toothbrush","tooth brush","brush"] },
+        { text: "Medication",    points: 18, match: ["medication","meds","medicine","pills","prescription","drugs","insulin"] },
+        { text: "Toiletries",    points: 13, match: ["toiletries","toiletrie","toothpaste","shampoo","deodorant","soap","razor"] },
+        { text: "Travel documents / ID", points: 9, match: ["travel documents","documents","id","passport","visa","tickets","boarding pass","license"] }
+      ]
+    },
+    {
+      question: "Name something a cat does that drives its owner crazy.",
+      answers: [
+        { text: "Scratches the furniture", points: 30, match: ["scratch","scratches","scratching","furniture","couch","claw","clawing","sofa"] },
+        { text: "Knocks things off tables", points: 24, match: ["knock things off","knock stuff off","knocks things off","push things off","knock over","knocks stuff off"] },
+        { text: "Meows at 3 a.m.",          points: 19, match: ["meow","meowing","meows","yowl","screams","cries","meows at night","3am","howling"] },
+        { text: "Ignores you completely",   points: 16, match: ["ignore","ignores","ignoring","ignores you"] },
+        { text: "Hairballs",                points: 11, match: ["hairball","hairballs","vomit","throw up","puke","barf"] }
+      ]
+    },
+    {
+      question: "Name something people do when they can't fall asleep.",
+      answers: [
+        { text: "Scroll on their phone", points: 32, match: ["scroll","scrolling","phone","social media","tiktok","instagram"] },
+        { text: "Watch TV",              points: 24, match: ["watch tv","tv","television","netflix","watch netflix","watch a show","watch shows"] },
+        { text: "Toss and turn",         points: 18, match: ["toss and turn","toss","turn","rolling around","thrash"] },
+        { text: "Drink warm milk",       points: 14, match: ["warm milk","milk","drink milk","tea","chamomile"] },
+        { text: "Count sheep",           points: 12, match: ["count sheep","sheep","counting sheep"] }
+      ]
+    },
+    {
+      question: "Name a chore people put off for way too long.",
+      answers: [
+        { text: "Laundry",               points: 30, match: ["laundry","washing clothes","wash clothes","clothes","folding"] },
+        { text: "The dishes",            points: 25, match: ["dishes","washing dishes","wash dishes","dishwasher","sink"] },
+        { text: "Cleaning the bathroom", points: 18, match: ["bathroom","clean the bathroom","toilet","shower","scrub"] },
+        { text: "Ironing",               points: 15, match: ["ironing","iron","press shirts"] },
+        { text: "Dusting",               points: 12, match: ["dusting","dust","wipe shelves"] }
+      ]
+    },
+    {
+      question: "Name something you'd find in a junk drawer.",
+      answers: [
+        { text: "Batteries",      points: 30, match: ["batteries","battery","dead batteries","aa batteries"] },
+        { text: "Old cables",     points: 25, match: ["cables","cable","wires","cords","chargers","old chargers"] },
+        { text: "Takeout menus",  points: 17, match: ["takeout menus","menus","menu","takeout menu","restaurant menus"] },
+        { text: "Random keys",    points: 16, match: ["keys","random keys","old keys","spare keys"] },
+        { text: "Tape",           points: 12, match: ["tape","duct tape","scotch tape"] }
+      ]
+    },
+    {
+      question: "Name something people do the night before a big deadline.",
+      answers: [
+        { text: "Panic",                 points: 30, match: ["panic","freak out","stress","crying","cry","panic attack"] },
+        { text: "Drink lots of coffee",  points: 25, match: ["coffee","drink coffee","energy drinks","caffeine","red bull","espresso"] },
+        { text: "Stay up all night",     points: 19, match: ["stay up late","all nighter","all-nighter","pull an all nighter","stay up","work late","no sleep"] },
+        { text: "Ask for an extension",  points: 15, match: ["ask for an extension","extension","beg for more time","email the professor","more time"] },
+        { text: "Blame the wifi",        points: 11, match: ["blame the wifi","blame wifi","wifi","blame the internet","excuses","internet"] }
+      ]
+    }
+  ];
+
+  /* =========================================================
+     STUBBED BACKEND API
+     ========================================================= */
+  const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+  const api = {
+    /** POST /api/round  ->  { question, answers:[{text,points}] } */
+    async generateRound(index) {
+      await sleep(900 + Math.random() * 900);          // fake LLM latency
+      return JSON.parse(JSON.stringify(ROUNDS[index % ROUNDS.length]));
+    },
+    /** POST /api/moderate -> { flagged:boolean } */
+    async moderate() {
+      await sleep(80);
+      return { flagged: false };
+    },
+    /** POST /api/ads/rewarded -> { ready:boolean } */
+    async prepareRewardedAd() {
+      await sleep(250);
+      return { ready: true };
+    }
+  };
+
+  /* =========================================================
+     STATE
+     ========================================================= */
+  const state = {
+    roundIndex: 0,
+    bankedScore: 0,
+    lastRoundScore: 0,
+    strikes: 0,
+    bonus: false,
+    revealed: [],
+    guessedCopy: [],
+    hints: {},
+    popIndex: -1,
+    round: null,
+    ended: false,
+    perfect: false
+  };
+
+  /* =========================================================
+     DOM
+     ========================================================= */
+  const $ = (id) => document.getElementById(id);
+  const els = {
+    questionText: $("questionText"),
+    board: $("board"),
+    form: $("guessForm"),
+    input: $("guessInput"),
+    submitBtn: $("submitBtn"),
+    hintBtn: $("hintBtn"),
+    roundLabel: $("roundLabel"),
+    scoreLabel: $("scoreLabel"),
+    strikesLabel: $("strikesLabel"),
+    toast: $("toast")
+  };
+
+  /* =========================================================
+     HELPERS
+     ========================================================= */
+  function esc(s) {
+    return String(s).replace(/[&<>"']/g, (c) => (
+      { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]
+    ));
+  }
+
+  function normalize(str) {
+    return String(str)
+      .toLowerCase()
+      .replace(/[^a-z0-9\s]/g, " ")
+      .replace(/\b(a|an|the|my|your|his|her|their|some|of|to|for|and|at|on|in|is|it)\b/g, " ")
+      .replace(/\s+/g, " ")
+      .trim();
+  }
+
+  /** crude singulariser so "cables" ~ "cable", "batteries" ~ "battery" */
+  function singular(word) {
+    return word
+      .replace(/ies$/, "y")
+      .replace(/(ches|shes|xes|ses|zes)$/, (m) => m.slice(0, -2))
+      .replace(/s$/, "");
+  }
+
+  function tokensMatch(aTokens, bTokens) {
+    return aTokens.every((t) =>
+      bTokens.some((u) => u === t || singular(u) === singular(t))
+    );
+  }
+
+  /** Generous fuzzy matcher — it's a party game, be kind. */
+  function matches(guess, answer) {
+    const g = normalize(guess);
+    if (!g) return false;
+
+    const gTokens = g.split(" ").filter(Boolean);
+    const candidates = [answer.text]
+      .concat(answer.match || [])
+      .map(normalize)
+      .filter(Boolean);
+
+    for (const c of candidates) {
+      if (c === g) return true;
+
+      const cTokens = c.split(" ").filter(Boolean);
+      if (tokensMatch(gTokens, cTokens) || tokensMatch(cTokens, gTokens)) return true;
+
+      if (g.length >= 4 && c.length >= 4 &&
+          (c.indexOf(g) !== -1 || g.indexOf(c) !== -1)) return true;
+    }
+    return false;
+  }
+
+  function hintFor(text) {
+    return text.split(/\s+/).map((w) => {
+      const clean = w.replace(/[^A-Za-z0-9]/g, "");
+      if (!clean) return w;
+      return clean[0].toUpperCase() + "•".repeat(Math.max(0, clean.length - 1));
+    }).join("  ");
+  }
+
+  /* --- tiny sound effects (best effort, never throws) --- */
+  let audioCtx = null;
+  function blip(freq, dur, type) {
+    try {
+      const Ctx = window.AudioContext || window.webkitAudioContext;
+      if (!Ctx) return;
+      if (!audioCtx) audioCtx = new Ctx();
+      const o = audioCtx.createOscillator();
+      const g = audioCtx.createGain();
+      o.type = type || "sine";
+      o.frequency.value = freq;
+      g.gain.setValueAtTime(0.07, audioCtx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + dur);
+      o.connect(g); g.connect(audioCtx.destination);
+      o.start(); o.stop(audioCtx.currentTime + dur);
+    } catch (e) { /* audio is a nice-to-have */ }
+  }
+
+  let toastTimer;
+  function toast(msg, kind) {
+    if (!els.toast) return;
+    els.toast.textContent = msg;
+    els.toast.className = "toast show " + (kind || "");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => { els.toast.className = "toast"; }, 2700);
+  }
+
+  /** Feedback must NEVER block the board from updating. */
+  function feedback(fn) {
+    try { fn(); } catch (err) { /* swallow */ }
+  }
+
+  /* =========================================================
+     SCORING
+     ========================================================= */
+  function currentRoundScore() {
+    if (!state.round) return 0;
+    let s = 0;
+    state.round.answers.forEach((a, i) => { if (state.revealed[i]) s += a.points; });
+    if (state.bonus) s += BONUS_POINTS;
+    s -= state.strikes * STRIKE_PENALTY;
+    return s;
+  }
+
+  function totalScore() {
+    return state.bankedScore + ((state.ended || !state.round) ? 0 : currentRoundScore());
+  }
+
+  /* =========================================================
+     RENDERING
+     ========================================================= */
+  function loadingHTML() {
+    return '<div class="loading">' +
+             '<div class="dots"><span></span><span></span><span></span></div>' +
+             '<div>The host is asking the AI…</div>' +
+           '</div>';
+  }
+
+  function renderBoard() {
+    if (!state.round) { els.board.innerHTML = loadingHTML(); return; }
+
+    const pop = state.popIndex;
+    state.popIndex = -1;
+
+    els.board.innerHTML = state.round.answers.map((a, i) => {
+      const revealed = !!state.revealed[i];
+      const hint = state.hints[i];
+
+      let cell;
+      if (revealed) {
+        cell = '<span class="answer-text">' + esc(a.text) + "</span>";
+      } else {
+        cell = '<span class="answer-text masked">???</span>' +
+               (hint ? '<span class="hint">' + esc(hint) + "</span>" : "");
+      }
+
+      const cls = ["row"];
+      if (revealed) cls.push("revealed");
+      if (i === 0) cls.push("top");
+      if (i === pop) cls.push("pop");
+
+      return '<div class="' + cls.join(" ") + '">' +
+               '<div class="rank">' + (i + 1) + "</div>" +
+               '<div class="cell">' + cell + "</div>" +
+               '<div class="points">' + a.points + "</div>" +
+             "</div>";
+    }).join("");
+  }
+
+  function updateHud() {
+    els.roundLabel.textContent = (state.roundIndex + 1) + "/" + ROUNDS.length;
+    els.scoreLabel.textContent = totalScore();
+
+    let out = "";
+    for (let i = 0; i < MAX_STRIKES; i++) {
+      out += '<span class="strike' + (i < state.strikes ? " on" : "") + '">✕</span>';
+    }
+    els.strikesLabel.innerHTML = out;
+  }
+
+  function refresh() {
+    renderBoard();
+    updateHud();
+  }
+
+  /* =========================================================
+     ROUND LIFECYCLE
+     ========================================================= */
+  async function startRound(index) {
+    state.roundIndex = index;
+    state.ended = false;
+    state.perfect = false;
+    state.strikes = 0;
+    state.bonus = false;
+    state.hints = {};
+    state.popIndex = -1;
+    state.revealed = [];
+    state.round = null;
+
+    els.input.value = "";
+    els.input.disabled = true;
+    els.hintBtn.disabled = true;
+    els.questionText.textContent = "Warming up the AI…";
+
+    refresh();
+
+    let round;
+    try {
+      round = await api.generateRound(index);
+    } catch (err) {
+      els.questionText.textContent = "The AI is asleep. Refresh to try again.";
+      return;
+    }
+
+    state.round = round;
+    state.revealed = new Array(round.answers.length).fill(false);
+
+    els.questionText.textContent = round.question;
+    els.input.disabled = false;
+    els.hintBtn.disabled = false;
+
+    refresh();
+    els.input.focus();
+  }
+
+  function endRound() {
+    if (state.ended || !state.round) return;
+
+    state.ended = true;
+    state.perfect = state.revealed.every(Boolean);
+    state.guessedCopy = state.revealed.slice();
+    state.lastRoundScore = currentRoundScore();
+    state.bankedScore += state.lastRoundScore;
+
+    state.revealed = state.revealed.map(() => true);
+    state.popIndex = -1;
+
+    els.input.disabled = true;
+    els.hintBtn.disabled = true;
+
+    refresh();
+    setTimeout(showResult, 500);
+  }
+
+  /* =========================================================
+     GUESSING  (the fixed part)
+     ========================================================= */
+  function handleGuess() {
+    /* guard: ignore clicks while loading or after the round is over */
+    if (!state.round || state.ended) return;
+
+    const raw = (els.input.value || "").trim();
+    if (!raw) return;
+
+    els.input.value = "";
+    els.input.focus();
+
+    const answers = state.round.answers;
+
+    /* --- is it one of the hidden answers? --- */
+    let hitIndex = -1;
+    for (let i = 0; i < answers.length; i++) {
+      if (!state.revealed[i] && matches(raw, answers[i])) { hitIndex = i; break; }
+    }
+
+    if (hitIndex !== -1) {
+      state.revealed[hitIndex] = true;
+      state.popIndex = hitIndex;
+
+      const a = answers[hitIndex];
+      let msg = "“" + a.text + "” — " + a.points + " points!";
+      if (hitIndex === 0 && !state.bonus) {
+        state.bonus = true;
+        msg += "  🏆 #1 ANSWER BONUS +" + BONUS_POINTS + "!";
+      }
+
+      /* update the board FIRST, celebrate second */
+      refresh();
+      feedback(() => {
+        toast(msg, "good");
+        blip(660, 0.1);
+        setTimeout(() => blip(990, 0.14), 90);
+      });
+
+      if (state.revealed.every(Boolean)) endRound();
+      return;
+    }
+
+    /* --- already revealed? no penalty --- */
+    const already = answers.some((a, i) => state.revealed[i] && matches(raw, a));
+    if (already) {
+      feedback(() => toast("That one's already on the board.", "warn"));
+      return;
+    }
+
+    /* --- strike --- */
+    state.strikes++;
+    refresh();
+    feedback(() => {
+      blip(150, 0.28, "sawtooth");
+      toast("Strike " + state.strikes + "!  “" + raw + "” isn't on the board.  (−" +
+            STRIKE_PENALTY + ")", "bad");
+    });
+
+    if (state.strikes >= MAX_STRIKES) endRound();
+  }
+
+  /* =========================================================
+     REWARDED AD  (stubbed)
+     ========================================================= */
+  function showAdModal() {
+    return new Promise((resolve) => {
+      const ov = document.createElement("div");
+      ov.className = "ad-overlay";
+      ov.innerHTML =
+        '<div class="ad-box">' +
+          '<div class="ad-tag">SPONSORED · STUBBED AD</div>' +
+          '<div class="ad-art">🛒</div>' +
+          '<div class="ad-title">Definitely A Real Advertisement</div>' +
+          '<div class="ad-sub">Buy more things you do not need!</div>' +
+          '<div class="ad-timer">3</div>' +
+        "</div>";
+      document.body.appendChild(ov);
+
+      const box = ov.querySelector(".ad-box");
+      const timerEl = ov.querySelector(".ad-timer");
+      const subEl = ov.querySelector(".ad-sub");
+
+      let t = 3;
+      const iv = setInterval(() => {
+        t--;
+        if (t > 0) {
+          timerEl.textContent = t;
+        } else {
+          clearInterval(iv);
+          box.classList.add("done");
+          timerEl.textContent = "✓";
+          subEl.textContent = "Hint unlocked!";
+          setTimeout(() => { ov.remove(); resolve(true); }, 700);
+        }
+      }, 900);
+    });
+  }
+
+  async function useHint() {
+    if (!state.round || state.ended) return;
+
+    const available = state.round.answers
+      .map((_, i) => i)
+      .filter((i) => !state.revealed[i] && !state.hints[i]);
+
+    if (!available.length) {
+      feedback(() => toast("No hints left for this round.", "warn"));
+      return;
+    }
+
+    els.hintBtn.disabled = true;
+    await api.prepareRewardedAd();     // stub
+    const ok = await showAdModal();    // stub
+    els.hintBtn.disabled = state.ended;
+
+    if (!ok) return;
+
+    const idx = available[0];
+    state.hints[idx] = hintFor(state.round.answers[idx].text);
+    refresh();
+    feedback(() => toast("Hint unlocked for slot #" + (idx + 1) + ": " + state.hints[idx], "warn"));
+  }
+
+  /* =========================================================
+     RESULT SCREEN
+     ========================================================= */
+  function showResult() {
+    const isLast = state.roundIndex >= ROUNDS.length - 1;
+
+    let label = "ROUND OVER";
+    if (state.perfect) label = "BOARD CLEARED!";
+    else if (state.strikes >= MAX_STRIKES) label = "THREE STRIKES!";
+
+    const rows = state.round.answers.map((a, i) => {
+      const hit = state.guessedCopy[i];
+      return '<li class="' + (hit ? "hit" : "miss") + '">' +
+               '<span class="s-text">' + esc(a.text) + "</span>" +
+               '<span class="s-pts">' + (hit ? "+" + a.points : "—") + "</span>" +
+             "</li>";
+    }).join("");
+
+    const ov = document.createElement("div");
+    ov.className = "overlay";
+    ov.innerHTML =
+      '<div class="card">' +
+        '<div class="card-label">' + label + "</div>" +
+        '<div class="big-score">' + state.lastRoundScore + "</div>" +
+        '<div class="score-sub">points this round</div>' +
+        '<ul class="summary">' + rows + "</ul>" +
+        '<div class="total">Total score: <strong>' + state.bankedScore + "</strong></div>" +
+        '<button class="btn" id="nextBtn" type="button">' +
+          (isLast ? "Play Again" : "Next Round") +
+        "</button>" +
+      "</div>";
+    document.body.appendChild(ov);
+
+    ov.querySelector("#nextBtn").addEventListener("click", () => {
+      ov.remove();
+      if (isLast) {
+        state.bankedScore = 0;
+        startRound(0);
+      } else {
+        startRound(state.roundIndex + 1);
+      }
+    });
+  }
+
+  /* =========================================================
+     EVENTS
+     ========================================================= */
+  /* Form submit covers Enter-key and the Guess button… */
+  els.form.addEventListener("submit", (e) => {
+    e.preventDefault();
+    handleGuess();
+  });
+
+  /* …and we bind the button directly too, so the guess can never be
+     swallowed by a missing/odd form submit event. */
+  els.submitBtn.addEventListener("click", (e) => {
+    e.preventDefault();          // stops the form's own submit → no double call
+    handleGuess();
+  });
+
+  els.hintBtn.addEventListener("click", useHint);
+
+  /* =========================================================
+     GO
+     ========================================================= */
+  startRound(0);
+})();
+</script>
+</body>
+</html>
